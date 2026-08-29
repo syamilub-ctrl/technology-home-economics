@@ -1,0 +1,1 @@
+# life-resource-class
