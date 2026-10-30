@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>🔥 짝꿍과 찾는 퍼스널 컬러 (중2 특별판)</title>
+<!-- Google Fonts: Jua (제목용), Gowun Dodum (본문용) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum:wght@400;700&display=swap">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg-main: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-sub: #64748B;
+    --border-color: #E2E8F0;
+    --accent: #6366F1;
+    --accent-hover: #4F46E5;
+  }
+  
+  [data-theme="dark"] {
+    --bg-main: #0F172A;
+    --card-bg: #1E293B;
+    --text-primary: #F8FAFC;
+    --text-sub: #94A3B8;
+    --border-color: #334155;
+    --accent: #818CF8;
+    --accent-hover: #6366F1;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Gowun Dodum', sans-serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .font-jua { font-family: 'Jua', sans-serif; }
+
+  /* Custom UI Cards & Elements */
+  .custom-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  }
+
+  .btn-bounce {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+  }
+  .btn-bounce:active {
+    transform: scale(0.95);
+  }
+
+  /* Glow animation for title card */
+  .glow-pulse {
+    animation: glow 2.5s infinite alternate;
+  }
+  @keyframes glow {
+    from { box-shadow: 0 0 12px rgba(99, 102, 241, 0.15); }
+    to { box-shadow: 0 0 28px rgba(99, 102, 241, 0.45); }
+  }
+
+  /* Confetti Particle Animation */
+  .confetti-particle {
+    position: fixed;
+    top: -20px;
+    width: 12px;
+    height: 16px;
+    border-radius: 4px;
+    z-index: 100;
+    pointer-events: none;
+    animation: fall 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(720deg) scale(0.6); opacity: 0; }
+  }
+</style>
+</head>
+<body class="min-h-screen pb-12 transition-colors duration-300">
+
+  <!-- Header Navigation -->
+  <header class="max-w-4xl mx-auto px-4 pt-6 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <span class="text-3xl">🎨</span>
+      <div>
+        <h1 class="font-jua text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">짝꿍 퍼스널 컬러 Lab</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">중2 미술·학급활동 탐구 프로젝트</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleDarkMode()" class="px-3.5 py-2 rounded-2xl bg-slate-200 dark:bg-slate-700 font-jua text-sm text-slate-800 dark:text-slate-200 btn-bounce" title="테마 변경">
+        🌙 화면 밝기
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main id="app" class="max-w-4xl mx-auto px-4 mt-6">
+    <!-- Dynamic Content Rendered via JS -->
+  </main>
+
+  <!-- Fullscreen Face-Drape Screen Modal (For physical chin-under testing) -->
+  <div id="fullDrapeOverlay" class="fixed inset-0 z-50 hidden flex-col justify-between items-center p-6 text-white text-center cursor-pointer select-none transition-colors duration-300">
+    <!-- Top Floating Instruction Banner -->
+    <div class="w-full max-w-lg bg-black/70 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 mt-2 pointer-events-auto">
+      <div class="flex justify-between items-center mb-1">
+        <span id="drapeBadge" class="font-jua text-base px-3 py-0.5 rounded-full bg-white/20 text-amber-300">드레이프 반사판 모드</span>
+        <span class="text-xs text-white/80 font-bold">❌ 닫으려면 화면 어디든 터치</span>
+      </div>
+      <h3 id="drapeTitleText" class="font-jua text-2xl md:text-3xl drop-shadow"></h3>
+      <p class="text-xs md:text-sm text-white/90 mt-1 font-jua">📱 이 화면을 턱 바로 밑에 대고 얼굴 빛 변화를 짝꿍과 관찰하세요!</p>
+    </div>
+
+    <!-- Center Screen Space -->
+    <div class="my-auto flex flex-col items-center justify-center pointer-events-none">
+      <span class="text-6xl mb-2 opacity-80 animate-bounce">👇</span>
+      <p class="font-jua text-xl md:text-2xl drop-shadow-lg text-white/90 px-4">"얼굴 다크서클이나 피부 톤이 어떻게 바뀌나요?"</p>
+    </div>
+
+    <!-- Bottom Quick Switch Bar (Compare colors while holding device under chin) -->
+    <div id="drapeSwitchBar" class="w-full max-w-md flex gap-3 pointer-events-auto mb-2">
+      <!-- Buttons populated dynamically if comparing colors -->
+    </div>
+  </div>
+
+<script>
+/* ==========================================================================
+   1. Data Definitions (Seasons, Quiz, Celebrity Profiles with BEST/WORST Visual Outfit Photos)
+   ========================================================================== */
+
+var SEASONS = {
+  spring: {
+    name: "봄 웜톤 (Spring Warm)",
+    color: "#FF6B4A",
+    subTypes: {
+      light: "봄 라이트 🍑 (인간 복숭아)",
+      bright: "봄 브라이트 🍊 (인간 형광등)"
+    },
+    vibe: "밝고 비타민처럼 팡팡 튀는 화사함! 얼굴에 조명을 켠 듯 생기 넘쳐요.",
+    best: [
+      ["코랄 피치", "#FF7F6B"], ["비타민 옐로", "#FFC93C"], ["라임 톡톡", "#9BD770"],
+      ["살구 핑크", "#FFB085"], ["브라이트 오렌지", "#FF8C42"], ["터콰이즈 민트", "#34D399"]
+    ],
+    avoid: [
+      ["딥 차콜", "#334155"], ["탁한 더스티 모브", "#8E6F9A"], ["차가운 쿨 그레이", "#94A3B8"]
+    ],
+    celebs: [
+      {
+        name: "장원영",
+        group: "IVE (아이브)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Jang_Wonyoung_%EC%9E%A5%EC%9B%90%EC%98%81_240513_02.png",
+        photoSource: "https://commons.wikimedia.org/wiki/File:Jang_Wonyoung_%EC%9E%A5%EC%9B%90%EC%98%81_240513_02.png",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/Jang_Wonyoung_%EC%9E%A5%EC%9B%90%EC%98%81_240513_02.png",
+        bestOutfit: "피치 코랄 원피스 & 비타민 옐로 룩",
+        bestDesc: "피부 톤이 화사하게 피어나고 이목구비가 상큼하고 또렷하게 살아납니다!",
+        bestColor: "#FF7F6B",
+        worstOutfit: "탁한 딥 차콜 수트 & 어두운 모브 톤",
+        worstDesc: "특유의 맑은 특색이 사라지고 얼굴빛이 칙칙하고 피곤해 보입니다.",
+        worstColor: "#334155"
+      },
+      {
+        name: "박보검",
+        group: "배우",
+        img: "https://upload.wikimedia.org/wikipedia/commons/6/61/Park_Bo-gum_in_October_2023.jpg",
+        photoSource: "https://commons.wikimedia.org/wiki/File:Park_Bo-gum_in_October_2023.jpg",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/Park_Bo-gum_in_October_2023.jpg",
+        bestOutfit: "따뜻한 아이보리 셔츠 & 살구빛 니트",
+        bestDesc: "부드럽고 훈훈한 멍뭉미 아우라가 가득 차오르는 매력 극대화!",
+        bestColor: "#FFC93C",
+        worstOutfit: "차가운 다크 쿨그레이 & 딥 카키",
+        worstDesc: "인상이 어두워 보이고 혈색이 파리해지는 아쉬운 매칭.",
+        worstColor: "#64748B"
+      }
+    ],
+    luckyItem: "코랄색 포스트잇, 라이트 옐로 무릎담요, 비타민 음료"
+  },
+  summer: {
+    name: "여름 쿨톤 (Summer Cool)",
+    color: "#5C6BC0",
+    subTypes: {
+      light: "여름 라이트 🌸 (인간 벚꽃 소다)",
+      mute: "여름 뮤트 🍇 (인간 라벤더 폼)"
+    },
+    vibe: "맑고 청량하며 우유 한 방울 섞인 듯 부드러운 아우라!",
+    best: [
+      ["딸기우유 핑크", "#F4A6C0"], ["파우더 소다블루", "#93C5FD"], ["라벤더 퍼플", "#C4B5FD"],
+      ["세이지 민트", "#A7F3D0"], ["애쉬 그레이 블루", "#94A3B8"], ["모브 로즈", "#E879F9"]
+    ],
+    avoid: [
+      ["황토색 오렌지", "#E67E22"], ["카레 머스터드", "#D97706"], ["딥 다크 브라운", "#78350F"]
+    ],
+    celebs: [
+      {
+        name: "민지",
+        group: "NewJeans (뉴진스)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/2/27/Minji_240903.png",
+        photoSource: "https://commons.wikimedia.org/wiki/File:Minji_240903.png",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/Minji_240903.png",
+        bestOutfit: "파우더 소다블루 데님 & 딸기우유 핑크 니트",
+        bestDesc: "특유의 깨끗하고 청순한 이미지가 배가되며 얼굴선이 부드러워짐!",
+        bestColor: "#93C5FD",
+        worstOutfit: "진한 머스터드 카레색 & 딥 브라운",
+        worstDesc: "얼굴에 노란 기가 돌며 청량함이 감소하고 답답해 보입니다.",
+        worstColor: "#D97706"
+      },
+      {
+        name: "차은우",
+        group: "ASTRO / 배우",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/3d/240301_Cha_Eun-woo.jpg",
+        photoSource: "https://commons.wikimedia.org/wiki/File:240301_Cha_Eun-woo.jpg",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/240301_Cha_Eun-woo.jpg",
+        bestOutfit: "파스텔 라벤더 셔츠 & 파우더블루 자켓",
+        bestDesc: "만화를 찢고 나온 듯한 맑은 쿨톤 남신 비주얼 완성!",
+        bestColor: "#C4B5FD",
+        worstOutfit: "탁한 웜 황토색 & 러스트 브릭 오렌지",
+        worstDesc: "피부 톤의 화사함이 묻히고 이목구비의 청량감이 떨어집니다.",
+        worstColor: "#E67E22"
+      }
+    ],
+    luckyItem: "파스텔 하늘색 필통, 연보라 3색볼펜, 민트색 에어팟 케이스"
+  },
+  autumn: {
+    name: "가을 웜톤 (Autumn Warm)",
+    color: "#B45309",
+    subTypes: {
+      mute: "가을 뮤트 🍂 (인간 단풍 라떼)",
+      deep: "가을 딥 ☕ (인간 시나몬 아인슈페너)"
+    },
+    vibe: "분위기 남신/여신! 깊이 있고 따뜻하며 힙한 감성이 돋보여요.",
+    best: [
+      ["카멜 베이지", "#D97706"], ["올리브 모스그린", "#65A30D"], ["러스트 브릭", "#C2410C"],
+      ["머스터드 황금색", "#F59E0B"], ["초콜릿 브라운", "#78350F"], ["딥 카키", "#4D7C0F"]
+    ],
+    avoid: [
+      ["형광 핫핑크", "#FF1493"], ["울트라 로열블루", "#1D4ED8"], ["페일 페어리 연보라", "#E0E7FF"]
+    ],
+    celebs: [
+      {
+        name: "뷔 (V)",
+        group: "BTS (방탄소년단)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/220624_%EB%B0%A9%ED%83%84%EC%86%8C%EB%85%84%EB%8B%A8_%EB%B7%94%281%29_%28cropped%29.jpg",
+        photoSource: "https://commons.wikimedia.org/wiki/File:220624_%EB%B0%A9%ED%83%84%EC%86%8C%EB%85%84%EB%8B%A8_%EB%B7%94%281%29_%28cropped%29.jpg",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/220624_%EB%B0%A9%ED%83%84%EC%86%8C%EB%85%84%EB%8B%A8_%EB%B7%94%281%29_%28cropped%29.jpg",
+        bestOutfit: "카멜 트렌치코트 & 딥 올리브 그린 후드",
+        bestDesc: "독보적인 분위기와 고급스러운 아우라가 폭발하는 분위기 끝판왕!",
+        bestColor: "#D97706",
+        worstOutfit: "쨍한 형광 핫핑크 & 체리 레몬 쿨 톤",
+        worstDesc: "옷만 도드라지고 뷔의 그윽한 피부 톤과 입체감이 따로 놂.",
+        worstColor: "#FF1493"
+      },
+      {
+        name: "제니",
+        group: "BLACKPINK (블랙핑크)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Jennie_Kim_2024_%28facecrop%29.png",
+        photoSource: "https://commons.wikimedia.org/wiki/File:Jennie_Kim_2024_%28facecrop%29.png",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/Jennie_Kim_2024_%28facecrop%29.png",
+        bestOutfit: "러스트 브릭 레드 & 차분한 베이지 코디",
+        bestDesc: "클래식하면서도 세련된 인간 가을 라떼 힙스터 룩 연출!",
+        bestColor: "#C2410C",
+        worstOutfit: "차가운 페일 아이스 블루 & 연한 파스텔 쿨 연보라",
+        worstDesc: "피부 혈색이 약해 보이고 얼굴이 창백하게 뜨는 느낌.",
+        worstColor: "#E0E7FF"
+      }
+    ],
+    luckyItem: "카키색 후드티, 우드톤 텀블러, 체크무늬 숄더백"
+  },
+  winter: {
+    name: "겨울 쿨톤 (Winter Cool)",
+    color: "#4338CA",
+    subTypes: {
+      bright: "겨울 브라이트 ⚡ (선명한 냉미녀/냉미남)",
+      dark: "겨울 딥 🖤 (시크 다크 카리스마)"
+    },
+    vibe: "선명하고 또렷한 대비! 도회적이고 깔끔한 카리스마가 매력적이에요.",
+    best: [
+      ["트루 체리레드", "#DC2626"], ["딥 로열블루", "#1E40AF"], ["퓨어 스노우 화이트", "#FFFFFF"],
+      ["미드나잇 블랙", "#0F172A"], ["비비드 자두 퍼플", "#7E22CE"], ["푸크시아 핑크", "#E11D48"]
+    ],
+    avoid: [
+      ["카레 머스터드", "#D97706"], ["연한 살구 베이지", "#FDE68A"], ["따뜻한 카멜", "#B45309"]
+    ],
+    celebs: [
+      {
+        name: "카리나",
+        group: "aespa (에스파)",
+        img: "https://upload.wikimedia.org/wikipedia/commons/2/24/Karina_performing_at_TikTok_Awards_%28cropped%29.jpg",
+        photoSource: "https://commons.wikimedia.org/wiki/File:Karina_performing_at_TikTok_Awards_%28cropped%29.jpg",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/Karina_performing_at_TikTok_Awards_%28cropped%29.jpg",
+        bestOutfit: "시크 미드나잇 블랙 & 비비드 트루 체리레드",
+        bestDesc: "이목구비가 미친 듯이 또렷해지고 선명한 카리스마 화사함 뿜뿜!",
+        bestColor: "#DC2626",
+        worstOutfit: "따뜻한 카레 머스터드 & 탁한 연살구 베이지",
+        worstDesc: "특유의 시크한 냉미녀 인상이 무뎌지고 피부가 노랗게 착색되어 보임.",
+        worstColor: "#D97706"
+      },
+      {
+        name: "변우석",
+        group: "배우",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/39/20260512_Byeon_Woo-seok.png",
+        photoSource: "https://commons.wikimedia.org/wiki/File:20260512_Byeon_Woo-seok.png",
+        photoFallback: "https://commons.wikimedia.org/wiki/Special:FilePath/20260512_Byeon_Woo-seok.png",
+        bestOutfit: "딥 로열블루 수트 & 퓨어 화이트 셔츠",
+        bestDesc: "얼굴 윤곽이 살고 또렷한 모델 비율과 피부 톤이 강렬하게 살아남!",
+        bestColor: "#1E40AF",
+        worstOutfit: "황토 카멜 브라운 & 칙칙한 베이지",
+        worstDesc: "선명한 쿨톤 대비가 약해지고 안색이 어두워 보입니다.",
+        worstColor: "#B45309"
+      }
+    ],
+    luckyItem: "블랙&화이트 에코백, 로열블루 멀티펜, 시크 텀블러"
+  }
+};
+
+// Quiz Questions for Middle Schoolers (6 Fun Interactive Questions)
+var QUIZ_QUESTIONS = [
+  {
+    category: "undertone",
+    title: "🩺 1단계: 손목 안쪽 혈관 색상 관찰",
+    sub: "밝은 자리에서 짝꿍과 함께 손목 안쪽 혈관 빛을 들여다보세요!",
+    options: [
+      { text: "초록빛 / 올리브빛이 더 많이 보여요", value: 1, icon: "🟢", color: "#6FA35B" },
+      { text: "파란색 / 보라색빛이 뚜렷해요", value: -1, icon: "🔵", color: "#5B6FC4" },
+      { text: "초록과 파랑이 섞여 있거나 잘 모르겠어요", value: 0, icon: "🔘", color: "#9AA0A6" }
+    ]
+  },
+  {
+    category: "undertone",
+    title: "💍 2단계: 골드 vs 실버 반사판 대결",
+    sub: "[ 📱 턱 밑에 대보기 ] 버튼을 눌러 태블릿을 턱 아래에 대고 비교해 보세요!",
+    isDrape: true,
+    drapes: [
+      { text: "✨ 따뜻한 골드 (Warm Gold)", value: 1, bg: "linear-gradient(135deg, #F59E0B, #B45309)" },
+      { text: "❄️ 쿨한 실버 (Cool Silver)", value: -1, bg: "linear-gradient(135deg, #E2E8F0, #64748B)" }
+    ]
+  },
+  {
+    category: "bright",
+    title: "👁️ 3단계: 눈동자 & 머리카락 자연 색감",
+    sub: "자연광 아래에서 관찰했을 때 짝꿍의 눈동자와 헤어 톤은 어떤가요?",
+    options: [
+      { text: "밝은 브라운, 부드러운 갈색빛", value: 1, icon: "🌰", color: "#B58A5A" },
+      { text: "또렷한 흑색, 시크한 진한 검정", value: -1, icon: "🖤", color: "#1B1B1F" },
+      { text: "그 중간 정도의 차분한 자연 갈색", value: 0, icon: "☕", color: "#6B5545" }
+    ]
+  },
+  {
+    category: "bright",
+    title: "👕 4단계: 교실 사복 / 체육복 어울림 대결",
+    sub: "내가 입었을 때 얼굴이 더 맑고 생기 있게 사느라 칭찬받는 색은?",
+    options: [
+      { text: "화사하고 맑은 라이트 파스텔 톤 (핑크/하늘)", value: 2, icon: "🌸", color: "#F472B6" },
+      { text: "쨍하고 선명한 비비드 톡톡 톤 (체리레드/로열블루)", value: 1, icon: "⚡", color: "#3B82F6" },
+      { text: "차분하고 은은한 딥/뮤트 톤 (카키/브라운/애쉬그레이)", value: -1, icon: "☕", color: "#78350F" }
+    ]
+  },
+  {
+    category: "undertone",
+    title: "💄 5단계: 립/혈색 틴트 컬러 비교",
+    sub: "입술이나 얼굴 쪽에 대보았을 때 이질감 없이 찰떡인 컬러 립 계열은?",
+    options: [
+      { text: "상큼한 코랄 / 살구 오렌지 피치", value: 1.5, icon: "🍑", color: "#FF7F6B" },
+      { text: "청량한 딸기우유 / 체리 쿨 핑크", value: -1.5, icon: "🍓", color: "#EC4899" },
+      { text: "분위기 있는 브릭 레드 / 말린 장미(MLBB)", value: 0.5, icon: "🥀", color: "#9F1239" }
+    ]
+  },
+  {
+    category: "bright",
+    title: "🎨 6단계: 비타민 옐로 vs 미드나잇 블루 드레이프",
+    sub: "마지막으로 턱 밑에 대어보기로 두 색상 반사판을 번갈아 체크해 보세요!",
+    isDrape: true,
+    drapes: [
+      { text: "☀️ 비타민 맑은 옐로 (밝고 화사함)", value: 1, bg: "#FFD166" },
+      { text: "🌙 미드나잇 딥 블루 (선명하고 또렷함)", value: -1, bg: "#1D3557" }
+    ]
+  }
+];
+
+/* ==========================================================================
+   2. App State Management
+   ========================================================================== */
+var state = {
+  playerA: "",
+  playerB: "",
+  currentRole: 0, // 0: Player A, 1: Player B
+  currentQIndex: 0,
+  warmScore: 0,
+  brightScore: 0,
+  completedResults: [] // Array of { role, name, seasonKey, subTypeName }
+};
+
+/* ==========================================================================
+   3. Renderers & UI Utilities
+   ========================================================================== */
+
+function getActiveName() {
+  return (state.currentRole === 0 ? state.playerA : state.playerB) || (state.currentRole === 0 ? "짝꿍 A" : "짝꿍 B");
+}
+
+function getHelperName() {
+  return (state.currentRole === 0 ? state.playerB : state.playerA) || (state.currentRole === 0 ? "짝꿍 B" : "짝꿍 A");
+}
+
+function toggleDarkMode() {
+  var root = document.documentElement;
+  var isDark = root.getAttribute("data-theme") === "dark";
+  root.setAttribute("data-theme", isDark ? "light" : "dark");
+}
+
+function renderHeaderProgress(step) {
+  var bars = "";
+  for (var j = 0; j < QUIZ_QUESTIONS.length; j++) {
+    var isActive = j <= step;
+    bars += '<div class="h-2.5 flex-1 rounded-full transition-all duration-300 ' + (isActive ? 'bg-indigo-600 dark:bg-indigo-400' : 'bg-slate-200 dark:bg-slate-700') + '"></div>';
+  }
+  return '<div class="mb-6"><div class="flex justify-between items-center mb-2"><span class="font-jua text-lg text-slate-700 dark:text-slate-300">진단 받는 사람: <b class="text-indigo-600 dark:text-indigo-400 font-normal px-3 py-1 bg-indigo-50 dark:bg-indigo-950/50 rounded-full border border-indigo-200 dark:border-indigo-800">' + escapeHtml(getActiveName()) + '</b></span><span class="text-xs font-bold text-slate-400">' + (step + 1) + ' / ' + QUIZ_QUESTIONS.length + '</span></div><div class="flex gap-1.5">' + bars + '</div></div>';
+}
+
+// 1. INTRO SCREEN
+function renderIntro() {
+  var app = document.getElementById("app");
+  app.innerHTML = 
+    '<div class="custom-card rounded-3xl p-6 md:p-10 text-center max-w-2xl mx-auto glow-pulse">' +
+      '<span class="inline-block text-5xl mb-3 animate-bounce">🎨</span>' +
+      '<h2 class="font-jua text-3xl md:text-4xl text-slate-800 dark:text-slate-100 mb-3">짝꿍과 함께 찾는 퍼스널 컬러</h2>' +
+      '<p class="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">한 사람은 진단을 받고, 한 사람은 도우미가 되어 서로의 얼굴 밑에 화면을 직접 대보며 관찰해 봐요! 인기 연예인 코디 분석과 소장용 포토카드까지 완성됩니다.</p>' +
+      
+      '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">' +
+        '<div>' +
+          '<label class="block font-jua text-slate-700 dark:text-slate-300 mb-2">🙋‍♂️ 짝꿍 A 이름</label>' +
+          '<input type="text" id="inputA" placeholder="예: 민수" value="' + escapeHtml(state.playerA) + '" class="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-jua text-lg focus:outline-none focus:border-indigo-500">' +
+        '</div>' +
+        '<div>' +
+          '<label class="block font-jua text-slate-700 dark:text-slate-300 mb-2">🙋‍♀️ 짝꿍 B 이름</label>' +
+          '<input type="text" id="inputB" placeholder="예: 지민" value="' + escapeHtml(state.playerB) + '" class="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-jua text-lg focus:outline-none focus:border-indigo-500">' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="p-4 bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-200 dark:border-indigo-800/50 rounded-2xl text-indigo-900 dark:text-indigo-300 text-sm text-left mb-8 leading-relaxed">' +
+        '💡 <b>탐구 팁:</b> 밝은 교실 창가나 조명 아래에서 태블릿/스마트폰 화면 밝기를 최대(100%)로 올린 후, 진단 받는 친구 턱 바로 아래에 화면을 밀착시켜 대어 보세요!' +
+      '</div>' +
+
+      '<button onclick="startQuiz()" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-jua text-2xl shadow-lg shadow-indigo-500/30 btn-bounce">' +
+        '🚀 A부터 탐구 시작하기' +
+      '</button>' +
+    '</div>';
+}
+
+function startQuiz() {
+  var a = document.getElementById("inputA").value.trim();
+  var b = document.getElementById("inputB").value.trim();
+  state.playerA = a || "짝꿍 A";
+  state.playerB = b || "짝꿍 B";
+  state.completedResults = [];
+  state.currentRole = 0;
+  loadQuestion(0, true);
+}
+
+// 2. QUIZ QUESTION SCREEN
+function loadQuestion(index, resetScores) {
+  if (resetScores) {
+    state.warmScore = 0;
+    state.brightScore = 0;
+  }
+  state.currentQIndex = index;
+  var q = QUIZ_QUESTIONS[index];
+  var app = document.getElementById("app");
+
+  var html = renderHeaderProgress(index) +
+    '<div class="custom-card rounded-3xl p-6 md:p-8 mb-6">' +
+      '<h3 class="font-jua text-2xl md:text-3xl text-slate-800 dark:text-slate-100 mb-2">' + q.title + '</h3>' +
+      '<p class="text-sm md:text-base text-indigo-600 dark:text-indigo-400 font-bold mb-6">🔍 <b>도우미 ' + escapeHtml(getHelperName()) + '의 역할:</b> ' + q.sub + '</p>';
+
+  if (q.isDrape) {
+    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">';
+    q.drapes.forEach(function(d, idx) {
+      html += 
+        '<div class="flex flex-col rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 shadow-sm">' +
+          '<button onclick="openFullDrape(' + idx + ')" style="background:' + d.bg + '" class="h-40 w-full flex items-end p-4 text-white font-jua text-2xl drop-shadow-md hover:opacity-95 transition-opacity btn-bounce">' +
+            '📱 ' + d.text + ' (턱 밑에 대보기)' +
+          '</button>' +
+          '<button onclick="selectAnswer(' + idx + ')" class="py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-jua text-lg text-center btn-bounce">' +
+            '이 쪽이 얼굴이 더 사는 느낌! ✨' +
+          '</button>' +
+        '</div>';
+    });
+    html += '</div>' +
+      '<div class="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800/40 text-amber-800 dark:text-amber-300 text-xs text-center font-jua">' +
+        '💡 상단 컬러 칸을 누르면 화면 전체가 풀스크린 반사판으로 바뀝니다. 턱 밑에 대고 짝꿍과 비교하세요!' +
+      '</div>';
+  } else {
+    html += '<div class="grid grid-cols-1 gap-3.5">';
+    q.options.forEach(function(opt, idx) {
+      html += 
+        '<button onclick="selectAnswer(' + idx + ')" class="p-4 md:p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 bg-slate-50 dark:bg-slate-800/80 flex items-center gap-4 text-left btn-bounce group">' +
+          '<span class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-inner shrink-0" style="background:' + (opt.color || '#E2E8F0') + '">' + (opt.icon || '') + '</span>' +
+          '<span class="font-jua text-lg md:text-xl text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">' + opt.text + '</span>' +
+        '</button>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  app.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   4. FULLSCREEN CHIN-UNDER DRAPE OVERLAY LOGIC
+   ========================================================================== */
+function openFullDrape(drapeIdx) {
+  var q = QUIZ_QUESTIONS[state.currentQIndex];
+  if (!q.isDrape) return;
+
+  var currentDrape = q.drapes[drapeIdx];
+  var overlay = document.getElementById("fullDrapeOverlay");
+  var titleText = document.getElementById("drapeTitleText");
+  var switchBar = document.getElementById("drapeSwitchBar");
+
+  overlay.style.background = currentDrape.bg;
+  titleText.textContent = currentDrape.text;
+
+  // Build quick switch buttons at bottom so users can toggle colors while holding phone under chin
+  switchBar.innerHTML = "";
+  q.drapes.forEach(function(d, idx) {
+    var isSelected = idx === drapeIdx;
+    var btn = document.createElement("button");
+    btn.className = "flex-1 py-3 px-2 rounded-xl font-jua text-sm text-white backdrop-blur-md border border-white/40 btn-bounce " + 
+                    (isSelected ? "bg-white/40 ring-2 ring-white" : "bg-black/30 hover:bg-black/50");
+    btn.textContent = (idx === 0 ? "👈 " : "👉 ") + d.text;
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      openFullDrape(idx);
+    };
+    switchBar.appendChild(btn);
+  });
+
+  overlay.classList.remove("hidden");
+  overlay.classList.add("flex");
+}
+
+function openCustomColorDrape(hex, name) {
+  var overlay = document.getElementById("fullDrapeOverlay");
+  var titleText = document.getElementById("drapeTitleText");
+  var switchBar = document.getElementById("drapeSwitchBar");
+
+  overlay.style.background = hex;
+  titleText.textContent = name;
+  switchBar.innerHTML = "";
+
+  overlay.classList.remove("hidden");
+  overlay.classList.add("flex");
+}
+
+function closeFullDrape() {
+  var overlay = document.getElementById("fullDrapeOverlay");
+  overlay.classList.add("hidden");
+  overlay.classList.remove("flex");
+}
+
+document.getElementById("fullDrapeOverlay").onclick = function() {
+  closeFullDrape();
+};
+
+function selectAnswer(answerIdx) {
+  var q = QUIZ_QUESTIONS[state.currentQIndex];
+  var val = q.isDrape ? q.drapes[answerIdx].value : q.options[answerIdx].value;
+
+  if (q.category === "undertone") {
+    state.warmScore += val;
+  } else if (q.category === "bright") {
+    state.brightScore += val;
+  }
+
+  if (state.currentQIndex < QUIZ_QUESTIONS.length - 1) {
+    loadQuestion(state.currentQIndex + 1, false);
+  } else {
+    triggerDrumroll();
+  }
+}
+
+// 5. DRUMROLL VISUAL LOADING SCREEN
+function triggerDrumroll() {
+  var app = document.getElementById("app");
+  var messages = [
+    "피부 밑 톤 반사율 스캔 중... 🔍",
+    "골드 vs 실버 온도감 측정 완료! 💍",
+    "스타들의 BEST/WORST 코디 비교 중... 📸",
+    "인생 포토카드 찍을 준비 완료! 🎨"
+  ];
+  
+  var count = 0;
+  app.innerHTML = 
+    '<div class="custom-card rounded-3xl p-10 text-center max-w-lg mx-auto my-12">' +
+      '<div id="spinCircle" class="w-32 h-32 rounded-full mx-auto mb-6 transition-all duration-300 shadow-2xl flex items-center justify-center text-4xl animate-spin">🎨</div>' +
+      '<h3 class="font-jua text-3xl text-slate-800 dark:text-slate-100 mb-2">두구두구두구... 🥁</h3>' +
+      '<p id="spinMsg" class="font-jua text-lg text-indigo-600 dark:text-indigo-400">' + messages[0] + '</p>' +
+    '</div>';
+
+  var colors = ["#FF6B4A", "#5C6BC0", "#B45309", "#4338CA"];
+  var interval = setInterval(function() {
+    count++;
+    var circle = document.getElementById("spinCircle");
+    var msg = document.getElementById("spinMsg");
+    if (circle && msg) {
+      circle.style.backgroundColor = colors[count % colors.length];
+      msg.textContent = messages[count % messages.length];
+    }
+  }, 400);
+
+  setTimeout(function() {
+    clearInterval(interval);
+    showResult();
+  }, 2000);
+}
+
+// 6. RESULT SCREEN WITH CELEBRITY BEST & WORST GALLERY
+function showResult() {
+  spawnConfetti();
+
+  var isWarm = state.warmScore >= 0;
+  var isBright = state.brightScore >= 0;
+
+  var seasonKey = isWarm ? (isBright ? "spring" : "autumn") : (isBright ? "summer" : "winter");
+  var season = SEASONS[seasonKey];
+  var subTypeKey = isBright ? "light" : (isWarm ? "deep" : "mute");
+  if (seasonKey === "winter") subTypeKey = isBright ? "bright" : "dark";
+
+  var subTypeName = season.subTypes[subTypeKey] || Object.values(season.subTypes)[0];
+
+  state.completedResults = state.completedResults.filter(function(r) { return r.role !== state.currentRole; });
+  state.completedResults.push({
+    role: state.currentRole,
+    name: getActiveName(),
+    seasonKey: seasonKey,
+    subTypeName: subTypeName
+  });
+
+  var app = document.getElementById("app");
+  var html = renderHeaderProgress(QUIZ_QUESTIONS.length - 1) +
+    
+    // Result Main Banner
+    '<div class="rounded-3xl p-6 md:p-8 text-white mb-6 shadow-xl relative overflow-hidden" style="background:linear-gradient(135deg, ' + season.color + ', #0F172A)">' +
+      '<span class="px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-sm font-jua border border-white/30">진단 탐구 완료 🎉</span>' +
+      '<h2 class="font-jua text-3xl md:text-5xl mt-3 mb-1 drop-shadow-md">' + escapeHtml(getActiveName()) + '님의 퍼스널 컬러는</h2>' +
+      '<h3 class="font-jua text-2xl md:text-4xl text-amber-300 mb-3">' + season.name + '</h3>' +
+      '<div class="inline-block px-4 py-2 rounded-2xl bg-black/30 backdrop-blur-md font-jua text-lg md:text-xl border border-white/20 mb-3">' + subTypeName + '</div>' +
+      '<p class="text-white/90 text-base md:text-lg leading-relaxed">' + season.vibe + '</p>' +
+    '</div>' +
+
+    // Celebrity BEST & WORST Outfit Showcase Card Section
+    '<div class="custom-card rounded-3xl p-6 md:p-8 mb-6">' +
+      '<div class="flex items-center gap-2 mb-4">' +
+        '<span class="text-3xl">🌟</span>' +
+        '<div>' +
+          '<h4 class="font-jua text-2xl md:text-3xl text-slate-800 dark:text-slate-100">나와 같은 톤 연예인의 BEST vs WORST 코디</h4>' +
+          '<p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-bold">스타들도 톤에 맞춰 입을 때와 피해야 할 착장이 확 달라져요!</p>' +
+        '</div>' +
+      '</div>' +
+      
+      '<div class="grid grid-cols-1 gap-6">' +
+        season.celebs.map(function(c) {
+          return '<div class="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-5 shadow-sm overflow-hidden">' +
+            '<div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">' +
+              '<a href="' + c.photoSource + '" target="_blank" rel="noopener noreferrer" title="사진 원본·작가·이용허락 확인" class="shrink-0"><img src="' + c.img + '" data-fallback="' + c.photoFallback + '" alt="' + c.name + ' 실제 사진" referrerpolicy="no-referrer" loading="lazy" decoding="async" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src=this.dataset.fallback;}else{this.onerror=null;this.alt=\'사진을 누르면 원본을 볼 수 있어요\';}" style="width:120px;height:150px;object-fit:cover;object-position:center 20%;border-radius:16px;flex-shrink:0" class="border-2 border-indigo-500 shadow-md"></a>' +
+              '<div>' +
+                '<h5 class="font-jua text-2xl text-indigo-600 dark:text-indigo-400">' + c.name + ' <span class="text-sm font-normal text-slate-500">(' + c.group + ')</span></h5>' +
+                '<p class="text-xs text-slate-500 dark:text-slate-400">대표 톤 스타일링 비교 파헤치기</p><a href="' + c.photoSource + '" target="_blank" rel="noopener noreferrer" class="text-xs text-indigo-500 underline">사진 출처·작가·이용허락 ↗</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+              // BEST Outfit Column
+              '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-300 dark:border-emerald-800/60 flex flex-col justify-between">' +
+                '<div>' +
+                  '<div class="flex justify-between items-center mb-2">' +
+                    '<span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-white font-jua text-sm">⭕ BEST 찰떡 착장</span>' +
+                    '<span class="w-6 h-6 rounded-full inline-block border border-white/50 shadow-sm" style="background:' + c.bestColor + '" title="Best Color"></span>' +
+                  '</div>' +
+                  '<h6 class="font-jua text-lg text-emerald-900 dark:text-emerald-200 mb-1">✨ ' + c.bestOutfit + '</h6>' +
+                  '<p class="text-xs md:text-sm text-emerald-800 dark:text-emerald-300 leading-relaxed font-bold">' + c.bestDesc + '</p>' +
+                '</div>' +
+              '</div>' +
+
+              // WORST Outfit Column
+              '<div class="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-300 dark:border-rose-800/60 flex flex-col justify-between">' +
+                '<div>' +
+                  '<div class="flex justify-between items-center mb-2">' +
+                    '<span class="px-2.5 py-1 rounded-lg bg-rose-500 text-white font-jua text-sm">❌ WORST 회피 착장</span>' +
+                    '<span class="w-6 h-6 rounded-full inline-block border border-white/50 shadow-sm" style="background:' + c.worstColor + '" title="Worst Color"></span>' +
+                  '</div>' +
+                  '<h6 class="font-jua text-lg text-rose-900 dark:text-rose-200 mb-1">☁️ ' + c.worstOutfit + '</h6>' +
+                  '<p class="text-xs md:text-sm text-rose-800 dark:text-rose-300 leading-relaxed font-bold">' + c.worstDesc + '</p>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("") +
+      '</div>' +
+
+      '<p class="text-xs text-slate-500 dark:text-slate-400 mt-4 text-center font-bold">🍀 <b>학교에서 챙기면 좋은 행운 아이템:</b> ' + season.luckyItem + '</p>' +
+    '</div>' +
+
+    // Color Palettes (Interactive Drape view)
+    '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">' +
+      '<div class="custom-card rounded-3xl p-6">' +
+        '<h4 class="font-jua text-xl text-emerald-600 dark:text-emerald-400 mb-3">💖 나를 살려주는 BEST 찰떡 컬러</h4>' +
+        '<div class="grid grid-cols-3 gap-2.5">' +
+          season.best.map(function(c) {
+            return '<button onclick="openCustomColorDrape(\'' + c[1] + '\', \'' + c[0] + '\')" class="h-20 rounded-2xl p-2.5 flex flex-col justify-end text-left text-white font-jua text-sm shadow-md btn-bounce transition-transform" style="background:' + c[1] + '">' +
+              '<span class="drop-shadow-md">' + c[0] + '</span>' +
+            '</button>';
+          }).join("") +
+        '</div>' +
+        '<p class="text-xs text-slate-400 mt-3 text-center">색상을 누르면 화면 전체가 턱 밑 반사판으로 전환됩니다.</p>' +
+      '</div>' +
+
+      '<div class="custom-card rounded-3xl p-6">' +
+        '<h4 class="font-jua text-xl text-rose-500 dark:text-rose-400 mb-3">⚠️ 얼굴빛을 죽이는 WORST 회피 컬러</h4>' +
+        '<div class="grid grid-cols-3 gap-2.5">' +
+          season.avoid.map(function(c) {
+            return '<button onclick="openCustomColorDrape(\'' + c[1] + '\', \'' + c[0] + '\')" class="h-20 rounded-2xl p-2.5 flex flex-col justify-end text-left text-white font-jua text-sm shadow-md btn-bounce transition-transform" style="background:' + c[1] + '">' +
+              '<span class="drop-shadow-md">' + c[0] + '</span>' +
+            '</button>';
+          }).join("") +
+        '</div>' +
+        '<p class="text-xs text-slate-400 mt-3 text-center">얼굴이 창백해지거나 칙칙해지는지 턱 아래 대어 비교해 보세요.</p>' +
+      '</div>' +
+    '</div>' +
+
+    // Printable Photo Card Generator Box
+    '<div class="custom-card rounded-3xl p-6 mb-6 text-center border-2 border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-950/20">' +
+      '<h4 class="font-jua text-2xl text-indigo-600 dark:text-indigo-400 mb-2">📸 나만의 퍼스널 컬러 포토카드 소장하기</h4>' +
+      '<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">내 이름과 퍼스널 컬러가 담긴 고화질 수료 포토카드를 생성해 보세요!</p>' +
+      '<button onclick="generatePhotoCard()" class="px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-jua text-lg rounded-2xl shadow-lg btn-bounce">' +
+        '🎴 포토카드 생성 및 저장하기' +
+      '</button>' +
+      '<div id="photoCardOutput" class="mt-4 flex flex-col items-center justify-center"></div>' +
+    '</div>';
+
+  // Buddy Duo Analysis (Unlocks when both A and B complete)
+  if (state.completedResults.length === 2) {
+    html += renderBuddyDuoReport();
+  }
+
+  // Action Buttons
+  html += '<div class="flex flex-wrap gap-3 mt-8">';
+  if (state.completedResults.length < 2) {
+    html += '<button onclick="swapPlayer()" class="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-jua text-xl rounded-2xl shadow-lg btn-bounce">🔄 역할 바꿈: ' + escapeHtml(getHelperName()) + ' 차례 시작</button>';
+  }
+  html += '<button onclick="loadQuestion(0, true)" class="py-4 px-6 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-jua text-xl rounded-2xl btn-bounce">다시 하기</button>';
+  html += '<button onclick="renderIntro()" class="py-4 px-6 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-jua text-xl rounded-2xl btn-bounce">처음 화면</button>';
+  html += '</div>';
+
+  app.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function swapPlayer() {
+  state.currentRole = state.currentRole === 0 ? 1 : 0;
+  loadQuestion(0, true);
+}
+
+// Render Duo Buddy Chemistry Report
+function renderBuddyDuoReport() {
+  var rA = state.completedResults[0];
+  var rB = state.completedResults[1];
+  
+  var isSameSeason = rA.seasonKey === rB.seasonKey;
+  var isSameTone = (rA.seasonKey === "spring" || rA.seasonKey === "autumn") === (rB.seasonKey === "spring" || rB.seasonKey === "autumn");
+
+  var score = isSameSeason ? 99 : (isSameTone ? 88 : 75);
+  var title = isSameSeason ? "👯 99% 쌍둥이 톤파괴 듀오!" : (isSameTone ? "🤝 88% 온기가 통하는 웜/쿨 단짝!" : "⚡ 75% 극과 극 반대 매력 꿀잼 듀오!");
+  var desc = isSameSeason 
+    ? "서로의 베스트 컬러가 완벽히 일치해요! 옷이나 필통 색상을 맞춰서 짝꿍템을 만들어 보세요."
+    : (isSameTone 
+      ? "톤의 온도감(웜/쿨)이 비슷해서 나란히 서면 분위기가 자연스럽게 잘 어울려요!"
+      : "서로 완전 반대 성향의 톤이에요! 상대방의 베스트 색상을 빌려 대보면 차이를 확실히 느낄 수 있어요.");
+
+  return '<div class="custom-card rounded-3xl p-6 md:p-8 mb-6 border-4 border-amber-400 bg-amber-500/10 glow-pulse">' +
+      '<div class="flex justify-between items-center mb-3">' +
+        '<h4 class="font-jua text-2xl md:text-3xl text-amber-600 dark:text-amber-400">🔥 짝꿍 케미 보고서</h4>' +
+        '<span class="font-jua text-2xl px-4 py-1.5 bg-amber-500 text-white rounded-full shadow-md">' + score + '점</span>' +
+      '</div>' +
+      '<h5 class="font-jua text-xl text-slate-800 dark:text-slate-100 mb-2">' + rA.name + ' × ' + rB.name + ' · ' + title + '</h5>' +
+      '<p class="text-slate-600 dark:text-slate-300 text-base mb-4 leading-relaxed">' + desc + '</p>' +
+      
+      '<div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-amber-200 dark:border-amber-800/50">' +
+        '<h6 class="font-jua text-lg text-amber-600 dark:text-amber-400 mb-2">🎯 오늘의 짝꿍 미션 챌린지</h6>' +
+        '<ul class="text-sm text-slate-700 dark:text-slate-300 space-y-2 font-bold">' +
+          '<li>1. 쉬는 시간에 서로의 행운 컬러 아이템 한 개씩 교환해서 인증샷 찍기 📸</li>' +
+          '<li>2. 짝꿍 얼굴 밑에 베스트 컬러 대어주고 “오늘 올킬이다!” 말해주기 💬</li>' +
+        '</ul>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ==========================================================================
+   7. Canvas PhotoCard Generator
+   ========================================================================== */
+function generatePhotoCard() {
+  var activeRes = state.completedResults.find(function(r) { return r.role === state.currentRole; });
+  if (!activeRes) return;
+
+  var season = SEASONS[activeRes.seasonKey];
+
+  var canvas = document.createElement("canvas");
+  canvas.width = 600;
+  canvas.height = 850;
+  var ctx = canvas.getContext("2d");
+
+  // Background Gradient
+  var grad = ctx.createLinearGradient(0, 0, 600, 850);
+  grad.addColorStop(0, season.color);
+  grad.addColorStop(1, "#0F172A");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 600, 850);
+
+  // Frame Border
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(20, 20, 560, 810);
+
+  // Header Title
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 28px 'Jua', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("PERSONAL COLOR STUDENT ID", 300, 75);
+
+  // Avatar Icon Box
+  ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(150, 110, 300, 180, 24);
+  } else {
+    ctx.rect(150, 110, 300, 180);
+  }
+  ctx.fill();
+
+  ctx.font = "80px sans-serif";
+  ctx.fillText("🎨", 300, 220);
+
+  // Student Name
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 44px 'Jua', sans-serif";
+  ctx.fillText(activeRes.name, 300, 340);
+
+  // Season Name Tag
+  ctx.fillStyle = "#FBBF24";
+  ctx.font = "bold 32px 'Jua', sans-serif";
+  ctx.fillText(season.name, 300, 390);
+
+  // SubType Tag
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "24px 'Jua', sans-serif";
+  ctx.fillText(activeRes.subTypeName, 300, 430);
+
+  // Best Color Chips
+  ctx.fillText("BEST PALETTE", 300, 490);
+  var startX = 120;
+  season.best.slice(0, 5).forEach(function(c, i) {
+    ctx.fillStyle = c[1];
+    ctx.beginPath();
+    ctx.arc(startX + i * 90, 540, 32, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  });
+
+  // Celeb & Lucky Item Info
+  var celebNames = season.celebs.map(function(c){ return c.name; }).join(", ");
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.font = "20px sans-serif";
+  ctx.fillText("⭐ 대표 스타: " + celebNames, 300, 630);
+  ctx.fillText("🍀 행운 아이템: " + season.luckyItem, 300, 670);
+
+  // Footer Tag
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  ctx.font = "18px sans-serif";
+  ctx.fillText("짝꿍과 함께 찾는 퍼스널 컬러 Lab 수료 인증", 300, 780);
+
+  // Display Image & Download Button
+  var outputContainer = document.getElementById("photoCardOutput");
+  outputContainer.innerHTML = "";
+
+  var img = document.createElement("img");
+  img.src = canvas.toDataURL("image/png");
+  img.className = "w-64 md:w-80 rounded-2xl shadow-2xl border-4 border-white my-3";
+
+  var downloadBtn = document.createElement("a");
+  downloadBtn.href = canvas.toDataURL("image/png");
+  downloadBtn.download = activeRes.name + "_퍼스널컬러_포토카드.png";
+  downloadBtn.className = "inline-block px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-jua text-base rounded-xl shadow-md btn-bounce mt-1";
+  downloadBtn.textContent = "💾 이미지 다운로드 받기";
+
+  outputContainer.appendChild(img);
+  outputContainer.appendChild(downloadBtn);
+}
+
+/* ==========================================================================
+   8. Confetti Generator
+   ========================================================================== */
+function spawnConfetti() {
+  var colors = ["#FF6B4A", "#5C6BC0", "#B45309", "#4338CA", "#F59E0B", "#10B981", "#EC4899"];
+  for (var i = 0; i < 40; i++) {
+    var p = document.createElement("div");
+    p.className = "confetti-particle";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDelay = (Math.random() * 0.8) + "s";
+    document.body.appendChild(p);
+
+    (function(node) {
+      setTimeout(function() { node.remove(); }, 3500);
+    })(p);
+  }
+}
+
+// Utility: Escape HTML string
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
+
+// Initialize on Window Load
+window.onload = function() {
+  renderIntro();
+};
+</script>
+</body>
+</html>
