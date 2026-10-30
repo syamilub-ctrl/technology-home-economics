@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕵️‍♂️ 과자 탐정단: 안전한 식품의 선택</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
+        
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #FFFDF7;
+        }
+        .font-jua {
+            font-family: 'Jua', sans-serif;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .print-card {
+                border: 2px solid #333 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-amber-400 border-b-4 border-amber-600 shadow-md py-6 px-4 no-print">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="inline-block bg-amber-800 text-amber-100 font-bold text-xs uppercase px-3 py-1 rounded-full mb-2 tracking-wide">
+                <i class="fa-solid fa-shield-halved mr-1"></i> 기술·가정 / 안전한 식품의 선택
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-jua text-amber-950 tracking-wider">
+                🕵️‍♂️ 과자 탐정단: 안전한 식품의 선택!
+            </h1>
+            <p class="text-amber-900 mt-2 text-sm sm:text-base">
+                내가 먹는 과자는 과연 안전할까? 영양성분과 식품첨가물을 탐정처럼 조사하여 올바르고 안전한 식품을 선택하는 눈을 길러봅시다!
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+
+        <!-- Progress Bar -->
+        <div class="mb-8 no-print bg-amber-100 p-4 rounded-2xl border border-amber-300 shadow-sm">
+            <div class="flex justify-between items-center mb-2 font-jua text-amber-900 text-sm sm:text-base">
+                <span><i class="fa-solid fa-list-check text-amber-600 mr-1"></i> 탐정 미션 달성도</span>
+                <span id="progressText" class="text-amber-700 font-bold">0% 완료</span>
+            </div>
+            <div class="w-full bg-amber-200 rounded-full h-4 overflow-hidden border border-amber-300">
+                <div id="progressBar" class="bg-amber-500 h-4 rounded-full transition-all duration-300" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <form id="worksheetForm" onsubmit="event.preventDefault();">
+            
+            <!-- STEP 0: Student Info & Snack Selection -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card">
+                <h2 class="text-xl font-jua text-amber-800 mb-4 flex items-center border-b pb-2">
+                    <span class="bg-amber-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">1</span>
+                    탐정 프로필 & 과자 지정
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">학년 / 반 / 번호</label>
+                        <input type="text" id="studentClass" placeholder="예: 1학년 2반 15번" required
+                            class="w-full p-2.5 bg-amber-50/50 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">이름</label>
+                        <input type="text" id="studentName" placeholder="홍길동" required
+                            class="w-full p-2.5 bg-amber-50/50 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">조사할 과자 이름</label>
+                        <input type="text" id="snackName" list="snackList" placeholder="과자 이름을 입력하거나 선택" required
+                            class="w-full p-2.5 bg-amber-50/50 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all text-sm">
+                        <datalist id="snackList">
+                            <option value="포카칩 오리지날"></option>
+                            <option value="새우깡"></option>
+                            <option value="고래밥"></option>
+                            <option value="초코송이"></option>
+                            <option value="자갈치"></option>
+                            <option value="감자깡"></option>
+                            <option value="꿀꽈배기"></option>
+                            <option value="오!감자"></option>
+                            <option value="버터와플"></option>
+                            <option value="구운 쌀과자"></option>
+                            <option value="새콤달콤"></option>
+                            <option value="스윙칩"></option>
+                        </datalist>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 1: Nutrition & Additives Photo Upload -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card">
+                <h2 class="text-xl font-jua text-amber-800 mb-4 flex items-center border-b pb-2">
+                    <span class="bg-amber-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">2</span>
+                    미션 1: 과자 봉지 라벨 사진 촬영
+                </h2>
+                
+                <p class="text-sm text-gray-600 mb-4">
+                    <i class="fa-solid fa-camera text-amber-500 mr-1"></i> 과자 봉지 뒤쪽에 있는 <strong>영양성분표</strong>와 <strong>원재료명</strong>을 각각 선명하게 사진 찍어 올려주세요!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Photo 1: Nutrition Label -->
+                    <div class="bg-amber-50/40 p-4 rounded-xl border border-amber-200 text-center">
+                        <h3 class="font-jua text-amber-900 mb-3 text-sm sm:text-base">
+                            📊 1. 영양성분표 사진
+                        </h3>
+                        <input type="file" id="nutritionPhotoInput" accept="image/*" capture="environment" class="hidden" onchange="handlePhotoUpload(event, 'nutritionPhotoPreview', 'nutritionUploadPrompt', 'nutritionPhotoContainer')">
+                        
+                        <div id="nutritionUploadPrompt" class="py-8 px-4 border-2 border-dashed border-amber-300 rounded-xl bg-white hover:bg-amber-50 cursor-pointer transition flex flex-col items-center justify-center" onclick="document.getElementById('nutritionPhotoInput').click()">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-xl mb-2">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <span class="font-jua text-amber-900 text-sm">📸 영양성분표 촬영 / 파일 첨부</span>
+                            <span class="text-xs text-gray-400 mt-1">터치하여 영양성분표를 찍으세요</span>
+                        </div>
+
+                        <div id="nutritionPhotoContainer" class="hidden relative inline-block max-w-full">
+                            <img id="nutritionPhotoPreview" src="" alt="영양성분표 사진" class="max-h-56 rounded-xl border-2 border-amber-300 shadow-sm mx-auto object-contain">
+                            <button type="button" onclick="removePhoto('nutritionPhotoInput', 'nutritionPhotoPreview', 'nutritionPhotoContainer', 'nutritionUploadPrompt')" class="no-print absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md transition">
+                                <i class="fa-solid fa-xmark text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Photo 2: Ingredients Label -->
+                    <div class="bg-amber-50/40 p-4 rounded-xl border border-amber-200 text-center">
+                        <h3 class="font-jua text-amber-900 mb-3 text-sm sm:text-base">
+                            📜 2. 원재료명 (식품첨가물) 사진
+                        </h3>
+                        <input type="file" id="ingredientPhotoInput" accept="image/*" capture="environment" class="hidden" onchange="handlePhotoUpload(event, 'ingredientPhotoPreview', 'ingredientUploadPrompt', 'ingredientPhotoContainer')">
+                        
+                        <div id="ingredientUploadPrompt" class="py-8 px-4 border-2 border-dashed border-amber-300 rounded-xl bg-white hover:bg-amber-50 cursor-pointer transition flex flex-col items-center justify-center" onclick="document.getElementById('ingredientPhotoInput').click()">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-xl mb-2">
+                                <i class="fa-solid fa-flask"></i>
+                            </div>
+                            <span class="font-jua text-amber-900 text-sm">📸 원재료명 촬영 / 파일 첨부</span>
+                            <span class="text-xs text-gray-400 mt-1">터치하여 원재료명을 찍으세요</span>
+                        </div>
+
+                        <div id="ingredientPhotoContainer" class="hidden relative inline-block max-w-full">
+                            <img id="ingredientPhotoPreview" src="" alt="원재료명 사진" class="max-h-56 rounded-xl border-2 border-amber-300 shadow-sm mx-auto object-contain">
+                            <button type="button" onclick="removePhoto('ingredientPhotoInput', 'ingredientPhotoPreview', 'ingredientPhotoContainer', 'ingredientUploadPrompt')" class="no-print absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md transition">
+                                <i class="fa-solid fa-xmark text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: Selected Nutrients Focus -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                    <h2 class="text-xl font-jua text-amber-800 flex items-center">
+                        <span class="bg-amber-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">3</span>
+                        미션 2: 영양성분 돋보기 (2가지 선택)
+                    </h2>
+                    <button type="button" onclick="openModal('nutrientModal')" class="no-print bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-full font-bold transition">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> 영양소 힌트 사전
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    과자에 들어있는 영양성분 중 <strong>2가지</strong>를 골라 우리 몸에서 하는 주요 역할을 조사하여 작성하세요.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Nutrient 1 -->
+                    <div class="p-4 bg-amber-50/40 border border-amber-200 rounded-xl">
+                        <span class="inline-block bg-amber-600 text-white text-xs px-2 py-0.5 rounded font-bold mb-2">영양성분 ①</span>
+                        <div class="mb-2">
+                            <input type="text" id="nutr1Name" placeholder="영양성분 이름 (예: 탄수화물, 나트륨)" class="w-full p-2 bg-white border border-amber-300 rounded text-sm font-bold">
+                        </div>
+                        <div>
+                            <textarea id="nutr1Role" rows="3" placeholder="우리 몸에서 어떤 중요한 역할을 하는지 작성하세요." class="w-full p-2 bg-white border border-amber-300 rounded text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Nutrient 2 -->
+                    <div class="p-4 bg-amber-50/40 border border-amber-200 rounded-xl">
+                        <span class="inline-block bg-amber-600 text-white text-xs px-2 py-0.5 rounded font-bold mb-2">영양성분 ②</span>
+                        <div class="mb-2">
+                            <input type="text" id="nutr2Name" placeholder="영양성분 이름 (예: 지방, 단백질)" class="w-full p-2 bg-white border border-amber-300 rounded text-sm font-bold">
+                        </div>
+                        <div>
+                            <textarea id="nutr2Role" rows="3" placeholder="우리 몸에서 어떤 중요한 역할을 하는지 작성하세요." class="w-full p-2 bg-white border border-amber-300 rounded text-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3: Food Additives Focus -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                    <h2 class="text-xl font-jua text-amber-800 flex items-center">
+                        <span class="bg-amber-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">4</span>
+                        미션 3: 식품첨가물 분석 (2가지 선택)
+                    </h2>
+                    <button type="button" onclick="openModal('additiveModal')" class="no-print bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-full font-bold transition">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> 첨가물 힌트 사전
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mb-4">
+                    과자에 포함된 식품첨가물 중 <strong>2가지</strong>를 골라 사용하는 목적과 과잉 섭취 시 문제점을 조사하여 작성하세요.
+                </p>
+
+                <div class="space-y-4">
+                    <!-- Additive 1 -->
+                    <div class="p-4 bg-orange-50/50 border border-orange-200 rounded-xl">
+                        <span class="inline-block bg-orange-600 text-white text-xs px-2 py-0.5 rounded font-bold mb-2">식품첨가물 ①</span>
+                        <input type="text" id="add1Name" placeholder="첨가물 이름 (예: L-글루탐산나트륨, 타르색소)" class="w-full p-2 bg-white border border-orange-300 rounded text-sm font-bold mb-2">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">💡 사용하는 목적 (어떤 때 쓰이나요?)</label>
+                                <textarea id="add1Purpose" rows="3" placeholder="예: 음식의 감칠맛을 내어 맛을 향상하기 위해 사용함." class="w-full p-2 bg-white border border-orange-200 rounded text-xs"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-red-600 mb-1">⚠️ 과잉 섭취 시 문제점</label>
+                                <textarea id="add1Risk" rows="3" placeholder="예: 과도하게 섭취 시 두통, 호흡곤란, 아토피 악화 위험이 있음." class="w-full p-2 bg-white border border-orange-200 rounded text-xs"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additive 2 -->
+                    <div class="p-4 bg-orange-50/50 border border-orange-200 rounded-xl">
+                        <span class="inline-block bg-orange-600 text-white text-xs px-2 py-0.5 rounded font-bold mb-2">식품첨가물 ②</span>
+                        <input type="text" id="add2Name" placeholder="첨가물 이름 (예: 산화방지제, 아스파탐)" class="w-full p-2 bg-white border border-orange-300 rounded text-sm font-bold mb-2">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">💡 사용하는 목적 (어떤 때 쓰이나요?)</label>
+                                <textarea id="add2Purpose" rows="3" placeholder="예: 기름의 산화를 막아 보존 기간을 늘리기 위해 사용함." class="w-full p-2 bg-white border border-orange-200 rounded text-xs"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-red-600 mb-1">⚠️ 과잉 섭취 시 문제점</label>
+                                <textarea id="add2Risk" rows="3" placeholder="예: 과량 섭취 시 체내 축적 및 비만, 신경계 자극 가능성." class="w-full p-2 bg-white border border-orange-200 rounded text-xs"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BONUS INTERACTIVE: Snack Health Indicator -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card no-print">
+                <h2 class="text-xl font-jua text-amber-800 mb-3 flex items-center">
+                    <span class="bg-teal-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">🎮</span>
+                    보너스: 내 과자의 건강 신호등 진단
+                </h2>
+                <p class="text-xs text-gray-600 mb-4">
+                    사진에서 확인한 나트륨과 당류 숫자를 살짝 입력해서 과자의 건강 신호등을 확인해 보세요!
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 max-w-md mx-auto mb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">나트륨 (mg)</label>
+                        <input type="number" id="sodiumMg" oninput="calculateHealthIndex()" placeholder="예: 280" class="w-full p-2 bg-amber-50/50 border border-amber-300 rounded text-sm text-center font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">당류 (g)</label>
+                        <input type="number" id="sugarG" oninput="calculateHealthIndex()" placeholder="예: 12" class="w-full p-2 bg-amber-50/50 border border-amber-300 rounded text-sm text-center font-bold">
+                    </div>
+                </div>
+
+                <div id="trafficLightBox" class="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col sm:flex-row items-center justify-around gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div id="lightGreen" class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm">안전</div>
+                        <div id="lightYellow" class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm">주의</div>
+                        <div id="lightRed" class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm">경고</div>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <span id="healthFeedback" class="font-jua text-sm sm:text-base text-gray-700">나트륨과 당류 함량을 입력하면 진단 결과가 나옵니다.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: Personal Reflection & Thought -->
+            <section class="bg-white rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-sm print-card">
+                <h2 class="text-xl font-jua text-amber-800 mb-4 flex items-center border-b pb-2">
+                    <span class="bg-amber-500 text-white w-8 h-8 rounded-full inline-flex items-center justify-center mr-2 text-base">5</span>
+                    미션 4: 탐정의 가공식품 최종 고찰
+                </h2>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-gray-800 mb-2">
+                        💭 가공식품에 대한 나의 생각 및 건강한 식습관을 위한 다짐을 자유롭게 작성해 봅시다.
+                    </label>
+                    <p class="text-xs text-gray-500 mb-2">
+                        (질문 힌트: 가공식품이 우리 삶에 주는 편리함과 문제점은 무엇인가요? 앞으로 과자를 고르거나 먹을 때 어떤 태도를 가져야 할까요?)
+                    </p>
+                    <textarea id="finalReflection" rows="4" placeholder="예: 가공식품은 간편하고 맛있는 장점이 있지만, 영양 불균형과 식품첨가물 과다 섭취 위험이 있습니다. 앞으로는 과자를 먹기 전에 영양성분표를 확인하고, 당류나 나트륨이 적은 제품을 선택하거나 적당량만 먹도록 노력하겠습니다."
+                        class="w-full p-3 bg-amber-50/50 border border-amber-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"></textarea>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 no-print">
+                <button type="button" onclick="completeWorksheet()" class="bg-amber-500 hover:bg-amber-600 text-white font-jua text-lg px-8 py-3 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-certificate mr-2"></i> 활동지 완성 & 탐정 임명장 받기
+                </button>
+                <button type="button" onclick="window.print()" class="bg-gray-700 hover:bg-gray-800 text-white font-jua text-lg px-6 py-3 rounded-xl shadow-lg transition">
+                    <i class="fa-solid fa-print mr-2"></i> 활동지 인쇄 / PDF 저장
+                </button>
+            </div>
+
+        </form>
+
+    </main>
+
+    <!-- Modal 1: Nutrient Dictionary -->
+    <div id="nutrientModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-jua text-lg text-amber-900"><i class="fa-solid fa-book-medical mr-2 text-amber-600"></i>영양성분 역할 힌트 백과</h3>
+                <button onclick="closeModal('nutrientModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3 text-xs text-gray-700">
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">탄수화물:</span> 우리 몸과 뇌에 에너지를 공급하는 주요 에너지원.
+                </div>
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">단백질:</span> 근육, 피부, 머리카락 등 신체 조직을 구성하고 성장시킴.
+                </div>
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">지방:</span> 체온 유지 및 장기 보호, 효율적인 에너지를 저장함.
+                </div>
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">나트륨:</span> 체액의 삼투압 조절 및 신경 전달을 도우나 과다 시 고혈압 원인.
+                </div>
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">당류:</span> 즉각적인 에너지를 내지만 과다 섭취 시 충치 및 비만 유발.
+                </div>
+                <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                    <span class="font-bold text-amber-800 text-sm">포화지방 / 트랜스지방:</span> 과다 섭취 시 혈관 건강에 해롭고 혈중 콜레스테롤 상승.
+                </div>
+            </div>
+            <button onclick="closeModal('nutrientModal')" class="mt-4 w-full py-2 bg-amber-500 text-white font-jua rounded-lg">확인</button>
+        </div>
+    </div>
+
+    <!-- Modal 2: Additive Dictionary -->
+    <div id="additiveModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-jua text-lg text-amber-900"><i class="fa-solid fa-triangle-exclamation mr-2 text-amber-600"></i>식품첨가물 힌트 백과</h3>
+                <button onclick="closeModal('additiveModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3 text-xs text-gray-700">
+                <div class="p-2.5 bg-orange-50 rounded-lg border border-orange-200">
+                    <span class="font-bold text-orange-800 text-sm">L-글루탐산나트륨 (MSG):</span> 
+                    <br>• 사용 목적: 감칠맛을 높여 풍미를 좋게 함.
+                    <br>• 과잉 시 문제: 두통, 얼굴 달아오름, 민감한 사람의 알레르기 반응.
+                </div>
+                <div class="p-2.5 bg-orange-50 rounded-lg border border-orange-200">
+                    <span class="font-bold text-orange-800 text-sm">합성향료:</span> 
+                    <br>• 사용 목적: 과자의 향을 풍부하게 하여 식욕을 촉진함.
+                    <br>• 과잉 시 문제: 천식, 두통, 민감 증상 유발 가능성.
+                </div>
+                <div class="p-2.5 bg-orange-50 rounded-lg border border-orange-200">
+                    <span class="font-bold text-orange-800 text-sm">산화방지제 (예: 토코페롤):</span> 
+                    <br>• 사용 목적: 기름의 산화를 막아 변질을 방지하고 변색 예방.
+                    <br>• 과잉 시 problem: 과량 섭취 시 소화장애 및 장기 부담.
+                </div>
+                <div class="p-2.5 bg-orange-50 rounded-lg border border-orange-200">
+                    <span class="font-bold text-orange-800 text-sm">타르색소 (합성착색료):</span> 
+                    <br>• 사용 목적: 알록달록한 색을 내어 먹음직스럽게 만듦.
+                    <br>• 과잉 시 문제: 어린이 아토피 피부염, 주의력결핍 과잉행동장애(ADHD) 유발 논란.
+                </div>
+                <div class="p-2.5 bg-orange-50 rounded-lg border border-orange-200">
+                    <span class="font-bold text-orange-800 text-sm">아스파탐 (인공감미료):</span> 
+                    <br>• 사용 목적: 칼로리 없이 강한 단맛을 냄.
+                    <br>• 과잉 시 문제: 과다 복용 시 신경계 자극, 페닐케톤뇨증 환자 주의.
+                </div>
+            </div>
+            <button onclick="closeModal('additiveModal')" class="mt-4 w-full py-2 bg-amber-500 text-white font-jua rounded-lg">확인</button>
+        </div>
+    </div>
+
+    <!-- Modal 3: Completion Certificate Pop-up -->
+    <div id="certModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50 no-print">
+        <div class="bg-amber-50 rounded-3xl max-w-md w-full p-6 text-center border-4 border-amber-400 shadow-2xl relative">
+            <div class="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow">
+                <i class="fa-solid fa-award text-amber-900 text-3xl"></i>
+            </div>
+            <h3 class="font-jua text-2xl text-amber-950 mb-1">🎉 탐정 임명장 발급!</h3>
+            <p class="text-xs text-amber-800 mb-4">식품 영양 및 첨가물 조사를 훌륭하게 완수했습니다.</p>
+            
+            <div class="bg-white p-4 rounded-xl border border-amber-300 text-left text-xs space-y-2 mb-4">
+                <p><strong>수사관:</strong> <span id="certName" class="text-amber-800 font-bold"></span> (<span id="certClass"></span>)</p>
+                <p><strong>조사 대상:</strong> <span id="certSnack" class="text-amber-800 font-bold"></span></p>
+                <p class="text-gray-600">위 학생은 과자 속 영양성분과 식품첨가물을 정확히 분석하고, 안전한 식품을 선택하는 올바른 식습관 태도를 갖추었으므로 <b>'안전한 식품 선택 명예 탐정'</b>으로 임명합니다.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeModal('certModal'); window.print();" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-jua py-2.5 rounded-xl shadow transition">
+                    <i class="fa-solid fa-print mr-1"></i>활동지 인쇄/저장
+                </button>
+                <button onclick="closeModal('certModal')" class="bg-gray-200 text-gray-700 font-jua px-4 py-2.5 rounded-xl">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // Photo Upload Handling
+        function handlePhotoUpload(event, previewId, promptId, containerId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById(previewId);
+                    preview.src = e.target.result;
+                    document.getElementById(promptId).classList.add('hidden');
+                    document.getElementById(containerId).classList.remove('hidden');
+                    updateProgress();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removePhoto(inputId, previewId, containerId, promptId) {
+            document.getElementById(inputId).value = '';
+            document.getElementById(previewId).src = '';
+            document.getElementById(containerId).classList.add('hidden');
+            document.getElementById(promptId).classList.remove('hidden');
+            updateProgress();
+        }
+
+        // Real-time Progress Tracking
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+
+        function updateProgress() {
+            const requiredIds = [
+                'studentClass', 'studentName', 'snackName',
+                'nutr1Name', 'nutr1Role', 'nutr2Name', 'nutr2Role',
+                'add1Name', 'add1Purpose', 'add1Risk',
+                'add2Name', 'add2Purpose', 'add2Risk',
+                'finalReflection'
+            ];
+
+            let filledCount = 0;
+            requiredIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.value.trim() !== '') {
+                    filledCount++;
+                }
+            });
+
+            // Check photos
+            const p1 = document.getElementById('nutritionPhotoPreview');
+            const hasP1 = p1 && p1.src && p1.src !== window.location.href;
+            if (hasP1) filledCount++;
+
+            const p2 = document.getElementById('ingredientPhotoPreview');
+            const hasP2 = p2 && p2.src && p2.src !== window.location.href;
+            if (hasP2) filledCount++;
+
+            const totalItems = requiredIds.length + 2; // +2 for photos
+
+            const percent = Math.round((filledCount / totalItems) * 100);
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').innerText = percent + '% 완료';
+        }
+
+        // Health Traffic Light Calculation
+        function calculateHealthIndex() {
+            const sodium = parseFloat(document.getElementById('sodiumMg').value) || 0;
+            const sugar = parseFloat(document.getElementById('sugarG').value) || 0;
+
+            const g = document.getElementById('lightGreen');
+            const y = document.getElementById('lightYellow');
+            const r = document.getElementById('lightRed');
+            const feedback = document.getElementById('healthFeedback');
+
+            // Reset lights
+            g.className = 'w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm';
+            y.className = 'w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm';
+            r.className = 'w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold transition-all text-xs sm:text-sm';
+
+            if (sodium === 0 && sugar === 0) {
+                feedback.innerText = "나트륨과 당류 함량을 입력하면 진단 결과가 나옵니다.";
+                return;
+            }
+
+            // High Sodium (>400mg) or High Sugar (>15g)
+            if (sodium > 400 || sugar > 15) {
+                r.className = 'w-10 h-10 rounded-full bg-red-500 text-white font-bold shadow-lg scale-110 flex items-center justify-center text-xs sm:text-sm';
+                feedback.innerHTML = "<span class='text-red-600 font-bold'>🔴 경고 신호!</span> 나트륨이나 당류 함량이 높아요. 적당히 나누어 먹는 지혜가 필요합니다.";
+            } else if (sodium > 200 || sugar > 8) {
+                y.className = 'w-10 h-10 rounded-full bg-yellow-500 text-white font-bold shadow-lg scale-110 flex items-center justify-center text-xs sm:text-sm';
+                feedback.innerHTML = "<span class='text-yellow-600 font-bold'>🟡 주의 신호!</span> 무난하지만 한 번에 너무 많이 먹지 않도록 주의하세요.";
+            } else {
+                g.className = 'w-10 h-10 rounded-full bg-green-500 text-white font-bold shadow-lg scale-110 flex items-center justify-center text-xs sm:text-sm';
+                feedback.innerHTML = "<span class='text-green-600 font-bold'>🟢 안전 신호!</span> 나트륨과 당류 함량이 상대적으로 낮고 양호합니다.";
+            }
+        }
+
+        // Modal Handlers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        // Complete Worksheet Action
+        function completeWorksheet() {
+            const name = document.getElementById('studentName').value;
+            const studentClass = document.getElementById('studentClass').value;
+            const snack = document.getElementById('snackName').value;
+
+            if (!name || !snack) {
+                alert('이름과 조사할 과자 이름을 먼저 입력해 주세요!');
+                return;
+            }
+
+            document.getElementById('certName').innerText = name;
+            document.getElementById('certClass').innerText = studentClass || '탐정 대원';
+            document.getElementById('certSnack').innerText = snack;
+
+            // Trigger Confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            openModal('certModal');
+        }
+    </script>
+
+</body>
+</html>
