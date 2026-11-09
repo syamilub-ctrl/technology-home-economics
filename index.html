@@ -35,13 +35,15 @@
     const branch='main';
     const pagesBase=`https://${owner}.github.io/${repo}/`;
     
-    // 파일명별 제목 및 설명 매핑 (퍼스널컬러 진단 관련 모든 파일명 대응)
+    // 파일명별 제목 및 설명 매핑
     const known={
-      'life-resource.html':{title:'생활자원의 이해와 관리',desc:'생활자원의 종류와 특성, 관리 방법, 선택과 기회비용, 시간 관리를 탐구하는 학생 활동',tag:'기술·가정 · 생활자원',icon:'🌿'},
       'meal-planner.html':{title:'식단 작성 프로그램',desc:'식품군과 영양을 고려하여 아침·점심·저녁 식단을 직접 구성하는 학생 활동',tag:'기술·가정 · 식생활',icon:'🥗'},
+      'fridge_stickerbook_pdf_fixed.html':{title:'식품의 선택과 보관',desc:'장보기 동선 · 소비기한 · 리얼 2D 냉장고 수납 스티커북 및 종합 활동',tag:'기술·가정 · 식생활',icon:'🥦'},
+      'code_artifact.html':{title:'가공 식품의 안전한 선택',desc:'영양성분표 해석, 식품첨가물 확인 및 안전한 가공식품 선택 탐구 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
+      'food_safety_activity_sheet.html':{title:'가공 식품의 안전한 선택',desc:'영양성분표 해석, 식품첨가물 확인 및 안전한 가공식품 선택 탐구 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
+      'life-resource.html':{title:'생활자원의 이해와 관리',desc:'생활자원의 종류와 특성, 관리 방법, 선택과 기회비용, 시간 관리를 탐구하는 학생 활동',tag:'기술·가정 · 생활자원',icon:'🌿'},
       'housing-culture-activities.html':{title:'더불어 사는 주생활 문화',desc:'주거 가치관, 생활양식, 이웃과 함께하는 주거 형태와 주거 문화를 탐구하는 4차시 활동',tag:'기술·가정 · 주생활',icon:'🏡'},
       'housing-values.html':{title:'더불어 사는 주생활 문화',desc:'주거 가치관, 생활양식, 이웃과 함께하는 주거 형태와 주거 문화를 탐구하는 4차시 활동',tag:'기술·가정 · 주생활',icon:'🏡'},
-      'code_artifact.html':{title:'안전한 식품의 선택',desc:'영양성분, 식품첨가물, 식품첨가물 찾기 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
       'personal_color_photos.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'},
       'personal_color_middle_school.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'},
       'personal_color.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'}
@@ -49,13 +51,25 @@
 
     let resources=[];
 
+    // 카드 출력 순서 정의 (1. 식단 작성 프로그램, 2. 식품의 선택과 보관, 3. 가공 식품의 안전한 선택)
+    const getPriority = item => {
+      if (item.name === 'meal-planner.html' || item.title === '식단 작성 프로그램') return 1;
+      if (item.name === 'fridge_stickerbook_pdf_fixed.html' || item.title === '식품의 선택과 보관') return 2;
+      if (item.name === 'code_artifact.html' || item.name === 'food_safety_activity_sheet.html' || item.title === '가공 식품의 안전한 선택') return 3;
+      return 99;
+    };
+
     // 영문 파일명 자동 한글화 변환 규칙
     const pretty = name => {
+      if (/fridge|stickerbook|보관/i.test(name)) return '식품의 선택과 보관';
+      if (/code_artifact|food_safety|가공/i.test(name)) return '가공 식품의 안전한 선택';
       if (/personal.*color|퍼스널.*컬러/i.test(name)) return '퍼스널컬러 진단';
       return name.replace(/\.html$/i, '').replace(/[-_]+/g, ' ').trim();
     };
 
     const iconFor = name => {
+      if (/fridge|stickerbook|보관/i.test(name)) return '🥦';
+      if (/code_artifact|food_safety/i.test(name)) return '🍔';
       if (/personal|color|퍼스널/i.test(name)) return '👗';
       if (/meal|food|diet/i.test(name)) return '🥗';
       if (/house|home|housing/i.test(name)) return '🏡';
@@ -84,10 +98,10 @@
             tag:meta.tag||'기술·가정 · 학생 활동',
             icon:meta.icon||iconFor(f.name)
           };
-        }).sort((a,b)=>(known[b.name]?1:0)-(known[a.name]?1:0)||a.title.localeCompare(b.title,'ko'));
+        }).sort((a,b)=>getPriority(a)-getPriority(b)||(known[b.name]?1:0)-(known[a.name]?1:0)||a.title.localeCompare(b.title,'ko'));
         render();
       }catch(error){
-        resources=['life-resource.html','housing-culture-activities.html','meal-planner.html','personal_color_photos.html'].map(name=>({name,...known[name]}));
+        resources=['meal-planner.html','fridge_stickerbook_pdf_fixed.html','code_artifact.html','life-resource.html','housing-culture-activities.html','personal_color_photos.html'].map(name=>({name,...known[name]}));
         render();
       }
     }
