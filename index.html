@@ -38,6 +38,8 @@
     // 파일명별 제목 및 설명 매핑
     const known={
       'meal-planner.html':{title:'식단 작성 프로그램',desc:'식품군과 영양을 고려하여 아침·점심·저녁 식단을 직접 구성하는 학생 활동',tag:'기술·가정 · 식생활',icon:'🥗'},
+      'budget-grocery.html':{title:'식단 준비하기',desc:'요리 목표 설정, 레시피 탐구, 쿠팡 실시간 가격 비교 및 5대 식품군 장보기 활동',tag:'기술·가정 · 식생활',icon:'🛒'},
+      'budget_grocery_shopping.html':{title:'식단 준비하기',desc:'요리 목표 설정, 레시피 탐구, 쿠팡 실시간 가격 비교 및 5대 식품군 장보기 활동',tag:'기술·가정 · 식생활',icon:'🛒'},
       'fridge_stickerbook_pdf_fixed.html':{title:'식품의 선택과 보관',desc:'장보기 동선 · 소비기한 · 리얼 2D 냉장고 수납 스티커북 및 종합 활동',tag:'기술·가정 · 식생활',icon:'🥦'},
       'code_artifact.html':{title:'가공 식품의 안전한 선택',desc:'영양성분표 해석, 식품첨가물 확인 및 안전한 가공식품 선택 탐구 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
       'food_safety_activity_sheet.html':{title:'가공 식품의 안전한 선택',desc:'영양성분표 해석, 식품첨가물 확인 및 안전한 가공식품 선택 탐구 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
@@ -51,16 +53,18 @@
 
     let resources=[];
 
-    // 카드 출력 순서 정의 (1. 식단 작성 프로그램, 2. 식품의 선택과 보관, 3. 가공 식품의 안전한 선택)
+    // 카드 출력 순서 정의 (1. 식단 작성 프로그램, 2. 식단 준비하기, 3. 식품의 선택과 보관, 4. 가공 식품의 안전한 선택)
     const getPriority = item => {
       if (item.name === 'meal-planner.html' || item.title === '식단 작성 프로그램') return 1;
-      if (item.name === 'fridge_stickerbook_pdf_fixed.html' || item.title === '식품의 선택과 보관') return 2;
-      if (item.name === 'code_artifact.html' || item.name === 'food_safety_activity_sheet.html' || item.title === '가공 식품의 안전한 선택') return 3;
+      if (item.name === 'budget-grocery.html' || item.name === 'budget_grocery_shopping.html' || item.title === '식단 준비하기') return 2;
+      if (item.name === 'fridge_stickerbook_pdf_fixed.html' || item.title === '식품의 선택과 보관') return 3;
+      if (item.name === 'code_artifact.html' || item.name === 'food_safety_activity_sheet.html' || item.title === '가공 식품의 안전한 선택') return 4;
       return 99;
     };
 
     // 영문 파일명 자동 한글화 변환 규칙
     const pretty = name => {
+      if (/budget|grocery|식단.*준비/i.test(name)) return '식단 준비하기';
       if (/fridge|stickerbook|보관/i.test(name)) return '식품의 선택과 보관';
       if (/code_artifact|food_safety|가공/i.test(name)) return '가공 식품의 안전한 선택';
       if (/personal.*color|퍼스널.*컬러/i.test(name)) return '퍼스널컬러 진단';
@@ -68,6 +72,7 @@
     };
 
     const iconFor = name => {
+      if (/budget|grocery|장보기/i.test(name)) return '🛒';
       if (/fridge|stickerbook|보관/i.test(name)) return '🥦';
       if (/code_artifact|food_safety/i.test(name)) return '🍔';
       if (/personal|color|퍼스널/i.test(name)) return '👗';
@@ -101,7 +106,7 @@
         }).sort((a,b)=>getPriority(a)-getPriority(b)||(known[b.name]?1:0)-(known[a.name]?1:0)||a.title.localeCompare(b.title,'ko'));
         render();
       }catch(error){
-        resources=['meal-planner.html','fridge_stickerbook_pdf_fixed.html','code_artifact.html','life-resource.html','housing-culture-activities.html','personal_color_photos.html'].map(name=>({name,...known[name]}));
+        resources=['meal-planner.html','budget-grocery.html','fridge_stickerbook_pdf_fixed.html','code_artifact.html','life-resource.html','housing-culture-activities.html','personal_color_photos.html'].map(name=>({name,...known[name]}));
         render();
       }
     }
