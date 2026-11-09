@@ -34,23 +34,42 @@
     const repo='technology-home-economics';
     const branch='main';
     const pagesBase=`https://${owner}.github.io/${repo}/`;
+    
+    // 파일명별 제목 및 설명 매핑 (퍼스널컬러 진단 관련 모든 파일명 대응)
     const known={
       'life-resource.html':{title:'생활자원의 이해와 관리',desc:'생활자원의 종류와 특성, 관리 방법, 선택과 기회비용, 시간 관리를 탐구하는 학생 활동',tag:'기술·가정 · 생활자원',icon:'🌿'},
       'meal-planner.html':{title:'식단 작성 프로그램',desc:'식품군과 영양을 고려하여 아침·점심·저녁 식단을 직접 구성하는 학생 활동',tag:'기술·가정 · 식생활',icon:'🥗'},
       'housing-culture-activities.html':{title:'더불어 사는 주생활 문화',desc:'주거 가치관, 생활양식, 이웃과 함께하는 주거 형태와 주거 문화를 탐구하는 4차시 활동',tag:'기술·가정 · 주생활',icon:'🏡'},
       'housing-values.html':{title:'더불어 사는 주생활 문화',desc:'주거 가치관, 생활양식, 이웃과 함께하는 주거 형태와 주거 문화를 탐구하는 4차시 활동',tag:'기술·가정 · 주생활',icon:'🏡'},
       'code_artifact.html':{title:'안전한 식품의 선택',desc:'영양성분, 식품첨가물, 식품첨가물 찾기 활동',tag:'기술·가정 · 식생활',icon:'🍔'},
-      'personal_color_photos.html':{title:'퍼스널컬러 진단하기',desc:'퍼스널컬러진단하기, 나와 어울리는 색깔 찾기, 의복의 선택 활동',tag:'기술·가정 · 의생활',icon:'👗'}
+      'personal_color_photos.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'},
+      'personal_color_middle_school.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'},
+      'personal_color.html':{title:'퍼스널컬러 진단',desc:'짝꿍과 함께 턱 밑 반사판으로 어울리는 색을 찾고 의복 선택과 퍼스널컬러를 탐구하는 활동',tag:'기술·가정 · 의생활',icon:'👗'}
     };
+
     let resources=[];
-    const pretty=name=>name.replace(/\.html$/i,'').replace(/[-_]+/g,' ').trim();
-    const iconFor=name=>/meal|food|diet/i.test(name)?'🥗':/house|home|housing/i.test(name)?'🏡':/resource|time/i.test(name)?'🌿':'🧩';
+
+    // 영문 파일명 자동 한글화 변환 규칙
+    const pretty = name => {
+      if (/personal.*color|퍼스널.*컬러/i.test(name)) return '퍼스널컬러 진단';
+      return name.replace(/\.html$/i, '').replace(/[-_]+/g, ' ').trim();
+    };
+
+    const iconFor = name => {
+      if (/personal|color|퍼스널/i.test(name)) return '👗';
+      if (/meal|food|diet/i.test(name)) return '🥗';
+      if (/house|home|housing/i.test(name)) return '🏡';
+      if (/resource|time/i.test(name)) return '🌿';
+      return '🧩';
+    };
+
     function render(query=''){
       const q=query.trim().toLowerCase();
       const filtered=resources.filter(x=>`${x.title} ${x.name} ${x.desc}`.toLowerCase().includes(q));
       document.getElementById('count').textContent=`총 ${filtered.length}개`;
       document.getElementById('grid').innerHTML=filtered.length?filtered.map(x=>`<article class="card"><div class="icon">${x.icon}</div><div class="tag">${x.tag}</div><h3>${x.title}</h3><p>${x.desc}</p><a class="open" href="${pagesBase}${encodeURIComponent(x.name)}">활동 시작</a></article>`).join(''):`<div class="empty">검색 결과가 없습니다.</div>`;
     }
+
     async function load(){
       try{
         const response=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/?ref=${branch}`,{headers:{Accept:'application/vnd.github+json'}});
@@ -58,11 +77,17 @@
         const files=await response.json();
         resources=files.filter(f=>f.type==='file'&&/\.html$/i.test(f.name)&&f.name.toLowerCase()!=='index.html').map(f=>{
           const meta=known[f.name]||{};
-          return {name:f.name,title:meta.title||pretty(f.name),desc:meta.desc||'클릭하여 학생 활동을 시작하세요.',tag:meta.tag||'기술·가정 · 학생 활동',icon:meta.icon||iconFor(f.name)};
+          return {
+            name:f.name,
+            title:meta.title||pretty(f.name),
+            desc:meta.desc||'클릭하여 학생 활동을 시작하세요.',
+            tag:meta.tag||'기술·가정 · 학생 활동',
+            icon:meta.icon||iconFor(f.name)
+          };
         }).sort((a,b)=>(known[b.name]?1:0)-(known[a.name]?1:0)||a.title.localeCompare(b.title,'ko'));
         render();
       }catch(error){
-        resources=['life-resource.html','housing-culture-activities.html','meal-planner.html'].map(name=>({name,...known[name]}));
+        resources=['life-resource.html','housing-culture-activities.html','meal-planner.html','personal_color_photos.html'].map(name=>({name,...known[name]}));
         render();
       }
     }
