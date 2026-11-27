@@ -374,4 +374,2840 @@
                         1. 밸런스 선정 ♥
                     </button>
                     <i class="fa-solid fa-chevron-right text-[10px] text-pinkrose-400"></i>
-                    <button type="button" onclick="goStudentStep(2)" id="nav-step-2" class="flex-1 lg:flex
+                    <button type="button" onclick="goStudentStep(2)" id="nav-step-2" class="flex-1 lg:flex-none whitespace-nowrap px-3.5 py-1.5 rounded-xl font-bold bg-white/80 text-slate-600 border border-pinkrose-200 hover:bg-pinkrose-50 transition">
+                        2. 100만 원 경매 ♥
+                    </button>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-pinkrose-400"></i>
+                    <button type="button" onclick="goStudentStep(3)" id="nav-step-3" class="flex-1 lg:flex-none whitespace-nowrap px-3.5 py-1.5 rounded-xl font-bold bg-white/80 text-slate-600 border border-pinkrose-200 hover:bg-pinkrose-50 transition">
+                        3. 서·논술 활동지 ♥
+                    </button>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-pinkrose-400"></i>
+                    <button type="button" onclick="goStudentStep(4)" id="nav-step-4" class="flex-1 lg:flex-none whitespace-nowrap px-3.5 py-1.5 rounded-xl font-bold bg-white/80 text-slate-600 border border-pinkrose-200 hover:bg-pinkrose-50 transition">
+                        4. 제출 & PDF ♥
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-grow">
+
+        <!-- ================================================================ -->
+        <!-- VIEW 1: STUDENT MODE                                             -->
+        <!-- ================================================================ -->
+        <div id="student-mode-view" class="space-y-6">
+
+            <!-- STEP 1: BALANCE GAME & TOP 10 SELECTION -->
+            <section id="student-step-1" class="space-y-6">
+                <div class="bg-white/95 p-6 rounded-3xl shadow-sm border-2 border-pinkrose-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="inline-block bg-pinkrose-100 text-pinkrose-800 text-xs font-extrabold px-3 py-1 rounded-full mb-1.5">♥ STEP 1 · 두근두근 배우자 가치관 탐색</span>
+                        <h2 class="text-xl sm:text-2xl font-black text-pinkrose-950 font-dodum">경매에 올릴 배우자 조건 10가지 선정하기 ♥</h2>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-1">6개 영역 30가지 조건 중 나에게 가장 중요한 <strong>10가지 조건</strong>을 고른 뒤 학급 투표로 전송하세요.</p>
+                    </div>
+                    <div class="flex bg-pinkrose-50 p-1 rounded-2xl border border-pinkrose-200 text-xs shrink-0">
+                        <button type="button" onclick="setStep1SubMode('tournament')" id="btn-sub-tourney" class="px-3.5 py-2 rounded-xl font-extrabold pastel-hero-gradient text-white shadow-sm transition">
+                            <i class="fa-solid fa-heart mr-1"></i> 1:1 밸런스 토너먼트
+                        </button>
+                        <button type="button" onclick="setStep1SubMode('checklist')" id="btn-sub-list" class="px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-900 transition">
+                            <i class="fa-solid fa-list-check mr-1"></i> 30개 전체 목록 선택
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submode A: 1:1 Balance Tournament -->
+                <div id="submode-tournament" class="space-y-5">
+                    <div id="tourney-match-box" class="pastel-stage-gradient p-6 sm:p-8 rounded-3xl shadow-lg border-2 border-pinkrose-200 space-y-6">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="pastel-hero-gradient text-white text-xs font-black px-3.5 py-1 rounded-full">♥ ROUND <span id="t-round-curr">1</span> / 15</span>
+                                <span class="text-xs font-bold text-pinkrose-900">둘 중 하나만 선택해야 한다면?</span>
+                            </div>
+                            <button type="button" onclick="resetTournament()" class="text-xs font-bold text-pinkrose-800 hover:text-pinkrose-600 underline">토너먼트 다시하기</button>
+                        </div>
+
+                        <div class="w-full bg-white/80 border border-pinkrose-200 h-2.5 rounded-full overflow-hidden p-0.5">
+                            <div id="t-progress-bar" class="pastel-hero-gradient h-full rounded-full transition-all duration-300" style="width: 6%"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 relative">
+                            <div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full pastel-hero-gradient text-white font-black text-xs items-center justify-center border-4 border-white shadow-md z-10">VS ♥</div>
+                            
+                            <button type="button" onclick="pickTournamentCard(0)" class="group bg-white/95 hover:bg-pinkrose-50 border-2 border-pinkrose-200 hover:border-pinkrose-500 p-6 rounded-3xl text-left transition transform hover:-translate-y-1 flex flex-col justify-between min-h-[165px] shadow-sm">
+                                <div>
+                                    <span id="t-left-cat" class="inline-block text-xs font-bold text-pinkrose-700 bg-pinkrose-100 px-2.5 py-0.5 rounded-full mb-2">카테고리</span>
+                                    <p id="t-left-text" class="text-base sm:text-lg font-extrabold text-pinkrose-950 font-dodum leading-snug">조건 A</p>
+                                </div>
+                                <span class="text-xs font-bold text-pinkrose-600 mt-4 block"><i class="fa-solid fa-heart mr-1"></i>이 조건이 더 끌려요!</span>
+                            </button>
+
+                            <button type="button" onclick="pickTournamentCard(1)" class="group bg-white/95 hover:bg-purple-50 border-2 border-purple-200 hover:border-purple-400 p-6 rounded-3xl text-left transition transform hover:-translate-y-1 flex flex-col justify-between min-h-[165px] shadow-sm">
+                                <div>
+                                    <span id="t-right-cat" class="inline-block text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full mb-2">카테고리</span>
+                                    <p id="t-right-text" class="text-base sm:text-lg font-extrabold text-pinkrose-950 font-dodum leading-snug">조건 B</p>
+                                </div>
+                                <span class="text-xs font-bold text-purple-600 mt-4 block"><i class="fa-solid fa-heart mr-1"></i>이 조건이 더 두근거려요!</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 15 Winners -> Pick 10 Box -->
+                    <div id="tourney-15-winners-box" class="hidden bg-white/95 p-6 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-pinkrose-100 pb-3">
+                            <div>
+                                <h3 class="text-lg font-black text-pinkrose-950 font-dodum">♥ 15강 통과 후보 중 최종 10가지를 확정하세요!</h3>
+                                <p class="text-xs text-slate-500">아래 15개 조건 중 경매에 올릴 10개를 클릭하여 선택합니다.</p>
+                            </div>
+                            <span class="bg-pinkrose-100 text-pinkrose-900 font-black text-xs px-3.5 py-1.5 rounded-2xl border border-pinkrose-200">
+                                선택됨: <span id="t-winners-picked-count" class="text-pinkrose-700 text-base">0</span> / 10
+                            </span>
+                        </div>
+                        <div id="t-15-winners-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                    </div>
+                </div>
+
+                <!-- Submode B: Full 30 Checklist -->
+                <div id="submode-checklist" class="hidden space-y-4">
+                    <div class="bg-white/95 p-4 rounded-3xl border-2 border-pinkrose-200 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <span class="text-xs sm:text-sm font-bold text-slate-700">6개 영역 총 30가지 조건 중 가장 중요한 <strong>10가지</strong>를 체크하세요.</span>
+                        <span class="pastel-hero-gradient text-white text-xs font-black px-4 py-2 rounded-2xl shadow-2xs">
+                            체크 현황: <span id="checklist-count-badge" class="text-white text-sm">0</span> / 10개 ♥
+                        </span>
+                    </div>
+                    <div id="full-30-categories-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- Selected Summary Bar & Submit Vote Button -->
+                <div class="pastel-soft-panel p-6 rounded-3xl shadow-md border-2 border-pinkrose-200 space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <h3 class="text-base font-extrabold text-pinkrose-900 font-dodum flex items-center gap-2">
+                            <i class="fa-solid fa-heart text-pinkrose-500"></i> 내가 선정한 핵심 배우자 조건
+                        </h3>
+                        <span id="step1-status-pill" class="text-xs font-black px-3 py-1 rounded-full bg-white text-pinkrose-700 border border-pinkrose-200">0 / 10개 선택됨</span>
+                    </div>
+                    <div id="selected-10-chip-list" class="flex flex-wrap gap-2 min-h-[48px] bg-white/85 p-3 rounded-2xl border border-pinkrose-200">
+                        <span class="text-xs text-slate-400 self-center mx-auto">아직 선택된 조건이 없습니다. 위에서 조건을 골라주세요 ♥</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                        <p class="text-xs text-slate-500">* 활동을 모두 끝내지 못했어도 상단 탭으로 이동해 현재 작성한 활동지를 PDF로 저장할 수 있습니다.</p>
+                        <button type="button" id="btn-submit-step1" onclick="submitStep1AndProceed()" class="w-full sm:w-auto pastel-hero-gradient text-white font-black px-6 py-3 rounded-2xl shadow-md transition flex items-center justify-center gap-2 hover:opacity-95">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>선정 저장 및 경매장 입장하기 →</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: 1 MILLION WON LIVE AUCTION -->
+            <section id="student-step-2" class="hidden space-y-6">
+                <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <span id="auc-live-badge" class="inline-flex items-center gap-1.5 bg-pinkrose-100 text-pinkrose-800 text-xs font-extrabold px-3 py-1 rounded-full mb-1">
+                            <span class="w-2 h-2 rounded-full bg-pinkrose-500"></span> 모의 경매 모드 (오프라인)
+                        </span>
+                        <h2 class="text-xl font-black text-pinkrose-950 font-dodum">♥ 두근두근 100만 원 가치 경매장 ♥</h2>
+                        <p id="auc-mode-desc" class="text-xs text-slate-600 mt-0.5">주어진 1,000,000원 예산 내에서 나에게 꼭 필요한 조건을 낙찰받으세요!</p>
+                    </div>
+                    <div class="pastel-soft-panel px-4 py-2.5 rounded-2xl border border-pinkrose-200 text-right shrink-0">
+                        <span class="text-[11px] font-bold text-slate-500 block">입찰 가능 잔여 예산</span>
+                        <span id="auc-available-cash" class="text-lg font-black text-pinkrose-700 font-mono">1,000,000원</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-5">
+                        <div class="pastel-stage-gradient p-6 sm:p-8 rounded-3xl shadow-lg border-2 border-pinkrose-200 space-y-6 relative overflow-hidden">
+                            <div class="flex justify-between items-center">
+                                <span class="pastel-hero-gradient text-white text-xs font-black px-3.5 py-1 rounded-full">
+                                    ♥ 경매 품목 #<span id="stage-item-num">1</span> / <span id="stage-item-total">10</span>
+                                </span>
+                                <span id="stage-status-badge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-white/90 text-pinkrose-700 border border-pinkrose-200">
+                                    입찰 진행 중 ♥
+                                </span>
+                            </div>
+
+                            <div>
+                                <span id="stage-item-cat" class="inline-block text-xs font-bold text-pinkrose-700 bg-white/80 px-2.5 py-0.5 rounded-full">카테고리</span>
+                                <h3 id="stage-item-title" class="text-xl sm:text-2xl font-black text-pinkrose-950 font-dodum mt-2 leading-snug">
+                                    경매 대기 중입니다...
+                                </h3>
+                            </div>
+
+                            <div class="bg-white/95 border-2 border-pinkrose-200 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-2xs">
+                                <div>
+                                    <span class="text-xs text-slate-500 block mb-1">현재 최고 입찰가</span>
+                                    <div id="stage-highest-price" class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-[#D63F7C] to-[#9855EC] bg-clip-text text-transparent font-mono">0원</div>
+                                </div>
+                                <div class="sm:text-right">
+                                    <span class="text-xs text-slate-500 block mb-1">현재 최고 입찰자</span>
+                                    <div id="stage-highest-bidder" class="text-base sm:text-lg font-extrabold text-pinkrose-950 flex items-center sm:justify-end gap-1.5">
+                                        <i class="fa-solid fa-heart text-pinkrose-400"></i> 입찰자 없음
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="bidding-controls-box" class="space-y-3">
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button type="button" onclick="quickAddBid(10000)" class="bg-white hover:bg-pinkrose-50 border-2 border-pinkrose-200 text-pinkrose-700 font-extrabold py-2.5 rounded-2xl text-xs sm:text-sm transition shadow-2xs">+ 1만 원 ♥</button>
+                                    <button type="button" onclick="quickAddBid(50000)" class="bg-white hover:bg-pinkrose-50 border-2 border-pinkrose-200 text-pinkrose-700 font-extrabold py-2.5 rounded-2xl text-xs sm:text-sm transition shadow-2xs">+ 5만 원 ♥</button>
+                                    <button type="button" onclick="quickAddBid(100000)" class="bg-white hover:bg-purple-50 border-2 border-purple-200 text-purple-700 font-extrabold py-2.5 rounded-2xl text-xs sm:text-sm transition shadow-2xs">+ 10만 원 ♥</button>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <input type="number" id="bid-amount-input" step="10000" min="10000" placeholder="입찰 금액 입력 (예: 150000)" class="flex-1 bg-white border-2 border-pinkrose-200 text-pinkrose-950 font-mono font-bold px-4 py-3 rounded-2xl text-sm focus:outline-none focus:border-pinkrose-500">
+                                    <button type="button" id="btn-place-bid" onclick="submitStudentBid()" class="pastel-hero-gradient text-white font-black px-6 py-3 rounded-2xl text-sm shadow-md transition shrink-0 hover:opacity-95">
+                                        <i class="fa-solid fa-heart mr-1"></i> 입찰하기
+                                    </button>
+                                </div>
+
+                                <div id="offline-sim-footer" class="flex flex-wrap justify-between items-center gap-2 pt-2 border-t border-pinkrose-200/80">
+                                    <span class="text-[11px] text-slate-600">* 모의 경매에서는 가상 친구들이 자동으로 경쟁 입찰합니다.</span>
+                                    <button type="button" onclick="finishOfflineItem()" class="bg-pinkrose-900 hover:bg-pinkrose-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition">
+                                        🔨 이 품목 낙찰 확정 / 다음 <i class="fa-solid fa-forward-step ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white/90 border border-pinkrose-200 rounded-2xl p-3 h-28 overflow-y-auto space-y-1 text-xs font-mono text-slate-600" id="bid-history-feed">
+                                <p class="text-pinkrose-700">♥ [시스템] 두근두근 경매장에 입장했습니다. 예산을 전략적으로 배분하세요.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-extrabold text-pinkrose-800 uppercase tracking-wider">♥ 경매 상장 조건 현황</h4>
+                                <span class="text-[11px] text-slate-400">클릭하여 상세 보기 (오프라인 모드 시 이동 가능)</span>
+                            </div>
+                            <div id="auction-10-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div class="pastel-stage-gradient border-2 border-pinkrose-300 p-5 rounded-3xl shadow-sm space-y-2">
+                            <div class="flex items-center gap-2 text-pinkrose-800 font-black text-xs">
+                                <i class="fa-solid fa-crown text-pinkrose-500 text-base"></i> 현재 최고가 낙찰 조건 (1위) ♥
+                            </div>
+                            <div id="class-top1-card" class="text-xs text-slate-600">
+                                아직 낙찰 확정된 조건이 없습니다.
+                            </div>
+                        </div>
+
+                        <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-3">
+                            <div class="flex justify-between items-center border-b border-pinkrose-100 pb-2">
+                                <h4 class="text-sm font-black text-pinkrose-950 font-dodum"><i class="fa-solid fa-heart text-pinkrose-500 mr-1.5"></i>내가 낙찰받은 조건</h4>
+                                <span id="my-won-badge" class="bg-pinkrose-100 text-pinkrose-800 text-xs font-black px-2.5 py-0.5 rounded-full">0개</span>
+                            </div>
+                            <div id="my-won-list" class="space-y-2 max-h-52 overflow-y-auto">
+                                <p class="text-xs text-slate-400 text-center py-6">낙찰받은 조건이 없습니다 ♥</p>
+                            </div>
+                            <div class="border-t border-pinkrose-100 pt-2.5 flex justify-between text-xs font-bold">
+                                <span class="text-slate-500">총 낙찰 지출액</span>
+                                <span id="my-total-spent" class="text-pinkrose-700 font-mono font-black">0원</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-3">
+                            <h4 class="text-sm font-black text-pinkrose-950 font-dodum"><i class="fa-solid fa-chart-simple text-pinkrose-500 mr-1.5"></i>조건별 낙찰가 순위 ♥</h4>
+                            <div id="auction-ranking-bars" class="space-y-2.5 max-h-60 overflow-y-auto"></div>
+                        </div>
+
+                        <button type="button" onclick="goStudentStep(3)" class="w-full pastel-hero-gradient text-white font-black py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2 hover:opacity-95">
+                            <span>3단계: 서·논술형 활동지 작성하기 ♥</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3: NARRATIVE REFLECTION ESSAY -->
+            <section id="student-step-3" class="hidden space-y-6">
+                <div class="bg-white/95 p-6 rounded-3xl shadow-sm border-2 border-pinkrose-200">
+                    <span class="inline-block bg-pinkrose-100 text-pinkrose-800 text-xs font-extrabold px-3 py-1 rounded-full mb-1.5">♥ STEP 3 · 두근두근 가치관 성찰 및 서·논술형 작성</span>
+                    <h2 class="text-xl sm:text-2xl font-black text-pinkrose-950 font-dodum">경매 경험을 통해 배우자 조건과 나의 가치관 성찰하기 ♥</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-1">아래 요약된 나의 경매 결과를 참고하여 3가지 논술형 문항에 진솔하게 답변을 작성해 주세요. (자동 저장됨)</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white/95 p-4 rounded-2xl border-2 border-pinkrose-200 shadow-2xs space-y-1">
+                        <span class="text-xs font-extrabold text-pinkrose-800 block"><i class="fa-solid fa-heart text-pinkrose-500 mr-1"></i> 내가 선정한 조건</span>
+                        <p id="essay-ref-chosen" class="text-xs text-slate-600 leading-relaxed line-clamp-3">-</p>
+                    </div>
+                    <div class="pastel-soft-panel p-4 rounded-2xl border-2 border-pinkrose-200 space-y-1">
+                        <span class="text-xs font-extrabold text-pinkrose-900 block"><i class="fa-solid fa-bag-shopping text-pinkrose-600 mr-1"></i> 내가 낙찰받은 조건 & 지출액</span>
+                        <p id="essay-ref-won" class="text-xs text-pinkrose-800 font-semibold leading-relaxed">-</p>
+                    </div>
+                    <div class="pastel-stage-gradient p-4 rounded-2xl border-2 border-pinkrose-300 space-y-1">
+                        <span class="text-xs font-extrabold text-pinkrose-900 block"><i class="fa-solid fa-crown text-pinkrose-600 mr-1"></i> 학급 최고가 낙찰 조건 (1위)</span>
+                        <p id="essay-ref-top1" class="text-xs text-pinkrose-900 font-bold leading-relaxed">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 p-6 sm:p-8 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-8">
+                    <div class="space-y-2.5">
+                        <label for="essay-input-1" class="block font-extrabold text-pinkrose-950 text-sm sm:text-base leading-snug">
+                            <span class="pastel-hero-gradient text-white text-xs font-black px-3 py-1 rounded-full mr-2">♥ 문항 1</span>
+                            [가치 선택의 기준] 30가지 조건 중 10가지를 선정하고 예산을 배분할 때 가장 중요하게 여긴 나만의 핵심 기준은 무엇인가요?
+                        </label>
+                        <textarea id="essay-input-1" rows="4" oninput="handleEssayInput(1)" placeholder="예: 저는 결혼 생활에서 경제적 조건보다 서로 간의 정서적 유대와 신뢰가 가장 중요하다고 생각했습니다..." class="w-full border-2 border-pinkrose-200 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-pinkrose-400 leading-relaxed bg-pinkrose-50/30"></textarea>
+                        <div class="flex justify-end gap-3 text-xs text-slate-400 font-mono">
+                            <span>공백 포함: <strong id="char-inc-1" class="text-pinkrose-700">0</strong>자</span>
+                            <span>공백 제외: <strong id="char-exc-1" class="text-pinkrose-700">0</strong>자</span>
+                        </div>
+                    </div>
+
+                    <hr class="border-pinkrose-100">
+
+                    <div class="space-y-2.5">
+                        <label for="essay-input-2" class="block font-extrabold text-pinkrose-950 text-sm sm:text-base leading-snug">
+                            <span class="pastel-hero-gradient text-white text-xs font-black px-3 py-1 rounded-full mr-2">♥ 문항 2</span>
+                            [경매 결과 분석 및 갈등 성찰] 내가 낙찰받은 조건(또는 아쉽게 놓친 조건)과 학급 전체에서 최고가로 낙찰된 조건을 비교하며, 현실의 배우자 선택과 결혼 생활에서 발생할 수 있는 가치관 차이를 어떻게 조율할 수 있을지 서술하시오.
+                        </label>
+                        <textarea id="essay-input-2" rows="4" oninput="handleEssayInput(2)" placeholder="예: 학급에서 가장 높은 가격에 낙찰된 조건을 보며 친구들이 현실적인 생활 안정성을 매우 중시한다는 것을 알았습니다..." class="w-full border-2 border-pinkrose-200 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-pinkrose-400 leading-relaxed bg-pinkrose-50/30"></textarea>
+                        <div class="flex justify-end gap-3 text-xs text-slate-400 font-mono">
+                            <span>공백 포함: <strong id="char-inc-2" class="text-pinkrose-700">0</strong>자</span>
+                            <span>공백 제외: <strong id="char-exc-2" class="text-pinkrose-700">0</strong>자</span>
+                        </div>
+                    </div>
+
+                    <hr class="border-pinkrose-100">
+
+                    <div class="space-y-2.5">
+                        <label for="essay-input-3" class="block font-extrabold text-pinkrose-950 text-sm sm:text-base leading-snug">
+                            <span class="pastel-hero-gradient text-white text-xs font-black px-3 py-1 rounded-full mr-2">♥ 문항 3</span>
+                            [미래의 나에게 적용] 이번 가치 경매를 통해 깨달은 '좋은 배우자'의 조건을 바탕으로, 앞으로 나는 어떤 사람으로 성장하고 싶은지 구체적인 다짐을 작성하시오.
+                        </label>
+                        <textarea id="essay-input-3" rows="4" oninput="handleEssayInput(3)" placeholder="예: 내가 배우자에게 바랐던 '솔직한 대화 태도'와 '건전한 경제관념'을 먼저 갖춘 사람이 되고 싶습니다..." class="w-full border-2 border-pinkrose-200 rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-pinkrose-400 leading-relaxed bg-pinkrose-50/30"></textarea>
+                        <div class="flex justify-end gap-3 text-xs text-slate-400 font-mono">
+                            <span>공백 포함: <strong id="char-inc-3" class="text-pinkrose-700">0</strong>자</span>
+                            <span>공백 제외: <strong id="char-exc-3" class="text-pinkrose-700">0</strong>자</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="button" onclick="goStudentStep(4)" class="pastel-hero-gradient text-white font-black px-7 py-3.5 rounded-2xl shadow-lg transition flex items-center gap-2 hover:opacity-95">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>4단계: 최종 제출 및 A4 활동지 PDF 저장 ♥</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: FINAL SUBMISSION & A4 PDF WORKSHEET -->
+            <section id="student-step-4" class="hidden space-y-6">
+                <!-- Action Bar (Print button removed; simple direct PDF download) -->
+                <div class="pastel-soft-panel border-2 border-pinkrose-200 p-5 rounded-3xl shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-black text-pinkrose-950 font-dodum">♥ 활동지 최종 검토 및 제출</h3>
+                        <p id="final-submit-status-text" class="text-xs text-slate-600 mt-0.5">활동을 모두 완료하지 않았어도 현재 작성된 상태 그대로 A4 PDF 파일로 즉시 저장됩니다.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end relative z-20">
+                        <button type="button" onclick="submitFinalToCloud()" id="btn-final-cloud-submit" style="touch-action: manipulation; cursor: pointer;" class="pastel-hero-gradient text-white font-black px-5 py-3 rounded-2xl text-xs sm:text-sm shadow transition flex items-center gap-1.5 hover:opacity-95 active:scale-95">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> 선생님께 최종 제출 ♥
+                        </button>
+                        <button type="button" onclick="downloadWorksheetPDF()" id="btn-download-pdf" style="touch-action: manipulation; cursor: pointer;" class="bg-white hover:bg-pinkrose-50 active:bg-pinkrose-100 active:scale-95 text-pinkrose-700 border-2 border-pinkrose-300 font-black px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-arrow-down"></i> A4 PDF 저장하기 ♥
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LOVELY PASTEL PINK A4 WORKSHEET PREVIEW -->
+                <div class="max-w-4xl mx-auto">
+                    <div id="a4-worksheet-area" class="bg-gradient-to-b from-white via-[#FFF9FB] to-[#FBF5FC] p-6 sm:p-10 rounded-3xl shadow-xl border-2 border-pinkrose-300 text-[#4A333E] space-y-5">
+                        <div class="border-2 border-dashed border-lavender-300 rounded-2xl p-5 sm:p-7 bg-white space-y-5">
+                            <!-- Document Title Banner -->
+                            <div class="pastel-stage-gradient border border-pinkrose-200 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+                                <div>
+                                    <span class="text-[11px] font-extrabold tracking-widest text-pinkrose-700">♥ 가치관 탐구 및 진로·가정 연계 활동지 ♥</span>
+                                    <h1 class="text-xl sm:text-2xl font-black text-pinkrose-950 font-batang mt-0.5">♥ 두근두근 배우자 조건 가치 경매 활동지 ♥</h1>
+                                </div>
+                                <div class="text-xs font-mono font-bold text-pinkrose-800 bg-white px-3 py-1 rounded-full border border-pinkrose-200" id="pdf-date-display">2026년 11월 26일</div>
+                            </div>
+
+                            <!-- Student Info Table -->
+                            <table class="w-full border-collapse border border-pinkrose-200 text-xs text-center">
+                                <tbody>
+                                    <tr>
+                                        <th class="border border-pinkrose-200 bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] p-2 font-bold text-pinkrose-950 w-20">수업 코드</th>
+                                        <td class="border border-pinkrose-200 p-2 font-mono font-bold" id="pdf-room">CLASS1</td>
+                                        <th class="border border-pinkrose-200 bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] p-2 font-bold text-pinkrose-950 w-16">학번</th>
+                                        <td class="border border-pinkrose-200 p-2 font-mono font-bold" id="pdf-stuid">-</td>
+                                        <th class="border border-pinkrose-200 bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] p-2 font-bold text-pinkrose-950 w-16">성명</th>
+                                        <td class="border border-pinkrose-200 p-2 font-extrabold text-sm text-pinkrose-700" id="pdf-stuname">-</td>
+                                        <th class="border border-pinkrose-200 bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] p-2 font-bold text-pinkrose-950 w-24">지출 / 잔액</th>
+                                        <td class="border border-pinkrose-200 p-2 font-mono font-bold" id="pdf-budget-summary">0원 / 1,000,000원</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Part 1: Selected Conditions -->
+                            <div class="space-y-2">
+                                <h3 class="inline-block text-xs sm:text-sm font-black text-white pastel-hero-gradient px-3.5 py-1 rounded-full font-batang">♥ 1. 내가 선정한 핵심 배우자 조건 10가지</h3>
+                                <div id="pdf-chosen-10-list" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs"></div>
+                            </div>
+
+                            <!-- Part 2: Auction Results Table -->
+                            <div class="space-y-2">
+                                <h3 class="inline-block text-xs sm:text-sm font-black text-white pastel-hero-gradient px-3.5 py-1 rounded-full font-batang">♥ 2. 100만 원 가치 경매 참여 및 낙찰 결과</h3>
+                                <table class="w-full border-collapse border border-pinkrose-200 text-xs">
+                                    <thead class="bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] font-bold text-pinkrose-950">
+                                        <tr>
+                                            <th class="border border-pinkrose-200 p-1.5 w-10 text-center">순번</th>
+                                            <th class="border border-pinkrose-200 p-1.5 text-left">경매 상장 조건</th>
+                                            <th class="border border-pinkrose-200 p-1.5 w-28 text-right">최종 낙찰가</th>
+                                            <th class="border border-pinkrose-200 p-1.5 w-24 text-center">낙찰 결과</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pdf-auction-tbody"></tbody>
+                                </table>
+                            </div>
+
+                            <!-- Part 3: Narrative Reflection Essays -->
+                            <div class="space-y-3.5 pt-1">
+                                <h3 class="inline-block text-xs sm:text-sm font-black text-white pastel-hero-gradient px-3.5 py-1 rounded-full font-batang">♥ 3. 두근두근 서·논술형 가치관 성찰</h3>
+                                
+                                <div class="border border-pinkrose-200 rounded-2xl overflow-hidden">
+                                    <div class="bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] px-3.5 py-2 border-b border-pinkrose-200 text-xs font-bold text-pinkrose-950">
+                                        ♥ [문항 1] 30가지 조건 중 10가지를 선정하고 예산을 배분할 때 가장 중요하게 여긴 나만의 핵심 기준은 무엇인가요?
+                                    </div>
+                                    <div id="pdf-essay-1" class="p-3 text-xs text-[#4A333E] whitespace-pre-wrap min-h-[75px] lined-essay-box"></div>
+                                </div>
+
+                                <div class="border border-pinkrose-200 rounded-2xl overflow-hidden">
+                                    <div class="bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] px-3.5 py-2 border-b border-pinkrose-200 text-xs font-bold text-pinkrose-950">
+                                        ♥ [문항 2] 내가 낙찰받은 조건과 학급 최고가 낙찰 조건을 비교하며, 현실의 배우자 선택에서 발생할 수 있는 가치관 차이를 어떻게 조율할 수 있을지 서술하시오.
+                                    </div>
+                                    <div id="pdf-essay-2" class="p-3 text-xs text-[#4A333E] whitespace-pre-wrap min-h-[75px] lined-essay-box"></div>
+                                </div>
+
+                                <div class="border border-pinkrose-200 rounded-2xl overflow-hidden">
+                                    <div class="bg-gradient-to-r from-[#FFE8F0] to-[#F8E6FA] px-3.5 py-2 border-b border-pinkrose-200 text-xs font-bold text-pinkrose-950">
+                                        ♥ [문항 3] 이번 가치 경매를 통해 깨달은 '좋은 배우자'의 조건을 바탕으로, 앞으로 나는 어떤 사람으로 성장하고 싶은지 구체적인 다짐을 작성하시오.
+                                    </div>
+                                    <div id="pdf-essay-3" class="p-3 text-xs text-[#4A333E] whitespace-pre-wrap min-h-[75px] lined-essay-box"></div>
+                                </div>
+                            </div>
+
+                            <!-- Teacher Feedback Footer -->
+                            <div class="border border-pinkrose-200 p-3 rounded-2xl flex justify-between items-center text-xs pastel-soft-panel">
+                                <span class="font-bold text-pinkrose-900">♥ 교사 확인 및 피드백:</span>
+                                <span class="text-pinkrose-700 font-bold">(인) ♥</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 2: TEACHER LIVE CONTROL DASHBOARD                           -->
+        <!-- ================================================================ -->
+        <div id="teacher-mode-view" class="hidden space-y-6">
+            <div class="pastel-stage-gradient p-6 rounded-3xl shadow-lg border-2 border-pinkrose-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="pastel-hero-gradient text-white text-xs font-black px-3 py-0.5 rounded-full uppercase">♥ Teacher Control Room</span>
+                        <span class="text-xs font-mono text-pinkrose-800 bg-white/90 px-2.5 py-0.5 rounded-full border border-pinkrose-200">방 코드: <strong id="tea-room-display">CLASS1</strong></span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black text-pinkrose-950 font-dodum">교사 실시간 경매 통제실 ♥</h2>
+                    <p class="text-xs text-slate-600 mt-0.5">학생 투표 집계 → TOP 10 확정 → 실시간 라이브 경매 진행 → 제출 답안 확인 및 CSV 다운로드를 한곳에서 제어합니다.</p>
+                </div>
+
+                <div class="flex flex-wrap bg-white/90 p-1.5 rounded-2xl border border-pinkrose-200 gap-1 text-xs">
+                    <button type="button" onclick="switchTeacherTab(1)" id="tea-tab-1" class="px-3.5 py-2 rounded-xl font-extrabold pastel-hero-gradient text-white transition">
+                        1. 실시간 투표 & TOP 10 확정 ♥
+                    </button>
+                    <button type="button" onclick="switchTeacherTab(2)" id="tea-tab-2" class="px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-800 transition">
+                        2. 라이브 경매 진행기 ♥
+                    </button>
+                    <button type="button" onclick="switchTeacherTab(3)" id="tea-tab-3" class="px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-800 transition">
+                        3. 제출 현황 & CSV 백업 ♥
+                    </button>
+                </div>
+            </div>
+
+            <!-- TEACHER TAB 1 -->
+            <div id="teacher-panel-1" class="space-y-5">
+                <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="pastel-soft-panel border border-pinkrose-200 text-pinkrose-900 px-4 py-2.5 rounded-2xl text-center">
+                            <span class="text-[11px] font-bold block">투표 참여 학생</span>
+                            <span id="tea-voters-count" class="text-xl font-black font-mono text-pinkrose-700">0명</span>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-pinkrose-950 font-dodum">♥ 학급 밸런스 게임 실시간 득표 현황</h3>
+                            <p class="text-xs text-slate-500">득표순으로 자동 정렬됩니다. 상위 10개를 선택해 경매 품목으로 확정하세요.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="autoSelectTop10Votes()" class="bg-pinkrose-50 hover:bg-pinkrose-100 border border-pinkrose-200 text-pinkrose-900 font-bold px-4 py-2.5 rounded-2xl text-xs transition">
+                            <i class="fa-solid fa-wand-magic-sparkles text-pinkrose-500 mr-1"></i> 상위 10개 자동 선택
+                        </button>
+                        <button type="button" onclick="confirmAndPushTop10()" class="pastel-hero-gradient text-white font-black px-5 py-2.5 rounded-2xl text-xs sm:text-sm shadow transition hover:opacity-95">
+                            <i class="fa-solid fa-heart mr-1"></i> 선택한 10개 경매 품목 확정 (<span id="tea-picked-10-cnt">0</span>/10)
+                        </button>
+                    </div>
+                </div>
+                <div id="tea-votes-chart-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- TEACHER TAB 2 -->
+            <div id="teacher-panel-2" class="hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-3">
+                        <div class="flex justify-between items-center border-b border-pinkrose-100 pb-2">
+                            <h3 class="text-sm font-black text-pinkrose-950 font-dodum">♥ 확정된 경매 품목 (10개)</h3>
+                            <button type="button" onclick="confirmResetAuctionRoom()" class="text-[11px] font-bold text-rose-600 hover:underline">전체 경매 초기화</button>
+                        </div>
+                        <div id="tea-auction-items-list" class="space-y-2 max-h-[520px] overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-5">
+                        <div class="pastel-stage-gradient p-6 sm:p-8 rounded-3xl shadow-lg border-2 border-pinkrose-200 space-y-6">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="pastel-hero-gradient text-white text-xs font-black px-3.5 py-1 rounded-full">
+                                        ♥ LIVE STAGE · 품목 #<span id="tea-stage-num">1</span>
+                                    </span>
+                                    <span id="tea-stage-status" class="text-xs font-bold px-3 py-1 rounded-full bg-white/90 text-pinkrose-800 border border-pinkrose-200">대기 중</span>
+                                </div>
+                                <button type="button" onclick="toggleSoundEffect()" id="btn-sound-toggle" class="bg-white/90 hover:bg-white text-pinkrose-800 border border-pinkrose-200 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                                    <i class="fa-solid fa-volume-high mr-1 text-pinkrose-500"></i> 효과음 ON
+                                </button>
+                            </div>
+
+                            <div>
+                                <span id="tea-stage-cat" class="inline-block text-xs font-bold text-pinkrose-700 bg-white/80 px-2.5 py-0.5 rounded-full">카테고리</span>
+                                <h2 id="tea-stage-title" class="text-2xl sm:text-3xl font-black text-pinkrose-950 font-dodum mt-2 leading-snug">
+                                    좌측 목록에서 경매할 품목을 선택하세요.
+                                </h2>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/95 p-5 rounded-2xl border-2 border-pinkrose-200 shadow-2xs">
+                                <div>
+                                    <span class="text-xs text-slate-500 block mb-1">실시간 최고 입찰가</span>
+                                    <div id="tea-stage-price" class="text-4xl font-black bg-gradient-to-r from-[#D63F7C] to-[#9855EC] bg-clip-text text-transparent font-mono">0원</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block mb-1">현재 최고 입찰 학생</span>
+                                    <div id="tea-stage-bidder" class="text-xl font-extrabold text-pinkrose-900 mt-1">없음</div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button type="button" onclick="teacherStartCurrentItem()" class="flex-1 pastel-hero-gradient text-white font-black py-3.5 px-4 rounded-2xl text-sm shadow transition hover:opacity-95">
+                                    <i class="fa-solid fa-play mr-1"></i> 이 품목 입찰 시작 ♥
+                                </button>
+                                <button type="button" onclick="teacherHammerSold()" class="flex-1 bg-pinkrose-900 hover:bg-pinkrose-800 text-white font-black py-3.5 px-4 rounded-2xl text-sm shadow transition">
+                                    <i class="fa-solid fa-gavel mr-1"></i> 낙찰 확정 (망치 두드리기)
+                                </button>
+                                <button type="button" onclick="teacherResetCurrentItem()" class="bg-white/90 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-pinkrose-200 font-bold py-3.5 px-4 rounded-2xl text-xs transition">
+                                    현재 품목 유찰/리셋
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 space-y-3">
+                            <h4 class="text-sm font-black text-pinkrose-950 font-dodum"><i class="fa-solid fa-users text-pinkrose-500 mr-1.5"></i>참여 학생별 낙찰 및 잔여 예산 현황 ♥</h4>
+                            <div id="tea-students-budget-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                                <p class="text-slate-400 col-span-full">입찰 또는 투표에 참여한 학생 데이터가 여기에 표시됩니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEACHER TAB 3 -->
+            <div id="teacher-panel-3" class="hidden space-y-5">
+                <div class="bg-white/95 p-5 rounded-3xl shadow-sm border-2 border-pinkrose-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-base font-black text-pinkrose-950 font-dodum">♥ 학생 최종 활동지 제출 현황 (<span id="tea-sub-count">0</span>명 제출)</h3>
+                        <p class="text-xs text-slate-500">학생 이름을 클릭하면 작성한 서·논술형 답안 전문을 바로 읽을 수 있습니다.</p>
+                    </div>
+                    <button type="button" onclick="exportAllSubmissionsCSV()" class="pastel-hero-gradient text-white font-black px-5 py-2.5 rounded-2xl text-xs sm:text-sm shadow transition flex items-center gap-2 hover:opacity-95">
+                        <i class="fa-solid fa-file-excel"></i> 전체 제출 결과 엑셀(CSV) 다운로드 ♥
+                    </button>
+                </div>
+
+                <div class="bg-white/95 rounded-3xl shadow-sm border-2 border-pinkrose-200 overflow-x-auto">
+                    <table class="w-full text-xs text-left">
+                        <thead class="pastel-soft-panel text-pinkrose-950 font-extrabold border-b border-pinkrose-200">
+                            <tr>
+                                <th class="p-3">제출 시각</th>
+                                <th class="p-3">학번</th>
+                                <th class="p-3">이름</th>
+                                <th class="p-3">낙찰받은 조건</th>
+                                <th class="p-3 text-right">총 지출액</th>
+                                <th class="p-3 text-center">답안 보기</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tea-submissions-tbody" class="divide-y divide-pinkrose-100">
+                            <tr>
+                                <td colspan="6" class="p-8 text-center text-slate-400">아직 최종 제출한 학생이 없습니다 ♥</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white/80 text-slate-500 text-xs py-6 mt-12 border-t border-pinkrose-200">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p class="font-bold text-pinkrose-900 font-dodum">♥ 두근두근 가치 경매소 : 배우자 조건 가치 경매 & 서·논술형 활동지 ♥</p>
+            <p class="text-slate-400">Firebase Realtime DB + Google Apps Script 하이브리드 수업 솔루션</p>
+        </div>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+    <script>
+        // =========================================================================
+        // 1. CURATED 30 SPOUSE CONDITIONS (6 CATEGORIES x 5 ITEMS)
+        // =========================================================================
+        const CONDITIONS_30 = [
+            // 1. 성격/가치관
+            { id: 1, cat: "성격/가치관", text: "어떤 상황에서도 내 편이 되어주는 든든한 공감 능력" },
+            { id: 2, cat: "성격/가치관", text: "자신의 잘못을 인정하고 진심으로 사과할 줄 아는 용기" },
+            { id: 3, cat: "성격/가치관", text: "감정 기복이 적고 위기 상황에서도 침착함을 유지하는 태도" },
+            { id: 4, cat: "성격/가치관", text: "매사에 긍정적이고 유머 감각이 있어 함께 있으면 웃게 되는 성격" },
+            { id: 5, cat: "성격/가치관", text: "타인을 배려하고 예의 바르며 도덕적 기준이 올바른 성품" },
+
+            // 2. 경제/직업
+            { id: 6, cat: "경제/직업", text: "충동구매를 자제하고 미래를 함께 설계하는 건전한 경제관념" },
+            { id: 7, cat: "경제/직업", text: "자신의 직업에 자부심을 가지고 성실하게 일하는 태도" },
+            { id: 8, cat: "경제/직업", text: "과도한 빚이나 도박·투기 등 재정적 위험 요소가 없는 상태" },
+            { id: 9, cat: "경제/직업", text: "안정적인 소득과 자산을 바탕으로 경제적 여유를 제공하는 능력" },
+            { id: 10, cat: "경제/직업", text: "소득 수준과 관계없이 서로의 경제권을 투명하게 공유하는 신뢰" },
+
+            // 3. 외모/건강
+            { id: 11, cat: "외모/건강", text: "규칙적인 운동과 식습관으로 스스로 건강을 관리하는 자기관리" },
+            { id: 12, cat: "외모/건강", text: "나의 호감을 자아내는 매력적인 외모와 깔끔한 스타일" },
+            { id: 13, cat: "외모/건강", text: "술, 담배 등 건강을 해치는 중독적 습관이 없는 생활" },
+            { id: 14, cat: "외모/건강", text: "정신적으로 건강하며 스트레스를 건전하게 해소할 줄 아는 힘" },
+            { id: 15, cat: "외모/건강", text: "청결과 위생 관념이 철저하여 쾌적한 일상을 유지하는 습관" },
+
+            // 4. 가정/육아
+            { id: 16, cat: "가정/육아", text: "가사 노동과 육아를 '도와주는 것'이 아닌 '함께하는 일'로 여기는 태도" },
+            { id: 17, cat: "가정/육아", text: "자녀 출산 및 양육 방식에 대한 가치관이 나와 일치함" },
+            { id: 18, cat: "가정/육아", text: "양가 부모님 및 가족들과 건강한 거리와 예의를 유지하는 조율 능력" },
+            { id: 19, cat: "가정/육아", text: "바쁜 일상 속에서도 가족과 함께하는 시간을 최우선으로 두는 가정적 면모" },
+            { id: 20, cat: "가정/육아", text: "아이를 진심으로 사랑하고 따뜻하게 보살필 수 있는 다정함" },
+
+            // 5. 취미/라이프스타일
+            { id: 21, cat: "취미/라이프스타일", text: "함께 즐길 수 있는 공통의 취미나 여가 활동이 하나 이상 있음" },
+            { id: 22, cat: "취미/라이프스타일", text: "서로의 개인 시간과 취향, 사생활을 존중해 주는 배려" },
+            { id: 23, cat: "취미/라이프스타일", text: "음식 취향과 생활 패턴(수면, 소비 등)이 비슷해 일상이 편안함" },
+            { id: 24, cat: "취미/라이프스타일", text: "새로운 경험과 여행을 함께 즐기며 삶의 활력을 나누는 태도" },
+            { id: 25, cat: "취미/라이프스타일", text: "반려동물이나 자연을 아끼고 일상의 소소한 행복을 즐길 줄 아는 여유" },
+
+            // 6. 소통/신뢰
+            { id: 26, cat: "소통/신뢰", text: "갈등이 생겼을 때 회피하거나 화내지 않고 대화로 푸는 소통 능력" },
+            { id: 27, cat: "소통/신뢰", text: "사소한 일에도 거짓말하지 않고 항상 솔직하게 대하는 정직함" },
+            { id: 28, cat: "소통/신뢰", text: "고마움과 애정 표현을 아끼지 않고 따뜻하게 말해주는 다정함" },
+            { id: 29, cat: "소통/신뢰", text: "나의 꿈과 도전을 진심으로 응원하고 지지해 주는 동반자 의식" },
+            { id: 30, cat: "소통/신뢰", text: "비판이나 비난 대신 상대방의 입장에서 먼저 생각해 주는 역지사지 태도" }
+        ];
+
+        const VIRTUAL_BOTS = [];
+
+        // =========================================================================
+        // 2. GLOBAL APPLICATION STATE
+        // =========================================================================
+        let state = {
+            role: 'student',
+            studentStep: 1,
+            step1SubMode: 'tournament',
+            teacherTab: 1,
+            soundEnabled: true,
+
+            config: {
+                roomCode: 'CLASS1',
+                teacherPin: '1234',
+                firebaseConfigStr: '',
+                gasUrl: ''
+            },
+            firebaseConnected: false,
+
+            student: {
+                id: '',
+                name: ''
+            },
+
+            selected10: [],
+            tournament: {
+                round: 0,
+                pairs: [],
+                winners15: []
+            },
+
+            offlineAuction: {
+                activeIndex: 0,
+                items: []
+            },
+
+            liveRoom: {
+                votes: {},
+                confirmed10: [],
+                auction: {
+                    activeIndex: 0,
+                    status: 'waiting',
+                    items: {}
+                },
+                submissions: {}
+            },
+
+            essays: {
+                1: '',
+                2: '',
+                3: ''
+            },
+            lastSubmittedAt: ''
+        };
+
+        let db = null;
+        let teacherSelected10Ids = [];
+        let lastGeneratedPdfBlobUrl = null;
+        let lastGeneratedPngDataUrl = null;
+        let lastGeneratedFileName = '가치경매_활동지';
+
+        // =========================================================================
+        // 3. INITIALIZATION & SAFE DOM HELPERS
+        // =========================================================================
+        function setTextSafe(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = text;
+        }
+
+        window.onload = function() {
+            loadLocalState();
+            parseUrlQueryConfig();
+            initFirebaseEngine();
+            initInputListeners();
+            
+            if (!Array.isArray(state.tournament.pairs) || state.tournament.pairs.length === 0) {
+                initTournament();
+            }
+            
+            renderAll();
+            updateConnectionBadges();
+        };
+
+        function loadLocalState() {
+            try {
+                const raw = localStorage.getItem('value_auction_hybrid_v1');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    state.config = { ...state.config, ...(parsed.config || {}) };
+                    state.student = { ...state.student, ...(parsed.student || {}) };
+                    state.selected10 = Array.isArray(parsed.selected10) ? parsed.selected10 : [];
+                    state.tournament = parsed.tournament || { round: 0, pairs: [], winners15: [] };
+                    state.offlineAuction = parsed.offlineAuction || { activeIndex: 0, items: [] };
+                    state.essays = { ...state.essays, ...(parsed.essays || {}) };
+                    state.lastSubmittedAt = parsed.lastSubmittedAt || '';
+                }
+            } catch (e) {
+                console.warn("Local load skipped:", e);
+            }
+        }
+
+        function saveLocalState() {
+            try {
+                const toSave = {
+                    config: state.config,
+                    student: state.student,
+                    selected10: state.selected10,
+                    tournament: state.tournament,
+                    offlineAuction: state.offlineAuction,
+                    essays: state.essays,
+                    lastSubmittedAt: state.lastSubmittedAt
+                };
+                localStorage.setItem('value_auction_hybrid_v1', JSON.stringify(toSave));
+            } catch (e) {
+                console.warn("Local save skipped:", e);
+            }
+        }
+
+        function parseUrlQueryConfig() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const encodedCfg = params.get('cfg');
+                if (encodedCfg) {
+                    const decoded = JSON.parse(decodeURIComponent(atob(encodedCfg)));
+                    if (decoded.roomCode) state.config.roomCode = decoded.roomCode;
+                    if (decoded.firebaseConfigStr) state.config.firebaseConfigStr = decoded.firebaseConfigStr;
+                    if (decoded.gasUrl) state.config.gasUrl = decoded.gasUrl;
+                    saveLocalState();
+                    showToast(`수업 방 [${state.config.roomCode}] 연동 설정이 자동으로 적용되었습니다!`, "success");
+                }
+            } catch (e) {}
+        }
+
+        function initInputListeners() {
+            const roomInput = document.getElementById('stu-room-input');
+            const idInput = document.getElementById('stu-id-input');
+            const nameInput = document.getElementById('stu-name-input');
+
+            if (roomInput) roomInput.value = state.config.roomCode || 'CLASS1';
+            if (idInput) {
+                idInput.value = state.student.id || '';
+                idInput.addEventListener('input', (e) => {
+                    state.student.id = e.target.value.trim();
+                    saveLocalState();
+                });
+            }
+            if (nameInput) {
+                nameInput.value = state.student.name || '';
+                nameInput.addEventListener('input', (e) => {
+                    state.student.name = e.target.value.trim();
+                    saveLocalState();
+                });
+            }
+
+            [1, 2, 3].forEach(num => {
+                const el = document.getElementById(`essay-input-${num}`);
+                if (el) {
+                    el.value = state.essays[num] || '';
+                    updateEssayCharCounters(num);
+                }
+            });
+        }
+
+        function onRoomCodeChange(val) {
+            const clean = (val || 'CLASS1').trim().toUpperCase().replace(/[^A-Z0-9가-힣_-]/g, '');
+            state.config.roomCode = clean || 'CLASS1';
+            const roomInput = document.getElementById('stu-room-input');
+            if (roomInput) roomInput.value = state.config.roomCode;
+            saveLocalState();
+            if (state.firebaseConnected) {
+                attachFirebaseRoomListeners();
+            }
+            showToast(`수업 방 코드가 [${state.config.roomCode}](으)로 변경되었습니다.`, "info");
+        }
+
+        // =========================================================================
+        // 4. FIREBASE REALTIME DATABASE ENGINE
+        // =========================================================================
+        function parseFirebaseConfigObject(rawStr) {
+            if (!rawStr || !rawStr.trim()) return null;
+            try {
+                return JSON.parse(rawStr);
+            } catch (_) {
+                try {
+                    const match = rawStr.match(/\{[\s\S]*\}/);
+                    if (!match) return null;
+                    const jsonified = match[0]
+                        .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":')
+                        .replace(/'/g, '"')
+                        .replace(/,\s*}/g, '}');
+                    return JSON.parse(jsonified);
+                } catch (e) {
+                    return null;
+                }
+            }
+        }
+
+        function initFirebaseEngine() {
+            const cfgObj = parseFirebaseConfigObject(state.config.firebaseConfigStr);
+            if (!cfgObj || !cfgObj.databaseURL || !cfgObj.apiKey) {
+                state.firebaseConnected = false;
+                db = null;
+                updateConnectionBadges();
+                return false;
+            }
+
+            try {
+                if (typeof firebase === 'undefined') {
+                    throw new Error("Firebase SDK 미로드");
+                }
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(cfgObj);
+                } else {
+                    firebase.app().delete().then(() => {
+                        firebase.initializeApp(cfgObj);
+                        db = firebase.database();
+                        state.firebaseConnected = true;
+                        updateConnectionBadges();
+                        attachFirebaseRoomListeners();
+                    });
+                    return true;
+                }
+                db = firebase.database();
+                state.firebaseConnected = true;
+                updateConnectionBadges();
+                attachFirebaseRoomListeners();
+                return true;
+            } catch (err) {
+                state.firebaseConnected = false;
+                db = null;
+                updateConnectionBadges();
+                return false;
+            }
+        }
+
+        function attachFirebaseRoomListeners() {
+            if (!db || !state.firebaseConnected) return;
+            const room = state.config.roomCode || 'CLASS1';
+            const roomRef = db.ref(`rooms/${room}`);
+            roomRef.off();
+
+            roomRef.on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                state.liveRoom.votes = data.votes || {};
+                state.liveRoom.confirmed10 = data.confirmed10 || [];
+                state.liveRoom.auction = data.auction || { activeIndex: 0, status: 'waiting', items: {} };
+                state.liveRoom.submissions = data.submissions || {};
+
+                updateBudgetHeader();
+                if (state.role === 'student' && state.studentStep === 2) {
+                    renderStudentAuctionStage();
+                } else if (state.role === 'teacher') {
+                    renderTeacherDashboard();
+                }
+            }, () => {
+                showToast("Firebase 실시간 읽기 권한 오류: 데이터베이스 규칙을 테스트 모드로 확인하세요.", "warning");
+            });
+        }
+
+        function updateConnectionBadges() {
+            const pill = document.getElementById('connection-status-pill');
+            const fbBadge = document.getElementById('fb-test-badge');
+            const gasBadge = document.getElementById('gas-test-badge');
+            const hasGas = state.config.gasUrl && state.config.gasUrl.startsWith('https://script.google.com/');
+
+            if (pill) {
+                if (state.firebaseConnected && hasGas) {
+                    pill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200 flex items-center gap-1.5";
+                    pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-purple-500 animate-ping"></span> 실시간 라이브 + 구글시트 연동됨 ♥`;
+                } else if (state.firebaseConnected) {
+                    pill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pinkrose-100 text-pinkrose-800 border border-pinkrose-200 flex items-center gap-1.5";
+                    pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-pinkrose-500 animate-pulse"></span> Firebase 실시간 연결됨 ♥`;
+                } else if (hasGas) {
+                    pill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200 flex items-center gap-1.5";
+                    pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-purple-500"></span> 구글시트 제출 연동됨 ♥`;
+                } else {
+                    pill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pinkrose-100 text-pinkrose-800 border border-pinkrose-200 flex items-center gap-1.5";
+                    pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-pinkrose-500"></span> 오프라인 체험 모드`;
+                }
+            }
+
+            if (fbBadge) {
+                fbBadge.innerText = state.firebaseConnected ? "연결 성공" : "미연결";
+                fbBadge.className = state.firebaseConnected
+                    ? "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800"
+                    : "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600";
+            }
+            if (gasBadge) {
+                gasBadge.innerText = hasGas ? "URL 설정됨" : "미설정";
+                gasBadge.className = hasGas
+                    ? "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800"
+                    : "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600";
+            }
+        }
+
+        // =========================================================================
+        // 5. SETTINGS & GUIDE MODALS
+        // =========================================================================
+        function openSettingsModal() {
+            const r = document.getElementById('cfg-room-code');
+            const p = document.getElementById('cfg-teacher-pin');
+            const f = document.getElementById('cfg-firebase-json');
+            const g = document.getElementById('cfg-gas-url');
+            if (r) r.value = state.config.roomCode || 'CLASS1';
+            if (p) p.value = state.config.teacherPin || '1234';
+            if (f) f.value = state.config.firebaseConfigStr || '';
+            if (g) g.value = state.config.gasUrl || '';
+            updateConnectionBadges();
+            document.getElementById('settings-modal')?.classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal')?.classList.add('hidden');
+        }
+
+        function saveCloudSettings() {
+            const room = (document.getElementById('cfg-room-code')?.value || 'CLASS1').trim().toUpperCase();
+            const pin = (document.getElementById('cfg-teacher-pin')?.value || '1234').trim();
+            const fbStr = (document.getElementById('cfg-firebase-json')?.value || '').trim();
+            const gasUrl = (document.getElementById('cfg-gas-url')?.value || '').trim();
+
+            state.config = {
+                roomCode: room || 'CLASS1',
+                teacherPin: pin || '1234',
+                firebaseConfigStr: fbStr,
+                gasUrl: gasUrl
+            };
+            const stuRoom = document.getElementById('stu-room-input');
+            if (stuRoom) stuRoom.value = state.config.roomCode;
+            saveLocalState();
+
+            const fbOk = initFirebaseEngine();
+            updateConnectionBadges();
+            closeSettingsModal();
+
+            if (fbOk) {
+                showToast("연동 설정이 저장되었으며 Firebase 실시간 연결에 성공했습니다!", "success");
+            } else if (gasUrl) {
+                showToast("구글 시트 연동 URL이 저장되었습니다!", "success");
+            } else {
+                showToast("설정이 저장되었습니다. (현재 오프라인 체험 모드)", "info");
+            }
+            renderAll();
+        }
+
+        function clearCloudSettings() {
+            state.config.firebaseConfigStr = '';
+            state.config.gasUrl = '';
+            state.firebaseConnected = false;
+            db = null;
+            saveLocalState();
+            updateConnectionBadges();
+            const f = document.getElementById('cfg-firebase-json');
+            const g = document.getElementById('cfg-gas-url');
+            if (f) f.value = '';
+            if (g) g.value = '';
+            showToast("클라우드 연동 설정이 초기화되었습니다.", "info");
+        }
+
+        function copyStudentAutoLink() {
+            saveCloudSettings();
+            const payload = {
+                roomCode: state.config.roomCode,
+                firebaseConfigStr: state.config.firebaseConfigStr,
+                gasUrl: state.config.gasUrl
+            };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const baseUrl = window.location.href.split('?')[0];
+            copyTextFallback(`${baseUrl}?cfg=${encoded}`, "학생 배포용 자동설정 링크가 클립보드에 복사되었습니다!");
+        }
+
+        function openGuideModal() {
+            document.getElementById('guide-modal')?.classList.remove('hidden');
+        }
+
+        function closeGuideModal() {
+            document.getElementById('guide-modal')?.classList.add('hidden');
+        }
+
+        function copyGasCode() {
+            const code = document.getElementById('gas-source-code')?.innerText || '';
+            copyTextFallback(code, "Google Apps Script 코드가 클립보드에 복사되었습니다!");
+        }
+
+        function copyTextFallback(text, successMsg) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg, "success");
+            } catch (e) {
+                showToast("복사에 실패했습니다. 직접 드래그하여 복사해 주세요.", "warning");
+            }
+            document.body.removeChild(temp);
+        }
+
+        // =========================================================================
+        // 6. ROLE & STEP NAVIGATION (UNRESTRICTED AT ANY TIME)
+        // =========================================================================
+        function requestTeacherMode() {
+            if (state.role === 'teacher') return;
+            showPinModal("교사 통제실 입장", "교사 전용 통제실에 접근하려면 PIN 번호를 입력하세요.", (enteredPin) => {
+                if (enteredPin === state.config.teacherPin) {
+                    switchRole('teacher');
+                    showToast("교사 통제실에 입장했습니다 ♥", "success");
+                } else {
+                    showToast("PIN 번호가 일치하지 않습니다.", "warning");
+                }
+            });
+        }
+
+        function switchRole(role) {
+            state.role = role;
+            const stuBtn = document.getElementById('role-student-btn');
+            const teaBtn = document.getElementById('role-teacher-btn');
+            const stuView = document.getElementById('student-mode-view');
+            const teaView = document.getElementById('teacher-mode-view');
+            const subHeader = document.getElementById('student-sub-header');
+
+            if (role === 'student') {
+                if (stuBtn) stuBtn.className = "px-3 py-1.5 rounded-xl font-extrabold pastel-hero-gradient text-white transition";
+                if (teaBtn) teaBtn.className = "px-3 py-1.5 rounded-xl font-bold text-slate-600 hover:text-pinkrose-800 transition";
+                stuView?.classList.remove('hidden');
+                teaView?.classList.add('hidden');
+                subHeader?.classList.remove('hidden');
+                renderAll();
+            } else {
+                if (teaBtn) teaBtn.className = "px-3 py-1.5 rounded-xl font-extrabold pastel-hero-gradient text-white transition";
+                if (stuBtn) stuBtn.className = "px-3 py-1.5 rounded-xl font-bold text-slate-600 hover:text-pinkrose-800 transition";
+                teaView?.classList.remove('hidden');
+                stuView?.classList.add('hidden');
+                subHeader?.classList.add('hidden');
+                renderTeacherDashboard();
+            }
+        }
+
+        function goStudentStep(step) {
+            state.studentStep = step;
+
+            [1, 2, 3, 4].forEach(n => {
+                const sec = document.getElementById(`student-step-${n}`);
+                const nav = document.getElementById(`nav-step-${n}`);
+                if (n === step) {
+                    sec?.classList.remove('hidden');
+                    if (nav) nav.className = "flex-1 lg:flex-none whitespace-nowrap px-3.5 py-1.5 rounded-xl font-extrabold pastel-hero-gradient text-white transition shadow-2xs";
+                } else {
+                    sec?.classList.add('hidden');
+                    if (nav) nav.className = "flex-1 lg:flex-none whitespace-nowrap px-3.5 py-1.5 rounded-xl font-bold bg-white/80 text-slate-600 border border-pinkrose-200 hover:bg-pinkrose-50 transition";
+                }
+            });
+
+            if (step === 2) {
+                ensureOfflineAuctionInitialized();
+                renderStudentAuctionStage();
+            } else if (step === 3) {
+                renderStep3EssaySummary();
+            } else if (step === 4) {
+                renderA4Worksheet();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderAll() {
+            updateBudgetHeader();
+            renderStep1UI();
+            if (state.studentStep === 2) renderStudentAuctionStage();
+            if (state.studentStep === 3) renderStep3EssaySummary();
+            if (state.studentStep === 4) renderA4Worksheet();
+        }
+
+        // =========================================================================
+        // 7. STEP 1: BALANCE GAME TOURNAMENT & 30 CHECKLIST
+        // =========================================================================
+        function setStep1SubMode(mode) {
+            state.step1SubMode = mode;
+            const btnT = document.getElementById('btn-sub-tourney');
+            const btnL = document.getElementById('btn-sub-list');
+            const boxT = document.getElementById('submode-tournament');
+            const boxL = document.getElementById('submode-checklist');
+
+            if (mode === 'tournament') {
+                if (btnT) btnT.className = "px-3.5 py-2 rounded-xl font-extrabold pastel-hero-gradient text-white shadow-sm transition";
+                if (btnL) btnL.className = "px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-900 transition";
+                boxT?.classList.remove('hidden');
+                boxL?.classList.add('hidden');
+            } else {
+                if (btnL) btnL.className = "px-3.5 py-2 rounded-xl font-extrabold pastel-hero-gradient text-white shadow-sm transition";
+                if (btnT) btnT.className = "px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-900 transition";
+                boxL?.classList.remove('hidden');
+                boxT?.classList.add('hidden');
+                renderFull30Checklist();
+            }
+        }
+
+        function initTournament() {
+            const shuffled = [...CONDITIONS_30].sort(() => Math.random() - 0.5);
+            const pairs = [];
+            for (let i = 0; i < 30; i += 2) {
+                pairs.push([shuffled[i], shuffled[i + 1]]);
+            }
+            state.tournament = {
+                round: 0,
+                pairs: pairs,
+                winners15: []
+            };
+            saveLocalState();
+        }
+
+        function resetTournament() {
+            initTournament();
+            renderStep1UI();
+            showToast("밸런스 토너먼트가 처음부터 재시작되었습니다 ♥", "info");
+        }
+
+        function renderStep1UI() {
+            const { round, pairs } = state.tournament;
+            const matchBox = document.getElementById('tourney-match-box');
+            const win15Box = document.getElementById('tourney-15-winners-box');
+
+            if (round < 15 && pairs && pairs[round]) {
+                matchBox?.classList.remove('hidden');
+                win15Box?.classList.add('hidden');
+
+                setTextSafe('t-round-curr', round + 1);
+                const pct = Math.round(((round + 1) / 15) * 100);
+                const bar = document.getElementById('t-progress-bar');
+                if (bar) bar.style.width = `${pct}%`;
+
+                const [left, right] = pairs[round];
+                setTextSafe('t-left-cat', left.cat);
+                setTextSafe('t-left-text', left.text);
+                setTextSafe('t-right-cat', right.cat);
+                setTextSafe('t-right-text', right.text);
+            } else {
+                matchBox?.classList.add('hidden');
+                win15Box?.classList.remove('hidden');
+                render15WinnersGrid();
+            }
+
+            renderFull30Checklist();
+            renderSelected10Chips();
+        }
+
+        function pickTournamentCard(sideIndex) {
+            const { round, pairs } = state.tournament;
+            if (round >= 15 || !pairs[round]) return;
+
+            const chosen = pairs[round][sideIndex];
+            state.tournament.winners15.push(chosen);
+            state.tournament.round += 1;
+
+            if (state.tournament.round === 15) {
+                showToast("15라운드 완료! 15개 후보 중 최종 10개를 선택하세요 ♥", "success");
+            }
+            saveLocalState();
+            renderStep1UI();
+        }
+
+        function render15WinnersGrid() {
+            const grid = document.getElementById('t-15-winners-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            setTextSafe('t-winners-picked-count', state.selected10.length);
+
+            (state.tournament.winners15 || []).forEach((item, idx) => {
+                const isPicked = state.selected10.some(s => s.id === item.id);
+                const card = document.createElement('button');
+                card.type = "button";
+                card.onclick = () => toggleConditionInTop10(item);
+                card.className = `p-4 rounded-2xl border-2 text-left transition flex flex-col justify-between ${
+                    isPicked
+                        ? 'pastel-soft-panel border-pinkrose-500 shadow-sm'
+                        : 'bg-white border-pinkrose-100 hover:border-pinkrose-300'
+                }`;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-bold text-pinkrose-800 bg-pinkrose-100 px-2.5 py-0.5 rounded-full">${item.cat}</span>
+                            <span class="w-5 h-5 rounded-full text-xs font-black flex items-center justify-center ${isPicked ? 'pastel-hero-gradient text-white' : 'bg-pinkrose-50 text-slate-400'}">
+                                ${isPicked ? '<i class="fa-solid fa-heart text-[10px]"></i>' : idx + 1}
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm font-bold text-pinkrose-950 leading-snug">${item.text}</p>
+                    </div>
+                    <span class="text-[11px] font-bold mt-3 ${isPicked ? 'text-pinkrose-700' : 'text-slate-400'}">
+                        ${isPicked ? '♥ 최종 10개에 포함됨' : '클릭하여 선택'}
+                    </span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderFull30Checklist() {
+            const container = document.getElementById('full-30-categories-container');
+            if (!container) return;
+            container.innerHTML = '';
+            setTextSafe('checklist-count-badge', state.selected10.length);
+
+            const categories = ["성격/가치관", "경제/직업", "외모/건강", "가정/육아", "취미/라이프스타일", "소통/신뢰"];
+            categories.forEach(cat => {
+                const items = CONDITIONS_30.filter(c => c.cat === cat);
+                const box = document.createElement('div');
+                box.className = "bg-white/95 p-4 rounded-3xl border-2 border-pinkrose-200 shadow-2xs space-y-2.5";
+                let html = `<h4 class="text-xs font-black text-pinkrose-950 flex items-center gap-1.5"><span class="text-pinkrose-500">♥</span>${cat}</h4><div class="space-y-1.5">`;
+                items.forEach(item => {
+                    const checked = state.selected10.some(s => s.id === item.id);
+                    html += `
+                        <label class="flex items-start gap-2.5 p-2.5 rounded-2xl border cursor-pointer transition ${checked ? 'pastel-soft-panel border-pinkrose-400' : 'bg-slate-50/70 border-pinkrose-100 hover:bg-pinkrose-50/70'}">
+                            <input type="checkbox" onchange="toggleConditionById(${item.id})" ${checked ? 'checked' : ''} class="mt-0.5 w-4 h-4 accent-[#D63F7C] rounded">
+                            <span class="text-xs font-semibold text-pinkrose-950 leading-snug">${item.text}</span>
+                        </label>
+                    `;
+                });
+                html += `</div>`;
+                box.innerHTML = html;
+                container.appendChild(box);
+            });
+        }
+
+        function toggleConditionById(id) {
+            const item = CONDITIONS_30.find(c => c.id === id);
+            if (item) toggleConditionInTop10(item);
+        }
+
+        function toggleConditionInTop10(item) {
+            const idx = state.selected10.findIndex(s => s.id === item.id);
+            if (idx > -1) {
+                state.selected10.splice(idx, 1);
+            } else {
+                if (state.selected10.length >= 10) {
+                    showToast("최대 10개까지만 선택할 수 있습니다. 기존 항목을 해제한 뒤 선택하세요.", "warning");
+                    renderStep1UI();
+                    return;
+                }
+                state.selected10.push(item);
+            }
+            saveLocalState();
+            renderStep1UI();
+        }
+
+        function renderSelected10Chips() {
+            const list = document.getElementById('selected-10-chip-list');
+            const pill = document.getElementById('step1-status-pill');
+            if (!list) return;
+            const cnt = state.selected10.length;
+
+            list.innerHTML = '';
+            if (cnt === 0) {
+                list.innerHTML = `<span class="text-xs text-slate-400 self-center mx-auto">아직 선택된 조건이 없습니다. 위에서 조건을 골라주세요 ♥</span>`;
+            } else {
+                state.selected10.forEach((item, idx) => {
+                    const chip = document.createElement('div');
+                    chip.className = "bg-white border border-pinkrose-300 text-pinkrose-900 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-2xs";
+                    chip.innerHTML = `
+                        <span class="font-black text-pinkrose-600">${idx + 1}.</span>
+                        <span class="max-w-[210px] truncate font-medium">${item.text}</span>
+                        <button type="button" onclick="toggleConditionById(${item.id})" class="text-pinkrose-400 hover:text-rose-500 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                    list.appendChild(chip);
+                });
+            }
+
+            if (pill) {
+                pill.innerText = `${cnt} / 10개 선택됨`;
+                pill.className = cnt === 10
+                    ? "text-xs font-black px-3 py-1 rounded-full pastel-hero-gradient text-white"
+                    : "text-xs font-black px-3 py-1 rounded-full bg-white text-pinkrose-700 border border-pinkrose-200";
+            }
+        }
+
+        function submitStep1AndProceed() {
+            if (state.selected10.length === 0) {
+                showToast("조건을 고르지 않은 상태로 경매장으로 이동합니다 ♥", "info");
+                goStudentStep(2);
+                return;
+            }
+
+            if (state.firebaseConnected && db && state.student.id && state.student.name) {
+                const room = state.config.roomCode || 'CLASS1';
+                const safeId = sanitizeFirebaseKey(state.student.id);
+                db.ref(`rooms/${room}/votes/${safeId}`).set({
+                    studentId: state.student.id,
+                    studentName: state.student.name,
+                    items: state.selected10.map(i => i.id),
+                    updatedAt: Date.now()
+                }).then(() => {
+                    showToast("학급 투표가 실시간으로 전송되었습니다! 경매장으로 이동합니다 ♥", "success");
+                }).catch(() => {});
+            } else {
+                showToast(`${state.selected10.length}개 조건이 저장되었습니다! 경매장으로 이동합니다 ♥`, "success");
+            }
+
+            goStudentStep(2);
+        }
+
+        // =========================================================================
+        // 8. STEP 2: 1,000,000 KRW AUCTION
+        // =========================================================================
+        function ensureOfflineAuctionInitialized() {
+            if (state.selected10.length > 0 && state.offlineAuction.items.length !== state.selected10.length) {
+                const prevMap = new Map((state.offlineAuction.items || []).map(it => [it.cond?.id, it]));
+                state.offlineAuction = {
+                    activeIndex: Math.min(state.offlineAuction.activeIndex || 0, state.selected10.length - 1),
+                    items: state.selected10.map(cond => prevMap.get(cond.id) || {
+                        cond: cond,
+                        highestBid: 0,
+                        highestBidder: '',
+                        isMine: false,
+                        status: 'active'
+                    })
+                };
+                saveLocalState();
+            } else if (state.selected10.length === 0) {
+                state.offlineAuction = { activeIndex: 0, items: [] };
+            }
+        }
+
+        function isLiveTeacherAuctionActive() {
+            return state.firebaseConnected && Array.isArray(state.liveRoom.confirmed10) && state.liveRoom.confirmed10.length === 10;
+        }
+
+        function calculateRemainingBudget() {
+            const INITIAL_BUDGET = 1000000;
+            let spent = 0;
+
+            if (isLiveTeacherAuctionActive()) {
+                const itemsObj = state.liveRoom.auction.items || {};
+                const myId = sanitizeFirebaseKey(state.student.id);
+                Object.values(itemsObj).forEach(item => {
+                    if (item && item.status === 'sold' && item.highestBidderId === myId) {
+                        spent += Number(item.highestBid || 0);
+                    }
+                });
+            } else {
+                (state.offlineAuction.items || []).forEach(item => {
+                    if (item.isMine && item.highestBid > 0) {
+                        spent += Number(item.highestBid);
+                    }
+                });
+            }
+            return Math.max(0, INITIAL_BUDGET - spent);
+        }
+
+        function updateBudgetHeader() {
+            const rem = calculateRemainingBudget();
+            const formatted = rem.toLocaleString() + '원';
+            setTextSafe('header-remaining-budget', formatted);
+            setTextSafe('auc-available-cash', formatted);
+        }
+
+        function renderStudentAuctionStage() {
+            updateBudgetHeader();
+            const isLive = isLiveTeacherAuctionActive();
+            const badge = document.getElementById('auc-live-badge');
+            const desc = document.getElementById('auc-mode-desc');
+            const offlineFooter = document.getElementById('offline-sim-footer');
+            const bidBtn = document.getElementById('btn-place-bid');
+            const statusBadge = document.getElementById('stage-status-badge');
+
+            if (isLive) {
+                if (badge) {
+                    badge.className = "inline-flex items-center gap-1.5 bg-purple-100 text-purple-800 text-xs font-extrabold px-3 py-1 rounded-full mb-1";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-purple-600 animate-ping"></span> 학급 실시간 라이브 경매 연결됨 ♥`;
+                }
+                if (desc) desc.innerText = "선생님이 진행하는 실시간 경매 화면과 자동 동기화됩니다. 낙찰 확정된 품목 금액만큼 예산에서 차감됩니다.";
+                offlineFooter?.classList.add('hidden');
+
+                const auc = state.liveRoom.auction || {};
+                const idx = Number(auc.activeIndex || 0);
+                const confirmedList = state.liveRoom.confirmed10;
+                const currentItemData = (auc.items && auc.items[idx]) || {
+                    cat: confirmedList[idx]?.cat || '',
+                    text: confirmedList[idx]?.text || '품목 대기 중',
+                    highestBid: 0,
+                    highestBidderName: '',
+                    status: auc.status || 'waiting'
+                };
+
+                setTextSafe('stage-item-num', idx + 1);
+                setTextSafe('stage-item-total', confirmedList.length);
+                setTextSafe('stage-item-cat', currentItemData.cat);
+                setTextSafe('stage-item-title', currentItemData.text);
+                setTextSafe('stage-highest-price', Number(currentItemData.highestBid || 0).toLocaleString() + '원');
+
+                const bidderEl = document.getElementById('stage-highest-bidder');
+                if (bidderEl) {
+                    bidderEl.innerHTML = currentItemData.highestBidderName
+                        ? `<i class="fa-solid fa-heart text-pinkrose-500"></i> ${currentItemData.highestBidderName}`
+                        : `<i class="fa-solid fa-heart text-pinkrose-300"></i> 입찰자 없음`;
+                }
+
+                if (statusBadge && bidBtn) {
+                    if (currentItemData.status === 'active') {
+                        statusBadge.innerText = "♥ 입찰 진행 중 (호가 가능)";
+                        statusBadge.className = "text-xs font-extrabold px-3 py-1 rounded-full pastel-hero-gradient text-white animate-pulse";
+                        bidBtn.disabled = false;
+                        bidBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else if (currentItemData.status === 'sold') {
+                        statusBadge.innerText = "🔨 낙찰 확정 완료!";
+                        statusBadge.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-pinkrose-900 text-white";
+                        bidBtn.disabled = true;
+                        bidBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        statusBadge.innerText = "선생님 경매 시작 대기 중";
+                        statusBadge.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-white text-slate-600 border border-pinkrose-200";
+                        bidBtn.disabled = true;
+                        bidBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+
+                renderAuctionOverviewGrid(confirmedList, auc.items || {}, idx, true);
+                renderAuctionSideWidgets(confirmedList, auc.items || {}, true);
+            } else {
+                ensureOfflineAuctionInitialized();
+                if (badge) {
+                    badge.className = "inline-flex items-center gap-1.5 bg-pinkrose-100 text-pinkrose-800 text-xs font-extrabold px-3 py-1 rounded-full mb-1";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-pinkrose-500"></span> 모의 경매 체험 모드`;
+                }
+                if (desc) desc.innerText = "연동된 실시간 경매가 없어 개인 모의 경매 모드로 실행 중입니다. 자유롭게 입찰해 보세요.";
+                offlineFooter?.classList.remove('hidden');
+
+                const totalItems = state.offlineAuction.items.length;
+                setTextSafe('stage-item-total', totalItems || 10);
+
+                if (totalItems === 0) {
+                    setTextSafe('stage-item-num', '-');
+                    setTextSafe('stage-item-cat', '미선정');
+                    setTextSafe('stage-item-title', '1단계에서 조건을 선택하면 이곳에 경매 품목이 표시됩니다 ♥');
+                    setTextSafe('stage-highest-price', '0원');
+                    const bidderEl = document.getElementById('stage-highest-bidder');
+                    if (bidderEl) bidderEl.innerHTML = `<i class="fa-solid fa-heart text-pinkrose-300"></i> 입찰자 없음`;
+                    if (bidBtn) {
+                        bidBtn.disabled = true;
+                        bidBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                    renderAuctionOverviewGrid([], [], 0, false);
+                    renderAuctionSideWidgets([], [], false);
+                    return;
+                }
+
+                const idx = Math.min(state.offlineAuction.activeIndex || 0, totalItems - 1);
+                const item = state.offlineAuction.items[idx];
+
+                setTextSafe('stage-item-num', idx + 1);
+                setTextSafe('stage-item-cat', item.cond.cat);
+                setTextSafe('stage-item-title', item.cond.text);
+                setTextSafe('stage-highest-price', item.highestBid.toLocaleString() + '원');
+
+                const bidderEl = document.getElementById('stage-highest-bidder');
+                if (bidderEl) {
+                    bidderEl.innerHTML = item.highestBidder
+                        ? `<i class="fa-solid fa-heart text-pinkrose-500"></i> ${item.highestBidder} ${item.isMine ? '(나)' : ''}`
+                        : `<i class="fa-solid fa-heart text-pinkrose-300"></i> 입찰자 없음`;
+                }
+
+                if (statusBadge && bidBtn) {
+                    if (item.status === 'sold') {
+                        statusBadge.innerText = "🔨 낙찰 확정됨";
+                        statusBadge.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-pinkrose-900 text-white";
+                        bidBtn.disabled = true;
+                        bidBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        statusBadge.innerText = "♥ 입찰 진행 중";
+                        statusBadge.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-white text-pinkrose-700 border border-pinkrose-200";
+                        bidBtn.disabled = false;
+                        bidBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+
+                renderAuctionOverviewGrid(state.selected10, state.offlineAuction.items, idx, false);
+                renderAuctionSideWidgets(state.selected10, state.offlineAuction.items, false);
+            }
+        }
+
+        function quickAddBid(addAmount) {
+            const input = document.getElementById('bid-amount-input');
+            if (!input) return;
+            const currentHighest = isLiveTeacherAuctionActive()
+                ? Number((state.liveRoom.auction.items?.[state.liveRoom.auction.activeIndex]?.highestBid) || 0)
+                : Number((state.offlineAuction.items[state.offlineAuction.activeIndex]?.highestBid) || 0);
+
+            const base = Math.max(Number(input.value) || 0, currentHighest);
+            input.value = base + addAmount;
+        }
+
+        function submitStudentBid() {
+            const input = document.getElementById('bid-amount-input');
+            if (!input) return;
+            const bidVal = parseInt(input.value, 10);
+            if (isNaN(bidVal) || bidVal <= 0) {
+                showToast("올바른 입찰 금액을 입력해 주세요.", "warning");
+                return;
+            }
+
+            const remainingCash = calculateRemainingBudget();
+
+            if (isLiveTeacherAuctionActive()) {
+                if (!state.student.id || !state.student.name) {
+                    showToast("실시간 학급 경매 입찰을 위해 상단에 학번과 이름을 입력해 주세요!", "warning");
+                    return;
+                }
+                const room = state.config.roomCode || 'CLASS1';
+                const idx = Number(state.liveRoom.auction.activeIndex || 0);
+                const itemState = state.liveRoom.auction.items?.[idx];
+
+                if (!itemState || itemState.status !== 'active') {
+                    showToast("현재 입찰이 진행 중인 품목이 아닙니다.", "warning");
+                    return;
+                }
+                if (bidVal <= Number(itemState.highestBid || 0)) {
+                    showToast(`현재 최고 입찰가(${Number(itemState.highestBid).toLocaleString()}원)보다 높은 금액을 입력하세요.`, "warning");
+                    return;
+                }
+                if (bidVal > remainingCash) {
+                    showToast(`잔여 예산(${remainingCash.toLocaleString()}원)을 초과하여 입찰할 수 없습니다!`, "warning");
+                    return;
+                }
+
+                const myId = sanitizeFirebaseKey(state.student.id);
+                const myLabel = `${state.student.id} ${state.student.name}`;
+                const itemRef = db.ref(`rooms/${room}/auction/items/${idx}`);
+
+                itemRef.transaction((currentData) => {
+                    if (!currentData || currentData.status !== 'active') return;
+                    if (bidVal <= Number(currentData.highestBid || 0)) return;
+                    currentData.highestBid = bidVal;
+                    currentData.highestBidderId = myId;
+                    currentData.highestBidderName = myLabel;
+                    currentData.updatedAt = Date.now();
+                    return currentData;
+                }, (error, committed) => {
+                    if (error) {
+                        showToast("입찰 전송 중 오류가 발생했습니다.", "warning");
+                    } else if (!committed) {
+                        showToast("다른 학생이 먼저 더 높은 금액을 입찰했습니다!", "warning");
+                    } else {
+                        input.value = '';
+                        appendBidFeed(`♥ [실시간 입찰] ${myLabel} → ${bidVal.toLocaleString()}원 입찰 성공!`);
+                        showToast(`${bidVal.toLocaleString()}원 입찰 완료!`, "success");
+                    }
+                });
+            } else {
+                const idx = state.offlineAuction.activeIndex;
+                const item = state.offlineAuction.items[idx];
+                if (!item || item.status === 'sold') return;
+
+                if (bidVal <= item.highestBid) {
+                    showToast(`현재 최고가(${item.highestBid.toLocaleString()}원)보다 높은 금액을 입력하세요.`, "warning");
+                    return;
+                }
+
+                const effectiveRemaining = item.isMine ? (remainingCash + item.highestBid) : remainingCash;
+                if (bidVal > effectiveRemaining) {
+                    showToast(`잔여 예산(${effectiveRemaining.toLocaleString()}원)을 초과할 수 없습니다!`, "warning");
+                    return;
+                }
+
+                const displayBidder = `${state.student.id || ''} ${state.student.name || '나'}`.trim();
+                item.highestBid = bidVal;
+                item.highestBidder = displayBidder;
+                item.isMine = true;
+                input.value = '';
+
+                appendBidFeed(`♥ [입찰] ${displayBidder} → ${bidVal.toLocaleString()}원 입찰!`);
+                showToast(`${bidVal.toLocaleString()}원 입찰했습니다.`, "success");
+                saveLocalState();
+                renderStudentAuctionStage();
+
+
+            }
+        }
+
+        function finishOfflineItem() {
+            const idx = state.offlineAuction.activeIndex;
+            const item = state.offlineAuction.items[idx];
+            if (!item) return;
+            item.status = 'sold';
+            appendBidFeed(`🔨 [낙찰 확정] #${idx + 1} 품목이 ${item.highestBid.toLocaleString()}원에 낙찰되었습니다.`);
+            if (idx < state.offlineAuction.items.length - 1) {
+                state.offlineAuction.activeIndex = idx + 1;
+            }
+            saveLocalState();
+            renderStudentAuctionStage();
+        }
+
+        function renderAuctionOverviewGrid(condList, itemsMap, activeIdx, isLive) {
+            const grid = document.getElementById('auction-10-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            condList.forEach((cond, i) => {
+                const itemData = itemsMap[i] || {};
+                const price = Number(itemData.highestBid || 0);
+                const isMine = isLive
+                    ? (itemData.status === 'sold' && itemData.highestBidderId === sanitizeFirebaseKey(state.student.id))
+                    : (itemData.isMine && itemData.status === 'sold');
+
+                const btn = document.createElement('button');
+                btn.type = "button";
+                if (!isLive) {
+                    btn.onclick = () => {
+                        state.offlineAuction.activeIndex = i;
+                        saveLocalState();
+                        renderStudentAuctionStage();
+                    };
+                }
+                btn.className = `p-2.5 rounded-2xl border text-left transition ${
+                    i === activeIdx
+                        ? 'pastel-soft-panel border-pinkrose-500 ring-2 ring-pinkrose-300 font-bold'
+                        : itemData.status === 'sold'
+                            ? 'bg-slate-100 border-pinkrose-200 text-slate-600'
+                            : 'bg-white border-pinkrose-100'
+                }`;
+                btn.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[11px] font-black text-pinkrose-800">#${i + 1}</span>
+                        ${isMine ? '<span class="text-[10px] pastel-hero-gradient text-white px-1.5 rounded-full font-bold">♥ 내낙찰</span>' : ''}
+                    </div>
+                    <p class="text-[11px] font-semibold text-pinkrose-950 truncate">${cond.text}</p>
+                    <p class="text-[11px] font-mono font-extrabold text-pinkrose-700 mt-1">${price > 0 ? price.toLocaleString() + '원' : '-'}</p>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderAuctionSideWidgets(condList, itemsMap, isLive) {
+            const myId = sanitizeFirebaseKey(state.student.id);
+            const normalized = condList.map((cond, i) => {
+                const d = itemsMap[i] || {};
+                const price = Number(d.highestBid || 0);
+                const status = d.status || 'waiting';
+                const isMine = isLive
+                    ? (status === 'sold' && d.highestBidderId === myId)
+                    : (Boolean(d.isMine) && status === 'sold');
+                const bidderName = isLive ? (d.highestBidderName || '') : (d.highestBidder || '');
+                return { idx: i, cond, price, status, isMine, bidderName };
+            });
+
+            const sorted = [...normalized].sort((a, b) => b.price - a.price);
+            const top1 = sorted[0];
+            const top1Box = document.getElementById('class-top1-card');
+            if (top1Box) {
+                if (top1 && top1.price > 0) {
+                    top1Box.innerHTML = `
+                        <p class="text-sm font-black text-pinkrose-950 leading-snug">${top1.cond.text}</p>
+                        <div class="flex justify-between items-center mt-2 text-xs font-bold text-pinkrose-800">
+                            <span class="font-mono text-sm font-black">${top1.price.toLocaleString()}원</span>
+                            <span>${top1.bidderName || '-'}</span>
+                        </div>
+                    `;
+                } else {
+                    top1Box.innerHTML = `<p class="text-xs text-slate-500">아직 입찰된 조건이 없습니다 ♥</p>`;
+                }
+            }
+
+            const myWon = normalized.filter(x => x.isMine);
+            setTextSafe('my-won-badge', `${myWon.length}개`);
+            const wonListEl = document.getElementById('my-won-list');
+            let spentSum = 0;
+
+            if (wonListEl) {
+                wonListEl.innerHTML = '';
+                if (myWon.length === 0) {
+                    wonListEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">낙찰 확정된 조건이 아직 없습니다 ♥</p>`;
+                } else {
+                    myWon.forEach(w => {
+                        spentSum += w.price;
+                        const div = document.createElement('div');
+                        div.className = "pastel-soft-panel border border-pinkrose-200 p-2.5 rounded-2xl text-xs space-y-1";
+                        div.innerHTML = `
+                            <div class="flex justify-between font-bold text-pinkrose-800">
+                                <span>♥ #${w.idx + 1} 조건</span>
+                                <span class="font-mono">${w.price.toLocaleString()}원</span>
+                            </div>
+                            <p class="text-pinkrose-950 font-medium">${w.cond.text}</p>
+                        `;
+                        wonListEl.appendChild(div);
+                    });
+                }
+            }
+            setTextSafe('my-total-spent', spentSum.toLocaleString() + '원');
+
+            const barsEl = document.getElementById('auction-ranking-bars');
+            if (barsEl) {
+                barsEl.innerHTML = '';
+                const maxVal = Math.max(top1?.price || 0, 100000);
+                sorted.forEach((item, rank) => {
+                    const widthPct = Math.max(4, Math.round((item.price / maxVal) * 100));
+                    const row = document.createElement('div');
+                    row.className = "space-y-1 text-xs";
+                    row.innerHTML = `
+                        <div class="flex justify-between font-semibold text-pinkrose-950">
+                            <span class="truncate max-w-[165px]">${rank + 1}위. ${item.cond.text}</span>
+                            <span class="font-mono font-bold text-pinkrose-700">${item.price.toLocaleString()}원</span>
+                        </div>
+                        <div class="w-full bg-pinkrose-100 h-2 rounded-full overflow-hidden">
+                            <div class="pastel-hero-gradient h-full rounded-full transition-all" style="width: ${widthPct}%"></div>
+                        </div>
+                    `;
+                    barsEl.appendChild(row);
+                });
+            }
+        }
+
+        function appendBidFeed(msg) {
+            const feed = document.getElementById('bid-history-feed');
+            if (!feed) return;
+            const p = document.createElement('p');
+            p.className = "text-pinkrose-800 font-medium";
+            p.innerText = msg;
+            feed.appendChild(p);
+            feed.scrollTop = feed.scrollHeight;
+        }
+
+        // =========================================================================
+        // 9. STEP 3: NARRATIVE REFLECTION ESSAY
+        // =========================================================================
+        function handleEssayInput(num) {
+            const el = document.getElementById(`essay-input-${num}`);
+            if (!el) return;
+            state.essays[num] = el.value;
+            updateEssayCharCounters(num);
+            saveLocalState();
+        }
+
+        function updateEssayCharCounters(num) {
+            const val = state.essays[num] || '';
+            setTextSafe(`char-inc-${num}`, val.length);
+            setTextSafe(`char-exc-${num}`, val.replace(/\s+/g, '').length);
+        }
+
+        function getNormalizedAuctionSummary() {
+            const isLive = isLiveTeacherAuctionActive();
+            const condList = isLive ? state.liveRoom.confirmed10 : state.selected10;
+            const itemsMap = isLive ? (state.liveRoom.auction.items || {}) : state.offlineAuction.items;
+            const myId = sanitizeFirebaseKey(state.student.id);
+
+            const rows = condList.map((cond, i) => {
+                const d = itemsMap[i] || {};
+                const price = Number(d.highestBid || 0);
+                const status = d.status || 'waiting';
+                const isMine = isLive
+                    ? (status === 'sold' && d.highestBidderId === myId)
+                    : (Boolean(d.isMine) && status === 'sold');
+                const bidderName = isLive ? (d.highestBidderName || '-') : (d.highestBidder || '-');
+                return { index: i + 1, cond, price, status, isMine, bidderName };
+            });
+
+            const sorted = [...rows].sort((a, b) => b.price - a.price);
+            const top1 = sorted[0] && sorted[0].price > 0 ? sorted[0] : null;
+            const myWon = rows.filter(r => r.isMine);
+            const totalSpent = myWon.reduce((acc, cur) => acc + cur.price, 0);
+
+            return { rows, top1, myWon, totalSpent, remaining: Math.max(0, 1000000 - totalSpent) };
+        }
+
+        function renderStep3EssaySummary() {
+            setTextSafe('essay-ref-chosen', state.selected10.map((c, i) => `${i + 1}.${c.text}`).join(' / ') || '아직 선택된 조건 없음');
+            ensureOfflineAuctionInitialized();
+            const summary = getNormalizedAuctionSummary();
+            setTextSafe('essay-ref-won', summary.myWon.length > 0
+                ? summary.myWon.map(w => `${w.cond.text}(${w.price.toLocaleString()}원)`).join(', ') + ` [총 ${summary.totalSpent.toLocaleString()}원]`
+                : '낙찰받은 조건 없음 (잔액 1,000,000원)');
+            setTextSafe('essay-ref-top1', summary.top1
+                ? `[${summary.top1.price.toLocaleString()}원] ${summary.top1.cond.text}`
+                : '경매 최고가 데이터 없음');
+        }
+
+        // =========================================================================
+        // 10. STEP 4: FINAL CLOUD SUBMISSION & ZERO-CORS 2D CANVAS PDF DOWNLOAD
+        // =========================================================================
+        function renderA4Worksheet() {
+            const now = new Date();
+            setTextSafe('pdf-date-display', `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`);
+            setTextSafe('pdf-room', state.config.roomCode || 'CLASS1');
+            setTextSafe('pdf-stuid', state.student.id || '(미입력)');
+            setTextSafe('pdf-stuname', state.student.name || '(미입력)');
+
+            ensureOfflineAuctionInitialized();
+            const summary = getNormalizedAuctionSummary();
+            setTextSafe('pdf-budget-summary', `${summary.totalSpent.toLocaleString()}원 / ${summary.remaining.toLocaleString()}원`);
+
+            // 1. Selected Conditions List
+            const chosenContainer = document.getElementById('pdf-chosen-10-list');
+            if (chosenContainer) {
+                chosenContainer.innerHTML = '';
+                if (state.selected10.length === 0) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = "col-span-full border border-dashed border-pinkrose-300 px-3 py-2.5 rounded-xl bg-pinkrose-50/40 text-center text-slate-500";
+                    emptyDiv.innerText = "아직 선정된 배우자 조건이 없습니다. (미완성 상태에서도 PDF 저장 가능 ♥)";
+                    chosenContainer.appendChild(emptyDiv);
+                } else {
+                    state.selected10.forEach((c, idx) => {
+                        const div = document.createElement('div');
+                        div.className = "border border-pinkrose-200 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#FFF7FA] to-[#F9F2FC] flex items-center gap-1.5";
+                        div.innerHTML = `<span class="font-black text-pinkrose-700">${idx + 1}.</span><span class="text-[10px] font-bold text-pinkrose-600">[${c.cat}]</span><span class="font-medium text-pinkrose-950 truncate">${c.text}</span>`;
+                        chosenContainer.appendChild(div);
+                    });
+                }
+            }
+
+            // 2. Auction Table
+            const tbody = document.getElementById('pdf-auction-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (summary.rows.length === 0) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td colspan="4" class="border border-pinkrose-200 p-3 text-center text-slate-400">경매 참여 내역이 없습니다.</td>`;
+                    tbody.appendChild(tr);
+                } else {
+                    summary.rows.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="border border-pinkrose-200 p-1.5 text-center font-bold">${r.index}</td>
+                            <td class="border border-pinkrose-200 p-1.5 font-medium">${r.cond.text}</td>
+                            <td class="border border-pinkrose-200 p-1.5 text-right font-mono font-bold">${r.price.toLocaleString()}원</td>
+                            <td class="border border-pinkrose-200 p-1.5 text-center font-bold ${r.isMine ? 'pastel-stage-gradient text-pinkrose-900' : 'text-slate-500'}">
+                                ${r.isMine ? '♥ 내 낙찰' : (r.price > 0 ? '타인 낙찰' : '진행 전/유찰')}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            // 3. Essays
+            setTextSafe('pdf-essay-1', state.essays[1] || ' ');
+            setTextSafe('pdf-essay-2', state.essays[2] || ' ');
+            setTextSafe('pdf-essay-3', state.essays[3] || ' ');
+
+            if (state.lastSubmittedAt) {
+                setTextSafe('final-submit-status-text', `♥ 최종 제출 완료 시각: ${state.lastSubmittedAt}`);
+            }
+        }
+
+        async function submitFinalToCloud() {
+            if (!state.student.id || !state.student.name) {
+                showToast("상단 입력란에 '학번'과 '이름'을 반드시 입력한 뒤 제출해 주세요!", "warning");
+                return;
+            }
+
+            const summary = getNormalizedAuctionSummary();
+            const payload = {
+                roomCode: state.config.roomCode || 'CLASS1',
+                studentId: state.student.id,
+                studentName: state.student.name,
+                selected10: state.selected10.map((c, i) => `${i + 1}.${c.text}`).join(' | '),
+                wonItems: summary.myWon.map(w => `${w.cond.text}(${w.price.toLocaleString()}원)`).join(', ') || '없음',
+                totalSpent: summary.totalSpent,
+                remainingBudget: summary.remaining,
+                essay1: state.essays[1] || '',
+                essay2: state.essays[2] || '',
+                essay3: state.essays[3] || '',
+                submittedAt: new Date().toLocaleString('ko-KR')
+            };
+
+            const btn = document.getElementById('btn-final-cloud-submit');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 제출 중...`;
+            }
+
+            let sentAny = false;
+
+            if (state.firebaseConnected && db) {
+                try {
+                    const safeId = sanitizeFirebaseKey(state.student.id);
+                    await db.ref(`rooms/${payload.roomCode}/submissions/${safeId}`).set(payload);
+                    sentAny = true;
+                } catch (e) {}
+            }
+
+            if (state.config.gasUrl && state.config.gasUrl.startsWith('https://script.google.com/')) {
+                try {
+                    await fetch(state.config.gasUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+                    sentAny = true;
+                } catch (e) {}
+            }
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> 선생님께 최종 제출 ♥`;
+            }
+
+            const timeStr = new Date().toLocaleTimeString('ko-KR');
+            state.lastSubmittedAt = timeStr;
+            saveLocalState();
+            setTextSafe('final-submit-status-text', `♥ 최종 제출 완료 (${timeStr})`);
+
+            if (sentAny) {
+                showToast("선생님께 활동지가 성공적으로 전송되었습니다! PDF도 저장해 보세요 ♥", "success");
+            } else {
+                showToast("오프라인 모드입니다. 우측 'A4 PDF 저장하기 ♥' 버튼을 눌러 파일로 저장하세요!", "info");
+            }
+        }
+
+        // Pure 2D Canvas Drawing Helpers (Zero-CORS, Zero external stylesheet dependency)
+        function drawRoundRect(ctx, x, y, w, h, r, fillStyle, strokeStyle, lineWidth = 1.5) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            if (fillStyle) {
+                ctx.fillStyle = fillStyle;
+                ctx.fill();
+            }
+            if (strokeStyle) {
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = strokeStyle;
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function wrapCanvasLines(ctx, text, maxWidth) {
+            const rawText = String(text || '').trim();
+            if (!rawText) return [];
+            const paragraphs = rawText.split(/\r?\n/);
+            const lines = [];
+            paragraphs.forEach(para => {
+                if (!para.trim()) {
+                    lines.push('');
+                    return;
+                }
+                let current = '';
+                for (let i = 0; i < para.length; i++) {
+                    const ch = para[i];
+                    const test = current + ch;
+                    if (ctx.measureText(test).width > maxWidth && current.length > 0) {
+                        lines.push(current);
+                        current = ch;
+                    } else {
+                        current = test;
+                    }
+                }
+                if (current) lines.push(current);
+            });
+            return lines;
+        }
+
+        function truncateCanvasText(ctx, text, maxWidth) {
+            let str = String(text || '');
+            if (ctx.measureText(str).width <= maxWidth) return str;
+            while (str.length > 1 && ctx.measureText(str + '…').width > maxWidth) {
+                str = str.slice(0, -1);
+            }
+            return str + '…';
+        }
+
+        function buildWorksheet2DCanvas() {
+            const W = 794;
+            const H = 1123;
+            const scale = 2; // High DPI crisp Korean text
+            const canvas = document.createElement('canvas');
+            canvas.width = W * scale;
+            canvas.height = H * scale;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(scale, scale);
+
+            const fontMain = '"Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif';
+
+            // 1. Pastel Background Gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+            bgGrad.addColorStop(0, '#FFF8FA');
+            bgGrad.addColorStop(0.5, '#FFEFF5');
+            bgGrad.addColorStop(1, '#F8EFFC');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Outer Card & Inner Dashed Frame
+            drawRoundRect(ctx, 20, 20, W - 40, H - 40, 20, '#FFFFFF', '#F7A8C8', 2.5);
+            ctx.save();
+            ctx.setLineDash([6, 5]);
+            drawRoundRect(ctx, 30, 30, W - 60, H - 60, 14, '#FFFFFF', '#D8B4F8', 1.8);
+            ctx.restore();
+
+            // 2. Title Header Banner
+            const bannerGrad = ctx.createLinearGradient(44, 42, W - 44, 102);
+            bannerGrad.addColorStop(0, '#FFE4EE');
+            bannerGrad.addColorStop(0.5, '#FAD7E8');
+            bannerGrad.addColorStop(1, '#EFE0FA');
+            drawRoundRect(ctx, 44, 42, W - 88, 60, 14, bannerGrad, '#F5B3CE', 1.2);
+
+            ctx.fillStyle = '#C93B76';
+            ctx.font = `bold 10.5px ${fontMain}`;
+            ctx.fillText('♥ 가치관 탐구 및 진로·가정 연계 활동지 ♥', 60, 62);
+
+            ctx.fillStyle = '#591634';
+            ctx.font = `900 19px ${fontMain}`;
+            ctx.fillText('♥ 두근두근 배우자 조건 가치 경매 활동지 ♥', 58, 88);
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+            drawRoundRect(ctx, W - 150, 56, 92, 30, 15, '#FFFFFF', '#F5B3CE', 1);
+            ctx.fillStyle = '#A6285C';
+            ctx.font = `bold 11px ${fontMain}`;
+            ctx.textAlign = 'center';
+            ctx.fillText(dateStr, W - 104, 75);
+            ctx.textAlign = 'left';
+
+            // 3. Student Info Bar
+            ensureOfflineAuctionInitialized();
+            const summary = getNormalizedAuctionSummary();
+            const infoY = 112;
+            const infoH = 30;
+            drawRoundRect(ctx, 44, infoY, W - 88, infoH, 8, '#FFF6F9', '#F5B3CE', 1);
+            ctx.fillStyle = '#6B1438';
+            ctx.font = `bold 11.5px ${fontMain}`;
+            const infoText = `♥ 수업코드: ${state.config.roomCode || 'CLASS1'}   |   학번: ${state.student.id || '(미입력)'}   |   성명: ${state.student.name || '(미입력)'}   |   지출: ${summary.totalSpent.toLocaleString()}원 / 잔액: ${summary.remaining.toLocaleString()}원`;
+            ctx.fillText(truncateCanvasText(ctx, infoText, W - 110), 56, infoY + 19);
+
+            // 4. Section 1: Selected Conditions (up to 10 in 2 columns)
+            let curY = 156;
+            const pillGrad1 = ctx.createLinearGradient(44, curY, 280, curY);
+            pillGrad1.addColorStop(0, '#F779A8');
+            pillGrad1.addColorStop(1, '#C58BF2');
+            drawRoundRect(ctx, 44, curY, 248, 24, 12, pillGrad1, null);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `bold 11.5px ${fontMain}`;
+            ctx.fillText('♥ 1. 내가 선정한 핵심 배우자 조건 10가지', 56, curY + 16);
+
+            curY += 32;
+            const colW = (W - 96) / 2;
+            for (let i = 0; i < 10; i++) {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const bx = 44 + col * (colW + 8);
+                const by = curY + row * 26;
+                drawRoundRect(ctx, bx, by, colW, 22, 6, '#FFF9FC', '#F6C8DC', 0.9);
+
+                const item = state.selected10[i];
+                ctx.fillStyle = '#C93B76';
+                ctx.font = `bold 10.5px ${fontMain}`;
+                ctx.fillText(`${i + 1}.`, bx + 8, by + 15);
+
+                ctx.fillStyle = item ? '#4A333E' : '#B89AA8';
+                ctx.font = `500 10.5px ${fontMain}`;
+                const label = item ? `[${item.cat}] ${item.text}` : '(미선택)';
+                ctx.fillText(truncateCanvasText(ctx, label, colW - 32), bx + 26, by + 15);
+            }
+
+            // 5. Section 2: Auction Results Table
+            curY += 5 * 26 + 10;
+            drawRoundRect(ctx, 44, curY, 258, 24, 12, pillGrad1, null);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `bold 11.5px ${fontMain}`;
+            ctx.fillText('♥ 2. 100만 원 가치 경매 참여 및 낙찰 결과', 56, curY + 16);
+
+            curY += 30;
+            // Table Header
+            drawRoundRect(ctx, 44, curY, W - 88, 22, 6, '#FFE6F0', '#F5B3CE', 1);
+            ctx.fillStyle = '#6B1438';
+            ctx.font = `bold 10.5px ${fontMain}`;
+            ctx.fillText('순번', 54, curY + 15);
+            ctx.fillText('경매 상장 조건', 95, curY + 15);
+            ctx.textAlign = 'right';
+            ctx.fillText('최종 낙찰가', W - 145, curY + 15);
+            ctx.textAlign = 'center';
+            ctx.fillText('낙찰 결과', W - 92, curY + 15);
+            ctx.textAlign = 'left';
+
+            curY += 24;
+            const totalRows = Math.max(summary.rows.length, 1);
+            const displayCount = Math.min(totalRows, 10);
+            for (let i = 0; i < displayCount; i++) {
+                const r = summary.rows[i];
+                const ry = curY + i * 21;
+                const rowBg = r && r.isMine ? '#FFF0F6' : '#FFFFFF';
+                drawRoundRect(ctx, 44, ry, W - 88, 19, 4, rowBg, '#F7D2E2', 0.8);
+
+                if (!r) {
+                    ctx.fillStyle = '#A88998';
+                    ctx.font = `500 10.5px ${fontMain}`;
+                    ctx.fillText('경매 참여 내역이 없습니다.', 56, ry + 13);
+                } else {
+                    ctx.fillStyle = '#6B1438';
+                    ctx.font = `bold 10px ${fontMain}`;
+                    ctx.fillText(`${r.index}`, 58, ry + 13);
+
+                    ctx.fillStyle = '#4A333E';
+                    ctx.font = `500 10.5px ${fontMain}`;
+                    ctx.fillText(truncateCanvasText(ctx, r.cond.text, 440), 95, ry + 13);
+
+                    ctx.textAlign = 'right';
+                    ctx.font = `bold 10.5px ${fontMain}`;
+                    ctx.fillStyle = '#8F1E4D';
+                    ctx.fillText(`${r.price.toLocaleString()}원`, W - 145, ry + 13);
+
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = r.isMine ? '#D63F7C' : '#8C6D7C';
+                    ctx.fillText(r.isMine ? '♥ 내 낙찰' : (r.price > 0 ? '타인 낙찰' : '진행 전'), W - 92, ry + 13);
+                    ctx.textAlign = 'left';
+                }
+            }
+
+            // 6. Section 3: 3 Narrative Reflection Essays
+            curY += displayCount * 21 + 10;
+            drawRoundRect(ctx, 44, curY, 226, 24, 12, pillGrad1, null);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `bold 11.5px ${fontMain}`;
+            ctx.fillText('♥ 3. 두근두근 서·논술형 가치관 성찰', 56, curY + 16);
+
+            curY += 30;
+            const essayPrompts = [
+                { num: 1, title: '♥ [문항 1] 가치 선택의 기준 (10가지 조건 선정 및 예산 배분의 핵심 기준)', text: state.essays[1] },
+                { num: 2, title: '♥ [문항 2] 경매 결과 분석 및 갈등 성찰 (학급 최고가 비교 및 가치관 차이 조율 방안)', text: state.essays[2] },
+                { num: 3, title: '♥ [문항 3] 미래의 나에게 적용 (좋은 배우자 조건을 바탕으로 내가 성장하고 싶은 다짐)', text: state.essays[3] }
+            ];
+
+            const footerTop = H - 72;
+            const availableEssayH = Math.max(240, footerTop - curY - 8);
+            const singleBoxH = Math.floor((availableEssayH - 16) / 3);
+
+            essayPrompts.forEach((ep, idx) => {
+                const ey = curY + idx * (singleBoxH + 8);
+                drawRoundRect(ctx, 44, ey, W - 88, singleBoxH, 10, '#FFFBFD', '#F5B3CE', 1);
+                // Prompt header strip
+                drawRoundRect(ctx, 44, ey, W - 88, 22, 8, '#FFE8F1', '#F5B3CE', 0.8);
+                ctx.fillStyle = '#6B1438';
+                ctx.font = `bold 10.5px ${fontMain}`;
+                ctx.fillText(ep.title, 54, ey + 15);
+
+                // Subtle lined rules
+                ctx.strokeStyle = '#F8D4E4';
+                ctx.lineWidth = 0.8;
+                for (let ly = ey + 40; ly < ey + singleBoxH - 6; ly += 18) {
+                    ctx.beginPath();
+                    ctx.moveTo(54, ly);
+                    ctx.lineTo(W - 54, ly);
+                    ctx.stroke();
+                }
+
+                // Essay Answer Text
+                ctx.fillStyle = '#3D2631';
+                ctx.font = `500 10.5px ${fontMain}`;
+                const lines = wrapCanvasLines(ctx, ep.text, W - 112);
+                const maxLines = Math.max(1, Math.floor((singleBoxH - 28) / 18));
+                lines.slice(0, maxLines).forEach((line, lIdx) => {
+                    const outLine = (lIdx === maxLines - 1 && lines.length > maxLines)
+                        ? truncateCanvasText(ctx, line + '…', W - 112)
+                        : line;
+                    ctx.fillText(outLine, 54, ey + 37 + lIdx * 18);
+                });
+            });
+
+            // 7. Teacher Confirmation Footer
+            drawRoundRect(ctx, 44, footerTop, W - 88, 28, 10, '#FFF4F8', '#F5B3CE', 1);
+            ctx.fillStyle = '#8F1E4D';
+            ctx.font = `bold 11px ${fontMain}`;
+            ctx.fillText('♥ 교사 확인 및 피드백:', 56, footerTop + 18);
+            ctx.textAlign = 'right';
+            ctx.fillText('(인) ♥', W - 58, footerTop + 18);
+            ctx.textAlign = 'left';
+
+            return canvas;
+        }
+
+        function downloadWorksheetPDF() {
+            const btn = document.getElementById('btn-download-pdf');
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span>⏳ PDF 생성 중... ♥</span>';
+                }
+                showToast("A4 PDF 활동지를 생성하고 있습니다... ♥", "info");
+
+                if (state.studentStep !== 4) {
+                    goStudentStep(4);
+                } else {
+                    renderA4Worksheet();
+                }
+
+                if (!window.jspdf || !window.jspdf.jsPDF) {
+                    throw new Error("PDF 생성 모듈을 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
+                }
+
+                const safeId = (state.student.id || '학번').replace(/[\\/:*?"<>|]/g, '_');
+                const safeName = (state.student.name || '학생').replace(/[\\/:*?"<>|]/g, '_');
+                lastGeneratedFileName = `가치경매_활동지_${safeId}_${safeName}`;
+                const pdfFileName = `${lastGeneratedFileName}.pdf`;
+
+                // Build crisp Zero-CORS 2D Canvas
+                const canvas = buildWorksheet2DCanvas();
+                lastGeneratedPngDataUrl = canvas.toDataURL('image/png');
+                const jpegData = canvas.toDataURL('image/jpeg', 0.94);
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                doc.addImage(jpegData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+                if (lastGeneratedPdfBlobUrl) {
+                    try { URL.revokeObjectURL(lastGeneratedPdfBlobUrl); } catch (_) {}
+                }
+                const pdfBlob = doc.output('blob');
+                lastGeneratedPdfBlobUrl = URL.createObjectURL(pdfBlob);
+
+                // Dual trigger: jsPDF.save + anchor download for Android/Lenovo tablets, iOS, and PC
+                try {
+                    doc.save(pdfFileName);
+                } catch (_) {}
+
+                const a = document.createElement('a');
+                a.href = lastGeneratedPdfBlobUrl;
+                a.download = pdfFileName;
+                a.rel = 'noopener';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    if (a.parentNode) document.body.removeChild(a);
+                }, 1500);
+
+                // Prepare fallback modal preview image in case an in-app browser blocks automatic download
+                const prevImg = document.getElementById('pdf-preview-img');
+                const prevWrap = document.getElementById('pdf-preview-img-wrap');
+                if (prevImg && lastGeneratedPngDataUrl) {
+                    prevImg.src = lastGeneratedPngDataUrl;
+                    prevWrap?.classList.remove('hidden');
+                }
+                document.getElementById('pdf-fallback-modal')?.classList.remove('hidden');
+
+                showToast(`'${pdfFileName}' 저장이 완료되었습니다! ♥`, "success");
+            } catch (err) {
+                console.error("PDF error:", err);
+                showToast(`PDF 저장 오류: ${err && err.message ? err.message : '다시 시도해 주세요.'}`, "warning");
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> A4 PDF 저장하기 ♥';
+                }
+            }
+        }
+
+        function closePdfFallbackModal() {
+            document.getElementById('pdf-fallback-modal')?.classList.add('hidden');
+        }
+
+        function openGeneratedPdfWindow() {
+            if (lastGeneratedPdfBlobUrl) {
+                const win = window.open(lastGeneratedPdfBlobUrl, '_blank');
+                if (win) return;
+            }
+            showToast("새 창 팝업이 차단되었습니다. 우측 [PNG 이미지로 저장] 또는 아래 이미지를 길게 눌러 저장해 주세요!", "warning");
+        }
+
+        function downloadGeneratedPng() {
+            if (!lastGeneratedPngDataUrl) return;
+            const a = document.createElement('a');
+            a.href = lastGeneratedPngDataUrl;
+            a.download = `${lastGeneratedFileName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                if (a.parentNode) document.body.removeChild(a);
+            }, 1000);
+            showToast("활동지 이미지(.png) 다운로드가 시작되었습니다 ♥", "success");
+        }
+
+        // =========================================================================
+        // 11. TEACHER LIVE CONTROL DASHBOARD LOGIC
+        // =========================================================================
+        function switchTeacherTab(tabNum) {
+            state.teacherTab = tabNum;
+            [1, 2, 3].forEach(n => {
+                const btn = document.getElementById(`tea-tab-${n}`);
+                const panel = document.getElementById(`teacher-panel-${n}`);
+                if (n === tabNum) {
+                    if (btn) btn.className = "px-3.5 py-2 rounded-xl font-extrabold pastel-hero-gradient text-white transition";
+                    panel?.classList.remove('hidden');
+                } else {
+                    if (btn) btn.className = "px-3.5 py-2 rounded-xl font-bold text-slate-600 hover:text-pinkrose-800 transition";
+                    panel?.classList.add('hidden');
+                }
+            });
+            renderTeacherDashboard();
+        }
+
+        function renderTeacherDashboard() {
+            setTextSafe('tea-room-display', state.config.roomCode || 'CLASS1');
+            renderTeacherVotingTab();
+            renderTeacherAuctionTab();
+            renderTeacherSubmissionsTab();
+        }
+
+        function getAggregatedVotes() {
+            const votesObj = state.liveRoom.votes || {};
+            const voterList = Object.values(votesObj);
+            const counts = {};
+            CONDITIONS_30.forEach(c => counts[c.id] = 0);
+
+            voterList.forEach(v => {
+                if (Array.isArray(v.items)) {
+                    v.items.forEach(id => {
+                        if (counts[id] !== undefined) counts[id] += 1;
+                    });
+                }
+            });
+
+            const ranked = CONDITIONS_30.map(c => ({
+                ...c,
+                votes: counts[c.id] || 0
+            })).sort((a, b) => b.votes - a.votes || a.id - b.id);
+
+            return { voterCount: voterList.length, ranked };
+        }
+
+        function renderTeacherVotingTab() {
+            const { voterCount, ranked } = getAggregatedVotes();
+            setTextSafe('tea-voters-count', `${voterCount}명`);
+
+            if (teacherSelected10Ids.length === 0 && Array.isArray(state.liveRoom.confirmed10) && state.liveRoom.confirmed10.length === 10) {
+                teacherSelected10Ids = state.liveRoom.confirmed10.map(c => c.id);
+            }
+            setTextSafe('tea-picked-10-cnt', teacherSelected10Ids.length);
+
+            const grid = document.getElementById('tea-votes-chart-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const maxVotes = Math.max(ranked[0]?.votes || 1, 1);
+
+            ranked.forEach((item, idx) => {
+                const isSelected = teacherSelected10Ids.includes(item.id);
+                const pct = Math.round((item.votes / maxVotes) * 100);
+                const card = document.createElement('div');
+                card.onclick = () => toggleTeacherTop10Pick(item.id);
+                card.className = `p-3.5 rounded-2xl border-2 cursor-pointer transition space-y-2 ${
+                    isSelected ? 'pastel-soft-panel border-pinkrose-500 shadow-sm' : 'bg-white border-pinkrose-100 hover:border-pinkrose-300'
+                }`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full text-xs font-black flex items-center justify-center ${idx < 10 ? 'pastel-hero-gradient text-white' : 'bg-pinkrose-50 text-slate-500'}">${idx + 1}</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-pinkrose-600 block">${item.cat}</span>
+                                <p class="text-xs sm:text-sm font-bold text-pinkrose-950 leading-snug">${item.text}</p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-xs font-black font-mono text-pinkrose-800 block">${item.votes}표</span>
+                            <span class="text-[10px] font-bold ${isSelected ? 'text-pinkrose-700' : 'text-slate-400'}">${isSelected ? '♥ 선정됨' : '클릭선택'}</span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-pinkrose-100 h-1.5 rounded-full overflow-hidden">
+                        <div class="${isSelected ? 'pastel-hero-gradient' : 'bg-pinkrose-300'} h-full rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleTeacherTop10Pick(id) {
+            const idx = teacherSelected10Ids.indexOf(id);
+            if (idx > -1) {
+                teacherSelected10Ids.splice(idx, 1);
+            } else {
+                if (teacherSelected10Ids.length >= 10) {
+                    showToast("경매 품목은 정확히 10개까지만 선택할 수 있습니다.", "warning");
+                    return;
+                }
+                teacherSelected10Ids.push(id);
+            }
+            renderTeacherVotingTab();
+        }
+
+        function autoSelectTop10Votes() {
+            const { ranked } = getAggregatedVotes();
+            teacherSelected10Ids = ranked.slice(0, 10).map(r => r.id);
+            renderTeacherVotingTab();
+            showToast("득표 상위 10개 조건이 자동 선택되었습니다 ♥", "info");
+        }
+
+        function confirmAndPushTop10() {
+            if (teacherSelected10Ids.length !== 10) {
+                showToast("정확히 10개의 조건을 선택한 뒤 확정해 주세요.", "warning");
+                return;
+            }
+            const chosenObjs = teacherSelected10Ids.map(id => CONDITIONS_30.find(c => c.id === id));
+
+            if (state.firebaseConnected && db) {
+                const room = state.config.roomCode || 'CLASS1';
+                const initialItems = {};
+                chosenObjs.forEach((c, idx) => {
+                    initialItems[idx] = {
+                        id: c.id,
+                        cat: c.cat,
+                        text: c.text,
+                        highestBid: 0,
+                        highestBidderId: '',
+                        highestBidderName: '',
+                        status: 'waiting'
+                    };
+                });
+
+                db.ref(`rooms/${room}`).update({
+                    confirmed10: chosenObjs,
+                    auction: {
+                        activeIndex: 0,
+                        status: 'waiting',
+                        items: initialItems
+                    }
+                }).then(() => {
+                    showToast("10개 경매 품목이 확정되어 모든 학생 화면에 전송되었습니다 ♥", "success");
+                    switchTeacherTab(2);
+                });
+            } else {
+                state.liveRoom.confirmed10 = chosenObjs;
+                showToast("오프라인 상태입니다. Firebase 연동 후 학생 화면으로 실시간 전송할 수 있습니다.", "warning");
+                switchTeacherTab(2);
+            }
+        }
+
+        function renderTeacherAuctionTab() {
+            const listEl = document.getElementById('tea-auction-items-list');
+            if (!listEl) return;
+            const confirmed = state.liveRoom.confirmed10 || [];
+            const auc = state.liveRoom.auction || { activeIndex: 0, items: {} };
+            const activeIdx = Number(auc.activeIndex || 0);
+
+            listEl.innerHTML = '';
+            if (confirmed.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center">1번 탭에서 먼저 경매 품목 10개를 확정해 주세요 ♥</p>`;
+                return;
+            }
+
+            confirmed.forEach((cond, idx) => {
+                const itemData = (auc.items && auc.items[idx]) || { highestBid: 0, highestBidderName: '', status: 'waiting' };
+                const isSelected = idx === activeIdx;
+
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.onclick = () => teacherSelectAuctionItem(idx);
+                btn.className = `w-full p-3 rounded-2xl border text-left transition flex justify-between items-center gap-2 ${
+                    isSelected ? 'pastel-soft-panel border-pinkrose-500 ring-2 ring-pinkrose-300' : 'bg-white border-pinkrose-100 hover:bg-pinkrose-50/60'
+                }`;
+                btn.innerHTML = `
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-black text-pinkrose-800">#${idx + 1}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                itemData.status === 'sold' ? 'bg-pinkrose-900 text-white' :
+                                itemData.status === 'active' ? 'pastel-hero-gradient text-white' : 'bg-pinkrose-50 text-slate-500'
+                            }">${itemData.status === 'sold' ? '낙찰완료' : itemData.status === 'active' ? '진행중' : '대기'}</span>
+                        </div>
+                        <p class="text-xs font-bold text-pinkrose-950 truncate mt-1">${cond.text}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-xs font-mono font-black text-pinkrose-700 block">${Number(itemData.highestBid || 0).toLocaleString()}원</span>
+                        <span class="text-[10px] text-slate-500">${itemData.highestBidderName || '-'}</span>
+                    </div>
+                `;
+                listEl.appendChild(btn);
+            });
+
+            const currCond = confirmed[activeIdx];
+            const currData = (auc.items && auc.items[activeIdx]) || { highestBid: 0, highestBidderName: '', status: 'waiting' };
+            if (currCond) {
+                setTextSafe('tea-stage-num', activeIdx + 1);
+                setTextSafe('tea-stage-cat', currCond.cat);
+                setTextSafe('tea-stage-title', currCond.text);
+                setTextSafe('tea-stage-price', Number(currData.highestBid || 0).toLocaleString() + '원');
+                setTextSafe('tea-stage-bidder', currData.highestBidderName || '입찰자 없음');
+                setTextSafe('tea-stage-status',
+                    currData.status === 'active' ? '♥ 실시간 입찰 진행 중' :
+                    currData.status === 'sold' ? '🔨 낙찰 확정됨' : '⏸ 시작 대기 중');
+            }
+
+            renderTeacherStudentBudgets();
+        }
+
+        function renderTeacherStudentBudgets() {
+            const grid = document.getElementById('tea-students-budget-grid');
+            if (!grid) return;
+            const votes = state.liveRoom.votes || {};
+            const items = (state.liveRoom.auction && state.liveRoom.auction.items) || {};
+
+            const students = {};
+            Object.entries(votes).forEach(([k, v]) => {
+                students[k] = { id: v.studentId, name: v.studentName, spent: 0, wonCount: 0 };
+            });
+
+            Object.values(items).forEach(it => {
+                if (it && it.status === 'sold' && it.highestBidderId) {
+                    if (!students[it.highestBidderId]) {
+                        students[it.highestBidderId] = { id: it.highestBidderId, name: it.highestBidderName, spent: 0, wonCount: 0 };
+                    }
+                    students[it.highestBidderId].spent += Number(it.highestBid || 0);
+                    students[it.highestBidderId].wonCount += 1;
+                }
+            });
+
+            const list = Object.values(students);
+            if (list.length === 0) return;
+
+            grid.innerHTML = '';
+            list.forEach(s => {
+                const rem = Math.max(0, 1000000 - s.spent);
+                const card = document.createElement('div');
+                card.className = "pastel-soft-panel border border-pinkrose-200 p-2.5 rounded-2xl flex justify-between items-center";
+                card.innerHTML = `
+                    <div>
+                        <span class="font-bold text-pinkrose-950 block">${s.id} ${s.name}</span>
+                        <span class="text-[10px] text-slate-500">낙찰 ${s.wonCount}개</span>
+                    </div>
+                    <span class="font-mono font-black text-pinkrose-700">${(rem / 10000).toLocaleString()}만</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function teacherSelectAuctionItem(idx) {
+            if (!state.firebaseConnected || !db) {
+                state.liveRoom.auction.activeIndex = idx;
+                renderTeacherAuctionTab();
+                return;
+            }
+            const room = state.config.roomCode || 'CLASS1';
+            db.ref(`rooms/${room}/auction/activeIndex`).set(idx);
+        }
+
+        function teacherStartCurrentItem() {
+            if (!state.firebaseConnected || !db) {
+                showToast("Firebase 연결 후 실시간 입찰 시작이 가능합니다.", "warning");
+                return;
+            }
+            const room = state.config.roomCode || 'CLASS1';
+            const idx = Number(state.liveRoom.auction.activeIndex || 0);
+            db.ref(`rooms/${room}/auction/items/${idx}/status`).set('active');
+            playGavelSound('start');
+            showToast(`#${idx + 1} 품목 실시간 입찰이 시작되었습니다 ♥`, "success");
+        }
+
+        function teacherHammerSold() {
+            if (!state.firebaseConnected || !db) return;
+            const room = state.config.roomCode || 'CLASS1';
+            const idx = Number(state.liveRoom.auction.activeIndex || 0);
+            db.ref(`rooms/${room}/auction/items/${idx}/status`).set('sold');
+            playGavelSound('hammer');
+            showToast(`#${idx + 1} 품목 낙찰이 확정되었습니다 ♥`, "success");
+        }
+
+        function teacherResetCurrentItem() {
+            if (!state.firebaseConnected || !db) return;
+            const room = state.config.roomCode || 'CLASS1';
+            const idx = Number(state.liveRoom.auction.activeIndex || 0);
+            db.ref(`rooms/${room}/auction/items/${idx}`).update({
+                highestBid: 0,
+                highestBidderId: '',
+                highestBidderName: '',
+                status: 'waiting'
+            });
+            showToast(`#${idx + 1} 품목이 초기화되었습니다.`, "info");
+        }
+
+        function confirmResetAuctionRoom() {
+            showConfirmModal("전체 경매 초기화", "현재 방의 모든 입찰 기록과 낙찰 내역을 0원으로 초기화하시겠습니까?", () => {
+                if (state.firebaseConnected && db) {
+                    const room = state.config.roomCode || 'CLASS1';
+                    const confirmed = state.liveRoom.confirmed10 || [];
+                    const resetItems = {};
+                    confirmed.forEach((c, i) => {
+                        resetItems[i] = {
+                            id: c.id, cat: c.cat, text: c.text,
+                            highestBid: 0, highestBidderId: '', highestBidderName: '', status: 'waiting'
+                        };
+                    });
+                    db.ref(`rooms/${room}/auction`).set({ activeIndex: 0, status: 'waiting', items: resetItems });
+                    showToast("전체 경매 기록이 초기화되었습니다.", "success");
+                }
+            });
+        }
+
+        function renderTeacherSubmissionsTab() {
+            const subs = Object.values(state.liveRoom.submissions || {});
+            setTextSafe('tea-sub-count', subs.length);
+            const tbody = document.getElementById('tea-submissions-tbody');
+            if (!tbody) return;
+
+            if (subs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">아직 최종 제출한 학생이 없습니다 ♥</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            subs.forEach((s, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-pinkrose-50/60";
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-slate-500">${s.submittedAt || '-'}</td>
+                    <td class="p-3 font-mono font-bold text-pinkrose-950">${s.studentId}</td>
+                    <td class="p-3 font-extrabold text-pinkrose-700">${s.studentName}</td>
+                    <td class="p-3 max-w-xs truncate text-slate-700">${s.wonItems}</td>
+                    <td class="p-3 text-right font-mono font-bold text-pinkrose-700">${Number(s.totalSpent || 0).toLocaleString()}원</td>
+                    <td class="p-3 text-center">
+                        <button type="button" onclick="openEssayPreview(${idx})" class="pastel-hero-gradient text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition hover:opacity-95">답안 읽기 ♥</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openEssayPreview(idx) {
+            const subs = Object.values(state.liveRoom.submissions || {});
+            const s = subs[idx];
+            if (!s) return;
+
+            setTextSafe('preview-student-header', `${s.studentId} ${s.studentName} 학생 성찰 활동지`);
+            const body = document.getElementById('preview-modal-body');
+            if (body) {
+                body.innerHTML = `
+                    <div class="pastel-soft-panel p-3.5 rounded-2xl border border-pinkrose-200 space-y-1 text-xs">
+                        <p><strong>♥ 선정 조건:</strong> ${s.selected10}</p>
+                        <p><strong>♥ 낙찰 내역:</strong> ${s.wonItems} (지출: ${Number(s.totalSpent).toLocaleString()}원 / 잔액: ${Number(s.remainingBudget).toLocaleString()}원)</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-pinkrose-950">♥ [문항 1] 가치 선택의 기준</h4>
+                        <p class="bg-pinkrose-50/60 p-3.5 rounded-2xl border border-pinkrose-200 whitespace-pre-wrap leading-relaxed">${s.essay1 || '(미작성)'}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-pinkrose-950">♥ [문항 2] 경매 결과 분석 및 갈등 성찰</h4>
+                        <p class="bg-pinkrose-50/60 p-3.5 rounded-2xl border border-pinkrose-200 whitespace-pre-wrap leading-relaxed">${s.essay2 || '(미작성)'}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-bold text-pinkrose-950">♥ [문항 3] 미래의 나에게 적용 및 다짐</h4>
+                        <p class="bg-pinkrose-50/60 p-3.5 rounded-2xl border border-pinkrose-200 whitespace-pre-wrap leading-relaxed">${s.essay3 || '(미작성)'}</p>
+                    </div>
+                `;
+            }
+            document.getElementById('essay-preview-modal')?.classList.remove('hidden');
+        }
+
+        function exportAllSubmissionsCSV() {
+            const subs = Object.values(state.liveRoom.submissions || {});
+            if (subs.length === 0) {
+                showToast("다운로드할 제출 데이터가 없습니다.", "warning");
+                return;
+            }
+
+            const headers = ["제출시각", "방코드", "학번", "이름", "선정한_10가지", "낙찰받은_조건", "총지출액", "남은예산", "문항1_가치선택기준", "문항2_경매결과분석", "문항3_미래의나적용"];
+            const csvRows = [headers.join(",")];
+
+            subs.forEach(s => {
+                const row = [
+                    s.submittedAt, s.roomCode, s.studentId, s.studentName,
+                    s.selected10, s.wonItems, s.totalSpent, s.remainingBudget,
+                    s.essay1, s.essay2, s.essay3
+                ].map(val => `"${String(val || '').replace(/"/g, '""')}"`);
+                csvRows.push(row.join(","));
+            });
+
+            const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `가치경매_학급제출결과_${state.config.roomCode}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("전체 제출 결과가 엑셀(CSV) 파일로 다운로드되었습니다 ♥", "success");
+        }
+
+        // =========================================================================
+        // 12. WEB AUDIO SOUND EFFECTS & CUSTOM MODALS / TOASTS
+        // =========================================================================
+        function toggleSoundEffect() {
+            state.soundEnabled = !state.soundEnabled;
+            const btn = document.getElementById('btn-sound-toggle');
+            if (btn) {
+                btn.innerHTML = state.soundEnabled
+                    ? `<i class="fa-solid fa-volume-high mr-1 text-pinkrose-500"></i> 효과음 ON`
+                    : `<i class="fa-solid fa-volume-xmark mr-1 text-slate-400"></i> 효과음 OFF`;
+            }
+        }
+
+        function playGavelSound(type) {
+            if (!state.soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'hammer') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(160, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.18);
+                    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.22);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.23);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.36);
+                }
+            } catch (e) {}
+        }
+
+        function sanitizeFirebaseKey(str) {
+            return String(str || 'anon').trim().replace(/[.#$\[\]\/]/g, '_');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            let style = "pastel-hero-gradient text-white border-white";
+            let icon = "fa-heart text-white";
+
+            if (type === 'warning') {
+                style = "bg-pinkrose-900 text-white border-pinkrose-300";
+                icon = "fa-triangle-exclamation text-pinkrose-200";
+            }
+
+            toast.className = `${style} border-l-4 px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2.5 pointer-events-auto transition-all duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base shrink-0"></i><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            const backdrop = document.getElementById('custom-modal-backdrop');
+            setTextSafe('modal-title', title);
+            setTextSafe('modal-message', message);
+            document.getElementById('modal-input-wrapper')?.classList.add('hidden');
+
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+
+            const close = () => backdrop?.classList.add('hidden');
+            if (cancelBtn) cancelBtn.onclick = close;
+            if (confirmBtn) {
+                confirmBtn.onclick = () => {
+                    close();
+                    if (onConfirm) onConfirm();
+                };
+            }
+            backdrop?.classList.remove('hidden');
+        }
+
+        function showPinModal(title, message, onSubmitPin) {
+            const backdrop = document.getElementById('custom-modal-backdrop');
+            setTextSafe('modal-title', title);
+            setTextSafe('modal-message', message);
+            const inputWrap = document.getElementById('modal-input-wrapper');
+            const pinInput = document.getElementById('modal-pin-input');
+            inputWrap?.classList.remove('hidden');
+            if (pinInput) pinInput.value = '';
+
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+
+            const close = () => backdrop?.classList.add('hidden');
+            if (cancelBtn) cancelBtn.onclick = close;
+            if (confirmBtn) {
+                confirmBtn.onclick = () => {
+                    const val = (pinInput?.value || '').trim();
+                    close();
+                    if (onSubmitPin) onSubmitPin(val);
+                };
+            }
+            if (pinInput) {
+                pinInput.onkeydown = (e) => {
+                    if (e.key === 'Enter' && confirmBtn) confirmBtn.click();
+                };
+            }
+            backdrop?.classList.remove('hidden');
+            setTimeout(() => pinInput?.focus(), 100);
+        }
+    </script>
+</body>
+</html>
