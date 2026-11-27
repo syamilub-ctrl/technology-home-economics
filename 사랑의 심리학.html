@@ -384,7 +384,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Circular 6-Node Color Wheel Visualization (Authentic Primary & Secondary Color Wheel) -->
+          <!-- Circular 6-Node Color Wheel Visualization -->
           <div class="lg:col-span-6 bg-gradient-to-b from-purple-50/80 via-rose-50/40 to-white rounded-3xl p-4 sm:p-6 border border-purple-100 flex flex-col items-center justify-center">
             <div class="relative w-[300px] h-[300px] sm:w-[330px] sm:h-[330px] mx-auto select-none">
               <svg viewBox="0 0 320 320" class="absolute inset-0 w-full h-full pointer-events-none">
@@ -922,7 +922,6 @@ function makeResponse(obj, callback) {
       { id: 42, style: 'Agape', short: false, text: "설령 상대방이 나와 멀어지더라도 그 사람의 행복을 진심으로 빌어줄 수 있다." }
     ];
 
-    // John Alan Lee's Authentic Color Wheel Theory Palette (Primary: Red, Blue, Yellow / Secondary: Violet, Green, Orange)
     const LAS_STYLE_META = {
       Eros: {
         ko: '에로스 (열정적 사랑 · 빨강)',
@@ -1234,9 +1233,7 @@ function makeResponse(obj, callback) {
 
     function wrapCanvasText(ctx, text, maxWidth) {
       if (!text) return [];
-      const paragraphs = String(text).split(/
-?
-/);
+      const paragraphs = String(text).split(/\r?\n/);
       const lines = [];
       for (const para of paragraphs) {
         if (para === '') {
@@ -2289,7 +2286,7 @@ function makeResponse(obj, callback) {
       let foundCount = 0;
       if (detailStr) {
         keys.forEach(k => {
-          const regex = new RegExp(k + '\s*:\s*([0-9.]+)', 'i');
+          const regex = new RegExp(k + '\\s*:\\s*([0-9.]+)', 'i');
           const m = detailStr.match(regex);
           if (m) {
             parsed[k] = parseFloat(m[1]);
