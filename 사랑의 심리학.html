@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>데이터로 들여다보는 사랑의 심리학</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jsPDF (CDN 로드 실패 시 내장 순수 JS PDF 바이너리 생성기 폴백 자동 작동) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Jua&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+      --font-serif: 'Gowun Batang', Georgia, serif;
+      --font-display: 'Jua', 'Gowun Dodum', sans-serif;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(135deg, #fff5f7 0%, #fff0f4 45%, #fef6ee 100%);
+      color: #4a353b;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .font-serif-kr {
+      font-family: var(--font-serif);
+    }
+    .font-title-pretty {
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.93);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 205, 218, 0.85);
+      box-shadow: 0 10px 30px -10px rgba(255, 107, 139, 0.16);
+    }
+    .tab-btn {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff6b8b 0%, #f43f5e 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 16px -4px rgba(255, 107, 139, 0.45);
+      transform: translateY(-1px);
+    }
+    .likert-btn {
+      transition: all 0.16s ease;
+      touch-action: manipulation;
+    }
+    .likert-btn:active {
+      transform: scale(0.95);
+    }
+    .likert-btn.selected {
+      background: linear-gradient(135deg, #ff6b8b 0%, #f43f5e 100%);
+      color: white;
+      border-color: #f43f5e;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(255, 107, 139, 0.35);
+      transform: scale(1.05);
+    }
+    .likert-btn-las.selected {
+      background: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
+      color: white;
+      border-color: #9333ea;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.35);
+      transform: scale(1.05);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 107, 139, 0.32)); }
+      50% { filter: drop-shadow(0 0 14px rgba(255, 107, 139, 0.65)); }
+    }
+    .triangle-glow {
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+
+    .wheel-node {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    }
+    .wheel-node.top-rank {
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.95), 0 0 24px rgba(255, 107, 139, 0.65);
+      z-index: 20;
+    }
+  </style>
+</head>
+<body class="pb-16">
+
+  <!-- Toast Notification Box -->
+  <div id="toast-box" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-3 w-[90%] max-w-md">
+    <div id="toast-msg" class="px-5 py-3.5 rounded-2xl bg-rose-950/95 text-white text-xs sm:text-sm font-medium shadow-xl backdrop-blur-md flex items-center justify-center gap-2 text-center">
+      <span>💖</span>
+      <span id="toast-text">알림 메시지</span>
+    </div>
+  </div>
+
+  <!-- Header & Student Info Bar -->
+  <header id="main-header" class="sticky top-0 z-40 bg-white/88 backdrop-blur-md border-b border-rose-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <!-- Title -->
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-white text-lg sm:text-xl shadow-md shrink-0" style="background: linear-gradient(135deg, #ff6b8b, #ff8fa3);">
+          💗
+        </div>
+        <div class="min-w-0">
+          <span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-rose-100 text-rose-600 mb-0.5">
+            청소년 심리·가정 수업 · 관계 가치관 탐구
+          </span>
+          <h1 class="font-title-pretty whitespace-nowrap text-[17px] sm:text-xl md:text-2xl font-normal text-rose-950 tracking-tight leading-snug">
+            데이터로 들여다보는 사랑의 심리학
+          </h1>
+        </div>
+      </div>
+
+      <!-- Student Info (1반 ~ 12반) -->
+      <div class="flex flex-wrap items-center gap-2 bg-rose-50/80 px-3.5 py-2 rounded-2xl border border-rose-200/70">
+        <div class="flex items-center gap-1.5">
+          <label for="student-class" class="text-xs font-semibold text-rose-700">학급 선택:</label>
+          <select id="student-class" class="text-xs bg-white border border-rose-200 rounded-xl px-2.5 py-1.5 font-medium text-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-300">
+            <option value="1반">1반</option>
+            <option value="2반">2반</option>
+            <option value="3반">3반</option>
+            <option value="4반">4반</option>
+            <option value="5반">5반</option>
+            <option value="6반">6반</option>
+            <option value="7반">7반</option>
+            <option value="8반">8반</option>
+            <option value="9반">9반</option>
+            <option value="10반">10반</option>
+            <option value="11반">11반</option>
+            <option value="12반">12반</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <label for="student-id-name" class="text-xs font-semibold text-rose-700">학번·이름:</label>
+          <input id="student-id-name" type="text" placeholder="예: 30101 홍길동" class="text-xs bg-white border border-rose-200 rounded-xl px-2.5 py-1.5 w-36 sm:w-44 text-rose-900 placeholder-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-300" />
+        </div>
+        <span class="text-[11px] text-rose-500 hidden sm:inline" title="실시간 학급 통계 화면에서는 이름이 절대 공개되지 않고 익명으로 집계됩니다.">
+          🔒 통계는 익명 처리
+        </span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-5xl mx-auto px-4 pb-3 pt-1 flex gap-2 overflow-x-auto">
+      <button type="button" onclick="switchTab('stls')" id="tab-stls" class="tab-btn active flex-shrink-0 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-white text-rose-700 border border-rose-100">
+        🔺 1. 스턴버그 사랑의 삼각형 검사 (STLS)
+      </button>
+      <button type="button" onclick="switchTab('las')" id="tab-las" class="tab-btn flex-shrink-0 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-white text-rose-700 border border-rose-100">
+        🎨 2. 리의 사랑의 색깔 검사 (LAS)
+      </button>
+      <button type="button" onclick="switchTab('worksheet')" id="tab-worksheet" class="tab-btn flex-shrink-0 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-white text-rose-700 border border-rose-100">
+        📝 3. 서·논술형 수업 활동지
+      </button>
+      <button type="button" onclick="switchTab('stats')" id="tab-stats" class="tab-btn flex-shrink-0 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold bg-white text-rose-700 border border-rose-100">
+        📊 4. 실시간 학급 통계 (익명)
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main id="main-container" class="max-w-5xl mx-auto px-4 pt-6 space-y-6">
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: STERNBERG'S TRIANGULAR THEORY OF LOVE SCALE (STLS)             -->
+    <!-- ===================================================================== -->
+    <section id="section-stls" class="space-y-6">
+      <div class="glass-card rounded-3xl p-6 sm:p-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-rose-100 pb-5">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold mb-2">
+              Robert J. Sternberg (1986) 표준화 척도
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-rose-950 font-serif-kr">
+              스턴버그의 사랑의 삼각형 검사 (STLS)
+            </h2>
+            <p class="text-sm text-rose-800/80 mt-1.5 leading-relaxed">
+              사랑을 이루는 세 가지 핵심 요소인 <strong class="text-rose-600">친밀감(정서적 유대)</strong>, <strong class="text-pink-600">열정(낭만적 끌림)</strong>, <strong class="text-amber-600">헌신(관계 유지의 의지)</strong>의 균형을 측정하여 나만의 사랑 삼각형을 그립니다.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <div class="inline-flex p-1 bg-rose-100/80 rounded-2xl border border-rose-200">
+              <button type="button" id="stls-mode-short" onclick="setStlsMode('short')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-rose-600 shadow-sm transition">
+                단축형 15문항
+              </button>
+              <button type="button" id="stls-mode-full" onclick="setStlsMode('full')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-500 hover:text-rose-700 transition">
+                원판 전체 45문항
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-rose-50/70 p-4 rounded-2xl border border-rose-100">
+          <div class="text-xs text-rose-800">
+            <span class="font-bold">💡 응답 안내:</span> 현재 호감을 느끼는 대상이나 <strong>장차 내가 맺고 싶은 바람직한 연인 관계</strong>를 떠올리며 <strong>1점(전혀 그렇지 않다) ~ 9점(매우 그렇다)</strong>을 선택하세요.
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="w-32 h-2.5 bg-rose-200/70 rounded-full overflow-hidden">
+              <div id="stls-progress-bar" class="h-full transition-all duration-300" style="width: 0%; background: linear-gradient(90deg, #ff6b8b, #f43f5e);"></div>
+            </div>
+            <span id="stls-progress-text" class="text-xs font-bold text-rose-700">0 / 15</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="stls-questions" class="space-y-4"></div>
+
+      <div class="flex justify-center pt-2">
+        <button type="button" onclick="calculateStls()" class="px-8 py-4 rounded-full text-white font-bold text-base shadow-lg shadow-rose-300/50 transition transform hover:-translate-y-0.5 flex items-center gap-2" style="background: linear-gradient(135deg, #ff6b8b, #f43f5e);">
+          <span>🔺</span>
+          <span>내 사랑의 삼각형 그리기 &amp; 결과 분석</span>
+        </button>
+      </div>
+
+      <!-- STLS Result Card -->
+      <div id="stls-result-card" class="hidden glass-card rounded-3xl p-6 sm:p-8 border-2 border-rose-300 space-y-6">
+        <div class="text-center space-y-1">
+          <span class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold">
+            스턴버그의 사랑의 삼각형 분석 결과
+          </span>
+          <h3 id="stls-type-title" class="text-2xl sm:text-3xl font-bold text-rose-950 font-serif-kr">
+            성숙한 사랑 (Consummate Love)
+          </h3>
+          <p id="stls-type-subtitle" class="text-sm text-rose-600 font-medium"></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <!-- Animated SVG Triangle -->
+          <div class="bg-gradient-to-b from-rose-50/90 to-white rounded-3xl p-4 border border-rose-100 flex flex-col items-center justify-center relative">
+            <svg id="stls-svg" viewBox="0 0 340 310" class="w-full max-w-[330px] h-auto overflow-visible">
+              <defs>
+                <linearGradient id="triFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff6b8b" stop-opacity="0.40" />
+                  <stop offset="50%" stop-color="#f472b6" stop-opacity="0.34" />
+                  <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.36" />
+                </linearGradient>
+              </defs>
+
+              <!-- Reference Equilateral Triangles -->
+              <polygon points="170,55 66.1,235 273.9,235" fill="rgba(255,241,242,0.5)" stroke="#fda4af" stroke-width="1.5" stroke-dasharray="5 4" />
+              <polygon points="170,108.3 112.3,208.3 227.7,208.3" fill="none" stroke="#fecdd3" stroke-width="1" stroke-dasharray="3 3" />
+
+              <!-- Center Axes -->
+              <line x1="170" y1="175" x2="170" y2="55" stroke="#fecdd3" stroke-width="1.2" />
+              <line x1="170" y1="175" x2="66.1" y2="235" stroke="#fecdd3" stroke-width="1.2" />
+              <line x1="170" y1="175" x2="273.9" y2="235" stroke="#fecdd3" stroke-width="1.2" />
+
+              <!-- User Dynamic Polygon -->
+              <polygon id="stls-user-poly" points="170,175 170,175 170,175" fill="url(#triFill)" stroke="#ff6b8b" stroke-width="3.5" stroke-linejoin="round" class="triangle-glow" />
+              <path id="stls-draw-path" d="M170,175 L170,175 L170,175 Z" fill="none" stroke="#be123c" stroke-width="2" stroke-linecap="round" />
+
+              <!-- Vertices Dots -->
+              <circle id="dot-intimacy" cx="170" cy="175" r="6.5" fill="#ff6b8b" stroke="#fff" stroke-width="2" />
+              <circle id="dot-passion" cx="170" cy="175" r="6.5" fill="#ec4899" stroke="#fff" stroke-width="2" />
+              <circle id="dot-commitment" cx="170" cy="175" r="6.5" fill="#f59e0b" stroke="#fff" stroke-width="2" />
+
+              <!-- Vertex Labels -->
+              <g transform="translate(170, 26)">
+                <rect x="-56" y="-14" width="112" height="32" rx="14" fill="#fff1f2" stroke="#fda4af" stroke-width="1.2" />
+                <text x="0" y="1" text-anchor="middle" fill="#be123c" font-size="11" font-weight="700">친밀감 (유대)</text>
+                <text id="svg-score-intimacy" x="0" y="14" text-anchor="middle" fill="#e11d48" font-size="12" font-weight="800">0.0 / 9.0</text>
+              </g>
+
+              <g transform="translate(56, 268)">
+                <rect x="-54" y="-14" width="108" height="32" rx="14" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1.2" />
+                <text x="0" y="1" text-anchor="middle" fill="#9d174d" font-size="11" font-weight="700">열정 (끌림)</text>
+                <text id="svg-score-passion" x="0" y="14" text-anchor="middle" fill="#db2777" font-size="12" font-weight="800">0.0 / 9.0</text>
+              </g>
+
+              <g transform="translate(284, 268)">
+                <rect x="-54" y="-14" width="108" height="32" rx="14" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.2" />
+                <text x="0" y="1" text-anchor="middle" fill="#92400e" font-size="11" font-weight="700">헌신 (의지)</text>
+                <text id="svg-score-commitment" x="0" y="14" text-anchor="middle" fill="#d97706" font-size="12" font-weight="800">0.0 / 9.0</text>
+              </g>
+            </svg>
+            <p class="text-[11px] text-rose-500 mt-1">※ 세 꼭짓점의 균형과 면적이 클수록 안정적이고 성숙한 사랑을 의미합니다.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="bg-rose-50 p-3 rounded-2xl border border-rose-200">
+                <div class="text-xs font-bold text-rose-600">친밀감</div>
+                <div id="card-score-intimacy" class="text-xl font-extrabold text-rose-900 mt-0.5">0.0</div>
+                <div id="badge-intimacy" class="text-[11px] font-semibold text-rose-500 mt-0.5">분석 중</div>
+              </div>
+              <div class="bg-pink-50 p-3 rounded-2xl border border-pink-200">
+                <div class="text-xs font-bold text-pink-600">열정</div>
+                <div id="card-score-passion" class="text-xl font-extrabold text-pink-900 mt-0.5">0.0</div>
+                <div id="badge-passion" class="text-[11px] font-semibold text-pink-500 mt-0.5">분석 중</div>
+              </div>
+              <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200">
+                <div class="text-xs font-bold text-amber-700">헌신</div>
+                <div id="card-score-commitment" class="text-xl font-extrabold text-amber-900 mt-0.5">0.0</div>
+                <div id="badge-commitment" class="text-[11px] font-semibold text-amber-600 mt-0.5">분석 중</div>
+              </div>
+            </div>
+
+            <div class="bg-white/90 p-4 rounded-2xl border border-rose-100 space-y-2">
+              <h4 class="text-sm font-bold text-rose-900 flex items-center gap-1.5">
+                <span>📖</span> 이론적 유형 해석
+              </h4>
+              <p id="stls-type-desc" class="text-xs sm:text-sm text-rose-800/90 leading-relaxed"></p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" onclick="submitResultToSheet('STLS')" class="flex-1 px-4 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                📤 실시간 통계에 익명 전송
+              </button>
+              <button type="button" onclick="switchTab('las')" class="flex-1 px-4 py-3 rounded-2xl bg-purple-500 hover:bg-purple-600 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                다음: 🎨 리의 색깔 검사하기 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: LEE'S COLOR WHEEL THEORY OF LOVE (LAS)                         -->
+    <!-- ===================================================================== -->
+    <section id="section-las" class="hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6 sm:p-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-100 pb-5">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold mb-2">
+              John Alan Lee (1973) / Hendrick &amp; Hendrick 표준화 척도
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-rose-950 font-serif-kr">
+              리의 사랑의 색깔 이론 검사 (LAS)
+            </h2>
+            <p class="text-sm text-rose-800/80 mt-1.5 leading-relaxed">
+              빛의 삼원색처럼 사랑의 태도도 <strong class="text-rose-600">6가지 색깔(에로스·루두스·스토르게·프라그마·마니아·아가페)</strong>로 나뉩니다. 내가 지향하는 사랑의 태도가 어떤 색깔에 가까운지 탐색해 봅시다.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <div class="inline-flex p-1 bg-purple-100/80 rounded-2xl border border-purple-200">
+              <button type="button" id="las-mode-short" onclick="setLasMode('short')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-purple-700 shadow-sm transition">
+                단축형 24문항
+              </button>
+              <button type="button" id="las-mode-full" onclick="setLasMode('full')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-purple-500 hover:text-purple-700 transition">
+                원판 전체 42문항
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-purple-50/70 p-4 rounded-2xl border border-purple-100">
+          <div class="text-xs text-purple-900">
+            <span class="font-bold">💡 응답 안내:</span> 평소 나의 가치관이나 사랑에 대한 태도와 일치하는 정도를 <strong>1점(전혀 그렇지 않다) ~ 5점(매우 그렇다)</strong> 중에서 선택하세요.
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="w-32 h-2.5 bg-purple-200/70 rounded-full overflow-hidden">
+              <div id="las-progress-bar" class="h-full bg-gradient-to-r from-purple-400 to-pink-500 transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <span id="las-progress-text" class="text-xs font-bold text-purple-700">0 / 24</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="las-questions" class="space-y-4"></div>
+
+      <div class="flex justify-center pt-2">
+        <button type="button" onclick="calculateLas()" class="px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 hover:from-purple-600 hover:to-pink-600 text-white font-bold text-base shadow-lg shadow-purple-300/50 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+          <span>🎨</span>
+          <span>내 사랑의 색깔 휠 돌리기 &amp; 결과 분석</span>
+        </button>
+      </div>
+
+      <!-- LAS Result Card -->
+      <div id="las-result-card" class="hidden glass-card rounded-3xl p-6 sm:p-8 border-2 border-purple-300 space-y-6">
+        <div class="text-center space-y-1">
+          <span class="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">
+            리의 사랑의 색깔 이론(Color Wheel) 분석 결과
+          </span>
+          <h3 id="las-top-title" class="text-2xl sm:text-3xl font-bold text-rose-950 font-serif-kr">
+            제1 주조색: 스토르게 (우정적 사랑)
+          </h3>
+          <p id="las-top-subtitle" class="text-sm text-purple-700 font-medium"></p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Circular 6-Node Color Wheel Visualization -->
+          <div class="lg:col-span-6 bg-gradient-to-b from-purple-50/80 via-rose-50/40 to-white rounded-3xl p-4 sm:p-6 border border-purple-100 flex flex-col items-center justify-center">
+            <div class="relative w-[300px] h-[300px] sm:w-[330px] sm:h-[330px] mx-auto select-none">
+              <svg viewBox="0 0 320 320" class="absolute inset-0 w-full h-full pointer-events-none">
+                <circle cx="160" cy="160" r="106" fill="none" stroke="#e9d5ff" stroke-width="2" stroke-dasharray="6 4" />
+                <circle cx="160" cy="160" r="52" fill="none" stroke="#fce7f3" stroke-width="1.5" />
+                <line x1="160" y1="160" x2="160" y2="54" stroke="#fda4af" stroke-width="2" />
+                <line x1="160" y1="160" x2="251.8" y2="107" stroke="#c4b5fd" stroke-width="2" />
+                <line x1="160" y1="160" x2="251.8" y2="213" stroke="#6ee7b7" stroke-width="2" />
+                <line x1="160" y1="160" x2="160" y2="266" stroke="#7dd3fc" stroke-width="2" />
+                <line x1="160" y1="160" x2="68.2" y2="213" stroke="#fdba74" stroke-width="2" />
+                <line x1="160" y1="160" x2="68.2" y2="107" stroke="#f472b6" stroke-width="2" />
+              </svg>
+
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-white shadow-md border-2 border-rose-200 flex flex-col items-center justify-center text-center z-10">
+                <span class="text-base">💖</span>
+                <span class="text-[10px] font-bold text-rose-800 leading-tight">나의 사랑<br/>색깔 휠</span>
+              </div>
+
+              <div id="wheel-node-Eros" style="left: 50%; top: 16.8%; background: linear-gradient(135deg, #fb7185, #e11d48);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">에로스</span>
+                <span class="text-[9px] opacity-85">열정적 사랑</span>
+                <span id="wheel-score-Eros" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+
+              <div id="wheel-node-Agape" style="left: 78.7%; top: 33.4%; background: linear-gradient(135deg, #a78bfa, #7c3aed);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">아가페</span>
+                <span class="text-[9px] opacity-85">헌신적 사랑</span>
+                <span id="wheel-score-Agape" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+
+              <div id="wheel-node-Storge" style="left: 78.7%; top: 66.6%; background: linear-gradient(135deg, #34d399, #059669);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">스토르게</span>
+                <span class="text-[9px] opacity-85">우정적 사랑</span>
+                <span id="wheel-score-Storge" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+
+              <div id="wheel-node-Pragma" style="left: 50%; top: 83.2%; background: linear-gradient(135deg, #38bdf8, #0284c7);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">프라그마</span>
+                <span class="text-[9px] opacity-85">실용적 사랑</span>
+                <span id="wheel-score-Pragma" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+
+              <div id="wheel-node-Ludus" style="left: 21.3%; top: 66.6%; background: linear-gradient(135deg, #fb923c, #ea580c);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">루두스</span>
+                <span class="text-[9px] opacity-85">유희적 사랑</span>
+                <span id="wheel-score-Ludus" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+
+              <div id="wheel-node-Mania" style="left: 21.3%; top: 33.4%; background: linear-gradient(135deg, #f472b6, #db2777);" class="wheel-node absolute -translate-x-1/2 -translate-y-1/2 w-[84px] h-[84px] sm:w-[90px] sm:h-[90px] rounded-full text-white flex flex-col items-center justify-center text-center shadow-lg border-2 border-white">
+                <span class="text-[10px] font-bold opacity-95">마니아</span>
+                <span class="text-[9px] opacity-85">소유적 사랑</span>
+                <span id="wheel-score-Mania" class="text-base sm:text-lg font-extrabold mt-0.5">0.0</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-purple-600 mt-2 text-center">
+              ※ 각 원 안의 점수는 5.0점 만점 기준이며, 상위 1·2순위 색깔이 확대 강조됩니다.
+            </p>
+          </div>
+
+          <div class="lg:col-span-6 space-y-4">
+            <div class="bg-rose-50/90 p-4 rounded-2xl border border-rose-200 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-500 text-white text-[11px] font-bold">🥇 제1 주조색 (가장 강한 태도)</span>
+                <span id="las-1st-score-badge" class="text-sm font-extrabold text-rose-700">0.0 / 5.0</span>
+              </div>
+              <h4 id="las-1st-name" class="text-base font-bold text-rose-950"></h4>
+              <p id="las-1st-desc" class="text-xs sm:text-sm text-rose-800/90 leading-relaxed"></p>
+            </div>
+
+            <div class="bg-purple-50/90 p-4 rounded-2xl border border-purple-200 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-500 text-white text-[11px] font-bold">🥈 제2 보조색 (함께 나타나는 태도)</span>
+                <span id="las-2nd-score-badge" class="text-sm font-extrabold text-purple-700">0.0 / 5.0</span>
+              </div>
+              <h4 id="las-2nd-name" class="text-base font-bold text-purple-950"></h4>
+              <p id="las-2nd-desc" class="text-xs sm:text-sm text-purple-900/90 leading-relaxed"></p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" onclick="submitResultToSheet('LAS')" class="flex-1 px-4 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                📤 실시간 통계에 익명 전송
+              </button>
+              <button type="button" onclick="switchTab('worksheet')" class="flex-1 px-4 py-3 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                다음: 📝 서·논술형 활동지 쓰기 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: THOUGHTFUL WORKSHEET & DIRECT CANVAS-TO-PDF DOWNLOAD           -->
+    <!-- ===================================================================== -->
+    <section id="section-worksheet" class="hidden space-y-6">
+      <!-- Top Action Bar: ONLY [📥 PDF 파일 다운로드] Button -->
+      <div id="worksheet-toolbar" class="glass-card rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-bold text-rose-950 font-serif-kr flex items-center gap-2">
+            <span>📝</span> 사랑의 심리학 서·논술형 수업 활동지
+          </h2>
+          <p class="text-xs text-rose-700 mt-1 leading-relaxed">
+            검사를 완료하지 않았거나 빈 칸인 상태에서도 오른쪽 버튼을 누르면 <strong>삼각형·6색 휠 그래프가 포함된 A4 PDF 파일</strong>이 즉시 다운로드됩니다.
+          </p>
+        </div>
+        <div class="shrink-0">
+          <button type="button" id="btn-download-pdf" onclick="downloadWorksheetPdf()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl text-white text-xs sm:text-sm font-bold shadow-md transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #ff6b8b, #f43f5e);">
+            <span>📥</span>
+            <span>PDF 파일 다운로드</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Worksheet Container -->
+      <div id="worksheet-printable-area" class="glass-card rounded-3xl p-7 sm:p-12 space-y-8 bg-white">
+        <!-- Worksheet Header -->
+        <div class="border-b-2 border-rose-300 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold text-rose-500">청소년 심리·가정 탐구 · 관계 가치관 형성 서·논술형 활동지</span>
+            <h3 class="text-2xl font-bold text-rose-950 font-serif-kr mt-1">
+              사랑의 삼각형과 색깔 이론으로 성찰하는 나의 관계 가치관
+            </h3>
+          </div>
+          <div class="flex items-center gap-3 text-sm font-bold text-rose-900 bg-rose-50 px-4 py-2 rounded-2xl border border-rose-200">
+            <span>소속: <span id="ws-class-display" class="text-rose-600">1반</span></span>
+            <span>|</span>
+            <span>학번·이름: <span id="ws-name-display" class="text-rose-600">________________</span></span>
+          </div>
+        </div>
+
+        <!-- Auto-filled Diagnostic Summary Cards WITH Side-by-Side SVG Triangle & 6-Color Wheel -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1: Sternberg Triangle Graphic + Summary -->
+          <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200 flex items-center gap-3.5">
+            <div id="ws-mini-triangle-wrap" class="w-28 h-28 shrink-0 bg-white rounded-2xl border border-rose-100 p-1 flex items-center justify-center"></div>
+            <div class="space-y-1 min-w-0">
+              <div class="text-[11px] font-bold text-rose-600">🔺 1. 스턴버그 사랑의 삼각형 결과</div>
+              <div id="ws-stls-summary-type" class="text-sm sm:text-base font-extrabold text-rose-950 truncate">미검사 (기본 가이드 도형)</div>
+              <div id="ws-stls-summary-scores" class="text-xs text-rose-800 font-medium leading-relaxed">
+                친밀감: -점 / 열정: -점 / 헌신: -점
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Lee's 6-Color Wheel Graphic + Summary -->
+          <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 flex items-center gap-3.5">
+            <div id="ws-mini-wheel-wrap" class="w-28 h-28 shrink-0 bg-white rounded-2xl border border-purple-100 p-1 flex items-center justify-center"></div>
+            <div class="space-y-1 min-w-0">
+              <div class="text-[11px] font-bold text-purple-700">🎨 2. 리의 사랑의 색깔 이론 결과</div>
+              <div id="ws-las-summary-type" class="text-sm sm:text-base font-extrabold text-purple-950 truncate">미검사 (기본 6색 색상환)</div>
+              <div id="ws-las-summary-scores" class="text-xs text-purple-800 font-medium leading-relaxed">
+                제1 주조색: - / 제2 보조색: -
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Essay Prompts (Strictly Love Theories & Adolescent Value Formation - Spacious Layout) -->
+        <div class="space-y-9 py-2">
+          <!-- Question 1 -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <label for="essay-q1" class="block text-sm sm:text-base font-bold text-rose-950">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-rose-500 text-white text-xs mr-1.5">1</span>
+                나의 사랑의 삼각형과 사랑의 색깔 분석을 통한 강점·보완점 성찰
+              </label>
+              <button type="button" onclick="toggleHint('hint-1')" class="hint-toggle-btn text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 hover:bg-rose-200 transition shrink-0">
+                💡 작성 길잡이 (이론 기반 예시)
+              </button>
+            </div>
+            <p class="text-xs sm:text-sm text-rose-900 bg-rose-50/60 p-4 rounded-xl border border-rose-100 leading-relaxed">
+              스턴버그의 사랑의 삼각형 세 요소(<strong>친밀감·열정·헌신</strong>)와 리의 <strong>6가지 사랑의 색깔</strong> 진단 결과를 바탕으로, 내가 대인관계에서 지닌 강점과 앞으로 보완해야 할 점을 이론 개념을 활용해 서술하시오.
+            </p>
+            <div id="hint-1" class="hint-box-el hidden text-xs text-rose-800 bg-amber-50/90 p-4 rounded-xl border border-amber-200 leading-relaxed">
+              <strong>✍️ 작성 길잡이 (이론 기반 예시):</strong><br/>
+              “나의 검사 결과 스턴버그의 삼각형에서는 ‘친밀감(7.8점)’이 가장 높게 나타났고, 리의 색깔 이론에서는 우정적 사랑인 ‘스토르게’와 헌신적 사랑인 ‘아가페’가 1·2순위로 나타났다. 이는 내가 일시적인 설렘(열정)보다 서로를 깊이 이해하고 신뢰하는 정서적 유대를 소중히 여긴다는 강점을 보여준다. 반면 ‘헌신’ 점수가 상대적으로 낮게 나온 것은, 갈등이 생겼을 때 끝까지 책임감을 가지고 관계를 지켜내려는 의지를 더 길러야 함을 시사한다.”
+            </div>
+            <textarea id="essay-q1" rows="7" oninput="saveEssays()" placeholder="삼각형 세 요소(친밀감·열정·헌신)와 6가지 사랑의 색깔 결과를 근거로 나의 대인관계 강점과 보완점을 적어 보세요." class="w-full rounded-2xl border border-rose-200 p-4 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-300 leading-relaxed"></textarea>
+          </div>
+
+          <!-- Question 2 -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <label for="essay-q2" class="block text-sm sm:text-base font-bold text-rose-950">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-pink-500 text-white text-xs mr-1.5">2</span>
+                두 이론의 핵심 개념을 연결해 정의하는 ‘건강하고 성숙한 사랑의 조건’
+              </label>
+              <button type="button" onclick="toggleHint('hint-2')" class="hint-toggle-btn text-[11px] font-bold px-2.5 py-1 rounded-full bg-pink-100 text-pink-700 hover:bg-pink-200 transition shrink-0">
+                💡 작성 길잡이 (이론 기반 예시)
+              </button>
+            </div>
+            <p class="text-xs sm:text-sm text-rose-900 bg-pink-50/60 p-4 rounded-xl border border-pink-100 leading-relaxed">
+              스턴버그의 사랑의 삼각형 이론과 리의 사랑의 색깔 이론의 핵심 개념을 연결하여, 내가 추구하는 <strong>‘건강하고 성숙한 사랑의 조건’</strong>을 구체적으로 정의하고 그 이유를 서술하시오.
+            </p>
+            <div id="hint-2" class="hint-box-el hidden text-xs text-rose-800 bg-amber-50/90 p-4 rounded-xl border border-amber-200 leading-relaxed">
+              <strong>✍️ 작성 길잡이 (이론 기반 예시):</strong><br/>
+              “내가 생각하는 건강하고 성숙한 사랑은 스턴버그가 말한 ‘친밀감·열정·헌신’이 조화를 이루면서도, 리의 ‘스토르게(우정적 신뢰)’와 ‘아가페(상호 배려)’가 바탕이 된 관계이다. 초기에는 ‘에로스’적인 설렘과 열정이 관계를 시작하게 하지만, 시간이 흐른 뒤에도 서로를 구속하는 ‘마니아’적 집착에 빠지지 않고 친구처럼 존중하며 약속을 지키는 ‘헌신’이 함께할 때 비로소 두 사람 모두 성장하는 사랑이 될 수 있기 때문이다.”
+            </div>
+            <textarea id="essay-q2" rows="7" oninput="saveEssays()" placeholder="두 이론의 핵심 개념을 연결하여 내가 생각하는 건강하고 성숙한 사랑의 조건과 그 이유를 적어 보세요." class="w-full rounded-2xl border border-rose-200 p-4 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-300 leading-relaxed"></textarea>
+          </div>
+        </div>
+
+        <!-- Teacher Check Footer -->
+        <div class="pt-4 border-t border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-rose-500">
+          <span>작성일: <span id="ws-today-date"></span></span>
+          <span class="font-bold text-rose-800">담당 교사 확인: ________________ (인)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 4: ANONYMOUS LIVE CLASS STATISTICS & GOOGLE APPS SCRIPT           -->
+    <!-- ===================================================================== -->
+    <section id="section-stats" class="hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100 pb-5">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span class="text-xs font-bold text-emerald-700">실시간 학급 통계 (이름 비공개 · 완전 익명)</span>
+            </div>
+            <h2 class="text-2xl font-bold text-rose-950 font-serif-kr">
+              실시간 학급 사랑 유형 분포 (1반~12반 통합)
+            </h2>
+            <p class="text-xs sm:text-sm text-rose-700 mt-1">
+              하나의 웹앱 링크로 1반~12반 전체 데이터가 통합 수집되며, 학생 이름은 절대 표시되지 않습니다.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="stats-class-filter" onchange="renderStatsCharts()" class="text-xs font-bold bg-white border border-rose-200 rounded-xl px-3 py-2 text-rose-900">
+              <option value="ALL">전체 학급 (1반~12반)</option>
+              <option value="1반">1반</option>
+              <option value="2반">2반</option>
+              <option value="3반">3반</option>
+              <option value="4반">4반</option>
+              <option value="5반">5반</option>
+              <option value="6반">6반</option>
+              <option value="7반">7반</option>
+              <option value="8반">8반</option>
+              <option value="9반">9반</option>
+              <option value="10반">10반</option>
+              <option value="11반">11반</option>
+              <option value="12반">12반</option>
+            </select>
+            <button type="button" onclick="fetchLiveStats()" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-sm transition">
+              🔄 새로고침
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-rose-50/80 p-4 rounded-2xl border border-rose-100 text-center">
+            <div class="text-xs text-rose-600 font-bold">총 참여 응답</div>
+            <div id="stat-total-count" class="text-2xl font-extrabold text-rose-950 mt-1">0명</div>
+          </div>
+          <div class="bg-pink-50/80 p-4 rounded-2xl border border-pink-100 text-center">
+            <div class="text-xs text-pink-600 font-bold">1위 삼각형 유형</div>
+            <div id="stat-top-stls" class="text-base sm:text-lg font-extrabold text-pink-950 mt-1.5">-</div>
+          </div>
+          <div class="bg-purple-50/80 p-4 rounded-2xl border border-purple-100 text-center">
+            <div class="text-xs text-purple-600 font-bold">1위 사랑의 색깔</div>
+            <div id="stat-top-las" class="text-base sm:text-lg font-extrabold text-purple-950 mt-1.5">-</div>
+          </div>
+          <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-100 text-center">
+            <div class="text-xs text-amber-700 font-bold">데이터 연동 상태</div>
+            <div id="stat-sync-badge" class="text-xs font-extrabold text-amber-800 mt-2">로컬 대기 (0명)</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white/90 p-5 rounded-3xl border border-rose-100 space-y-3">
+            <h3 class="text-sm font-bold text-rose-950 flex items-center gap-1.5">
+              <span>🔺</span> 스턴버그 사랑의 삼각형 분포
+            </h3>
+            <div id="chart-stls-bars" class="space-y-2.5"></div>
+          </div>
+
+          <div class="bg-white/90 p-5 rounded-3xl border border-purple-100 space-y-3">
+            <h3 class="text-sm font-bold text-purple-950 flex items-center gap-1.5">
+              <span>🎨</span> 리의 사랑의 색깔 분포
+            </h3>
+            <div id="chart-las-bars" class="space-y-2.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teacher Google Sheets Apps Script Setup Accordion -->
+      <div class="glass-card rounded-3xl p-6 border border-rose-200">
+        <button type="button" onclick="toggleGasPanel()" class="w-full flex items-center justify-between text-left">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">⚙️</span>
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-rose-950">교사용 구글 스프레드시트 실시간 연동 설정</h3>
+              <p class="text-xs text-rose-600">구글 시트 앱스 스크립트(Apps Script) URL을 연결하면 1반~12반 학생들의 결과가 실시간으로 합산됩니다.</p>
+            </div>
+          </div>
+          <span id="gas-arrow" class="text-rose-500 font-bold text-sm transition-transform">▼</span>
+        </button>
+
+        <div id="gas-panel" class="hidden mt-5 pt-5 border-t border-rose-100 space-y-4">
+          <div class="space-y-2">
+            <label for="gas-url-input" class="block text-xs font-bold text-rose-900">
+              Google Apps Script 웹 앱 URL (배포 후 생성된 https://script.google.com/macros/s/.../exec 주소)
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input id="gas-url-input" type="url" placeholder="https://script.google.com/macros/s/..." class="flex-1 rounded-xl border border-rose-200 px-3.5 py-2.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-rose-300" />
+              <button type="button" onclick="saveGasUrl()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shrink-0 transition">
+                URL 저장 및 연결
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-rose-50/70 p-4 rounded-2xl border border-rose-100 text-xs text-rose-900 space-y-1.5 leading-relaxed">
+            <div class="font-bold text-rose-950">📌 3단계 초간단 연동 방법:</div>
+            <p>1. 새 <strong>구글 스프레드시트</strong>를 열고 상단 메뉴 <strong>[확장 프로그램] &gt; [Apps Script]</strong>를 클릭합니다.</p>
+            <p>2. 아래 코드를 복사해 붙여넣고 저장(Ctrl+S)한 뒤, 우측 상단 <strong>[배포] &gt; [새 배포]</strong>를 누릅니다.</p>
+            <p>3. 유형을 <strong>[웹 앱]</strong>으로 선택하고 액세스 권한을 <strong>'모든 사용자(Anyone)'</strong>로 배포한 뒤 나온 URL을 위 칸에 저장하세요.</p>
+          </div>
+
+          <div class="relative">
+            <button type="button" onclick="copyGasCode()" class="absolute top-2.5 right-2.5 px-3 py-1 rounded-lg bg-white/90 hover:bg-white text-rose-700 text-[11px] font-bold shadow-sm border border-rose-200">
+              📋 코드 복사
+            </button>
+            <pre id="gas-code-block" class="bg-slate-900 text-emerald-300 p-4 rounded-2xl text-[11px] overflow-x-auto leading-relaxed">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["시간", "반", "학번이름(교사용)", "검사종류", "결과유형", "세부점수"]);
+  }
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date().toLocaleString("ko-KR"),
+    data.studentClass || "미지정",
+    data.studentIdName || "익명",
+    data.testType,
+    data.resultType,
+    data.detailScores
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var rows = sheet.getDataRange().getValues();
+  var list = [];
+  for (var i = 1; i < rows.length; i++) {
+    // 개인정보 보호를 위해 학번이름(rows[i][2])은 절대 반환하지 않음
+    list.push({
+      studentClass: rows[i][1],
+      testType: rows[i][3],
+      resultType: rows[i][4]
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify(list))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. STANDARDIZED SCALE ITEMS (STLS 45 ITEMS & LAS 42 ITEMS)
+    // =========================================================================
+    const STLS_ITEMS = [
+      // Intimacy (친밀감 15문항 - 1~5번 단축형 포함)
+      { id: 1, dim: 'intimacy', short: true,  text: "나는 상대방이 행복하고 잘되기를 진심으로 응원한다." },
+      { id: 2, dim: 'intimacy', short: true,  text: "나는 상대방과 함께 있을 때 마음이 따뜻하고 편안하다." },
+      { id: 3, dim: 'intimacy', short: true,  text: "나는 힘든 일이 생기면 언제든 상대방에게 의지할 수 있다고 믿는다." },
+      { id: 4, dim: 'intimacy', short: true,  text: "나는 내 소중한 가치관이나 솔직한 속마음을 상대방과 기꺼이 나눈다." },
+      { id: 5, dim: 'intimacy', short: true,  text: "나는 상대방과 대화가 잘 통하고 서로 깊이 이해한다고 느낀다." },
+      { id: 6, dim: 'intimacy', short: false, text: "상대방도 도움이 필요할 때 나에게 편하게 의지할 수 있다." },
+      { id: 7, dim: 'intimacy', short: false, text: "나는 상대방으로부터 따뜻한 정서적 응원을 받고 있다고 느낀다." },
+      { id: 8, dim: 'intimacy', short: false, text: "나 역시 상대방에게 정서적인 힘과 위로를 건네준다." },
+      { id: 9, dim: 'intimacy', short: false, text: "내 삶에서 상대방은 매우 소중하고 가치 있는 존재이다." },
+      { id: 10, dim: 'intimacy', short: false, text: "나는 상대방과 매우 가깝고 친밀한 유대감을 느낀다." },
+      { id: 11, dim: 'intimacy', short: false, text: "나는 상대방과 안정적이고 편안한 관계를 맺고 있다." },
+      { id: 12, dim: 'intimacy', short: false, text: "상대방은 나의 장점과 단점을 있는 그대로 잘 이해해 준다." },
+      { id: 13, dim: 'intimacy', short: false, text: "나는 상대방을 진심으로 믿고 신뢰한다." },
+      { id: 14, dim: 'intimacy', short: false, text: "나는 남들에게 말하기 어려운 고민도 상대방에게는 털어놓을 수 있다." },
+      { id: 15, dim: 'intimacy', short: false, text: "상대방과 함께 웃고 이야기하는 시간이 나에게 큰 기쁨을 준다." },
+
+      // Passion (열정 15문항 - 16~20번 단축형 포함)
+      { id: 16, dim: 'passion', short: true,  text: "상대방을 바라보기만 해도 가슴이 두근거리고 설렌다." },
+      { id: 17, dim: 'passion', short: true,  text: "나는 하루 중에도 상대방 생각을 아주 자주 떠올린다." },
+      { id: 18, dim: 'passion', short: true,  text: "상대방과의 관계는 나에게 매우 로맨틱하고 낭만적으로 느껴진다." },
+      { id: 19, dim: 'passion', short: true,  text: "나는 상대방에게 강한 매력과 이끌림을 느낀다." },
+      { id: 20, dim: 'passion', short: true,  text: "나는 다른 누구보다도 상대방과 함께 시간을 보내고 싶다." },
+      { id: 21, dim: 'passion', short: false, text: "나는 상대방을 내 이상형에 매우 가까운 사람이라고 생각한다." },
+      { id: 22, dim: 'passion', short: false, text: "상대방만큼 나를 설레고 행복하게 해 줄 사람은 없을 것 같다." },
+      { id: 23, dim: 'passion', short: false, text: "우리 관계만큼 나에게 특별한 에너지를 주는 것은 거의 없다." },
+      { id: 24, dim: 'passion', short: false, text: "상대방과 손을 잡거나 가까이 있을 때 기분 좋은 설렘을 느낀다." },
+      { id: 25, dim: 'passion', short: false, text: "상대방과의 사이에는 특별한 설렘과 끌림의 분위기가 있다." },
+      { id: 26, dim: 'passion', short: false, text: "나는 상대방에게 강렬한 애정과 열정을 느낀다." },
+      { id: 27, dim: 'passion', short: false, text: "상대방이 없는 나의 일상은 상상하기 어렵다." },
+      { id: 28, dim: 'passion', short: false, text: "상대방의 존재만으로도 내 일상이 생동감 있고 즐겁게 느껴진다." },
+      { id: 29, dim: 'passion', short: false, text: "나는 상대방의 매력에 깊이 빠져 있다." },
+      { id: 30, dim: 'passion', short: false, text: "나는 상대방과 더욱 가까워지고 싶은 강한 마음을 가지고 있다." },
+
+      // Commitment (헌신 15문항 - 31~35번 단축형 포함)
+      { id: 31, dim: 'commitment', short: true,  text: "나는 상대방을 진심으로 아끼고 사랑한다는 확신이 있다." },
+      { id: 32, dim: 'commitment', short: true,  text: "나는 앞으로도 상대방과의 관계를 소중히 이어갈 결심이 되어 있다." },
+      { id: 33, dim: 'commitment', short: true,  text: "상대방에 대한 나의 책임감과 믿음은 쉽게 흔들리지 않는다." },
+      { id: 34, dim: 'commitment', short: true,  text: "나는 상대방과의 관계를 오래도록 변함없이 지켜나가고 싶다." },
+      { id: 35, dim: 'commitment', short: true,  text: "나는 설령 사소한 다툼이나 어려움이 생겨도 상대방 곁을 지킬 것이다." },
+      { id: 36, dim: 'commitment', short: false, text: "나는 어떤 상황에서도 상대방에 대한 내 마음을 쉽게 바꾸지 않을 것이다." },
+      { id: 37, dim: 'commitment', short: false, text: "나는 항상 상대방에게 신의를 지키며 책임감 있게 행동할 것이다." },
+      { id: 38, dim: 'commitment', short: false, text: "나는 상대방과의 관계에 깊이 헌신하고 있다." },
+      { id: 39, dim: 'commitment', short: false, text: "다른 사람이 끼어들어 우리 사이를 흔들게 두지 않을 것이다." },
+      { id: 40, dim: 'commitment', short: false, text: "나는 상대방과 미래에도 든든한 동반자로 함께할 것을 기대한다." },
+      { id: 41, dim: 'commitment', short: false, text: "나는 상대방과의 약속과 관계를 매우 진지하고 소중하게 여긴다." },
+      { id: 42, dim: 'commitment', short: false, text: "나는 관계를 유지하기 위해 필요한 배려와 노력을 기꺼이 다한다." },
+      { id: 43, dim: 'commitment', short: false, text: "상대방과의 관계를 이어가겠다는 나의 결정은 확고하다." },
+      { id: 44, dim: 'commitment', short: false, text: "나는 우리의 사랑과 우정이 오랫동안 지속될 것이라고 믿는다." },
+      { id: 45, dim: 'commitment', short: false, text: "나는 상대방을 변치 않고 아껴주겠다고 스스로 약속했다." }
+    ];
+
+    const LAS_ITEMS = [
+      // Eros (에로스 - 열정적 사랑 7문항)
+      { id: 1,  style: 'Eros', short: true,  text: "나는 상대방을 처음 보았을 때부터 강한 설렘과 끌림을 느끼는 편이다." },
+      { id: 2,  style: 'Eros', short: true,  text: "나는 연인과 외모나 분위기가 잘 어울리고 첫눈에 반하는 로맨스를 꿈꾼다." },
+      { id: 3,  style: 'Eros', short: true,  text: "좋아하는 사람과 손을 잡거나 눈을 맞출 때 가슴이 뛸 만큼 설레는 것이 중요하다." },
+      { id: 4,  style: 'Eros', short: true,  text: "나는 사랑에 빠지면 상대방에게 온 마음을 다해 열정적으로 표현한다." },
+      { id: 5,  style: 'Eros', short: false, text: "연인 사이에는 서로에게 강하게 빠져드는 로맨틱한 감정이 꼭 필요하다." },
+      { id: 6,  style: 'Eros', short: false, text: "나는 연인과 서로의 감정과 비밀을 솔직하고 뜨겁게 나누고 싶다." },
+      { id: 7,  style: 'Eros', short: false, text: "나의 이상형은 외적인 매력과 따뜻한 감성을 모두 갖춘 사람이다." },
+
+      // Ludus (루두스 - 유희적 사랑 7문항)
+      { id: 8,  style: 'Ludus', short: true,  text: "나는 연애를 너무 심각하게 생각하기보다 즐거운 놀이처럼 가볍게 즐기고 싶다." },
+      { id: 9,  style: 'Ludus', short: true,  text: "상대방이 나에게 너무 깊이 집착하거나 구속하려 하면 부담스러워진다." },
+      { id: 10, style: 'Ludus', short: true,  text: "한 사람에게만 얽매이기보다 여러 친구·이성과 폭넓게 어울리는 것이 좋다." },
+      { id: 11, style: 'Ludus', short: true,  text: "나는 연애에서 밀고 당기는 긴장감과 유쾌한 스릴을 즐기는 편이다." },
+      { id: 12, style: 'Ludus', short: false, text: "나는 상대방이 나의 모든 것을 다 알지 못하도록 적당한 거리를 유지한다." },
+      { id: 13, style: 'Ludus', short: false, text: "서로 마음이 식거나 재미없어지면 미련 없이 깔끔하게 끝내는 것이 좋다고 생각한다." },
+      { id: 14, style: 'Ludus', short: false, text: "먼 미래를 미리 약속하기보다는 지금 이 순간의 즐거움에 충실하고 싶다." },
+
+      // Storge (스토르게 - 우정적 사랑 7문항)
+      { id: 15, style: 'Storge', short: true,  text: "진정한 사랑은 갑작스러운 불꽃보다 오랜 우정처럼 서서히 깊어지는 것이다." },
+      { id: 16, style: 'Storge', short: true,  text: "나는 연인이 되기 전에 먼저 서로를 잘 아는 편안한 친구가 되는 것이 가장 좋다." },
+      { id: 17, style: 'Storge', short: true,  text: "나는 짜릿한 설렘보다 취미와 대화를 나누며 함께 웃는 편안함이 더 좋다." },
+      { id: 18, style: 'Storge', short: true,  text: "사랑은 특별한 이벤트보다 소소한 일상을 함께하며 쌓이는 믿음이라고 생각한다." },
+      { id: 19, style: 'Storge', short: false, text: "가장 이상적인 사랑은 평생을 함께 걸어갈 든든한 단짝 친구 같은 관계이다." },
+      { id: 20, style: 'Storge', short: false, text: "연애 중에도 각자의 개인 시간과 독립적인 생활을 존중하며 차분하게 만난다." },
+      { id: 21, style: 'Storge', short: false, text: "설령 연인 사이가 끝나더라도 좋은 친구로 남아 서로를 응원할 수 있다고 믿는다." },
+
+      // Pragma (프라그마 - 실용적 사랑 7문항)
+      { id: 22, style: 'Pragma', short: true,  text: "나는 연인이나 동반자를 선택할 때 상대방의 성격, 성실성, 미래 계획을 꼼꼼히 본다." },
+      { id: 23, style: 'Pragma', short: true,  text: "사랑에 빠지기 전에 상대방의 가치관과 생활 습관이 나와 잘 맞는지 먼저 생각해 본다." },
+      { id: 24, style: 'Pragma', short: true,  text: "오래 행복하려면 감정만큼이나 현실적인 조건과 성실함의 조화가 중요하다." },
+      { id: 25, style: 'Pragma', short: true,  text: "나는 우리 가족이나 주변 친구들과도 무난하게 잘 어울릴 수 있는 사람을 원한다." },
+      { id: 26, style: 'Pragma', short: false, text: "상대방이 장래에 책임감 있고 든든한 동반자가 될 수 있을지 미리 떠올려 본다." },
+      { id: 27, style: 'Pragma', short: false, text: "현실적인 문제가 너무 크다면 아무리 호감이 가도 관계를 시작하기 전에 신중히 고민한다." },
+      { id: 28, style: 'Pragma', short: false, text: "나는 나와 비슷한 목표와 생활 태도를 가진 사람과 만날 때 안정감을 느낀다." },
+
+      // Mania (마니아 - 소유적·열광적 사랑 7문항)
+      { id: 29, style: 'Mania', short: true,  text: "좋아하는 사람이 나에게 조금만 소홀하거나 답장이 늦어지면 불안하고 초조해진다." },
+      { id: 30, style: 'Mania', short: true,  text: "나는 누군가를 좋아하게 되면 다른 일에 집중하기 어렵고 온통 그 사람 생각뿐이다." },
+      { id: 31, style: 'Mania', short: true,  text: "나는 상대방으로부터 내가 사랑받고 있다는 확신을 자주 확인받고 싶다." },
+      { id: 32, style: 'Mania', short: true,  text: "좋아하는 사람이 다른 이성과 친하게 지내는 모습을 보면 질투심을 참기 힘들다." },
+      { id: 33, style: 'Mania', short: false, text: "연애할 때 나의 기분은 상대방의 말 한마디와 표정에 따라 크게 오르내린다." },
+      { id: 34, style: 'Mania', short: false, text: "상대방이 나를 떠날까 봐 걱정되어 그 사람의 일거수일투족이 궁금해진다." },
+      { id: 35, style: 'Mania', short: false, text: "상대방이 나만큼 나를 좋아하지 않는 것 같으면 견디기 힘들 정도로 속상하다." },
+
+      // Agape (아가페 - 헌신적·이타적 사랑 7문항)
+      { id: 36, style: 'Agape', short: true,  text: "나는 내가 조금 손해를 보더라도 사랑하는 사람이 행복하다면 기꺼이 양보한다." },
+      { id: 37, style: 'Agape', short: true,  text: "상대방이 힘든 상황에 처했을 때 내 일보다 상대방을 돕는 것이 항상 우선이다." },
+      { id: 38, style: 'Agape', short: true,  text: "나는 무언가를 바라기보다 상대방에게 아낌없이 주고 보살펴 줄 때 가장 행복하다." },
+      { id: 39, style: 'Agape', short: true,  text: "상대방이 실수를 하거나 서운하게 해도 넓게 이해하고 용서하려 노력한다." },
+      { id: 40, style: 'Agape', short: false, text: "내 시간과 에너지를 사랑하는 사람의 기쁨과 성장을 위해 쓰는 것이 전혀 아깝지 않다." },
+      { id: 41, style: 'Agape', short: false, text: "진정한 사랑은 조건 없이 상대방을 있는 그대로 아껴주고 헌신하는 것이다." },
+      { id: 42, style: 'Agape', short: false, text: "설령 상대방이 나와 멀어지더라도 그 사람의 행복을 진심으로 빌어줄 수 있다." }
+    ];
+
+    const LAS_STYLE_META = {
+      Eros: {
+        ko: '에로스 (열정적 사랑)',
+        shortKo: '에로스',
+        color: '#e11d48',
+        desc: '강렬한 설렘과 로맨틱한 감정을 중시하는 태도입니다. 감정에 솔직하고 애정을 적극적으로 표현하는 장점이 있으나, 초기 열정이 식을 때도 관계를 지탱할 신뢰를 함께 쌓는 것이 중요합니다.'
+      },
+      Ludus: {
+        ko: '루두스 (유희적 사랑)',
+        shortKo: '루두스',
+        color: '#ea580c',
+        desc: '사랑을 심각한 구속이 아닌 즐겁고 자유로운 교류로 바라보는 태도입니다. 밝고 유연한 분위기를 만들지만, 지나치면 상대방에게 진지한 책임감과 신뢰를 주기 어려울 수 있습니다.'
+      },
+      Storge: {
+        ko: '스토르게 (우정적 사랑)',
+        shortKo: '스토르게',
+        color: '#059669',
+        desc: '오랜 우정과 깊은 신뢰를 바탕으로 서서히 깊어지는 안정적인 태도입니다. 서로의 일상과 가치를 존중하며 친구처럼 편안하고 지속 가능한 관계를 만들어 갑니다.'
+      },
+      Pragma: {
+        ko: '프라그마 (실용적 사랑)',
+        shortKo: '프라그마',
+        color: '#0284c7',
+        desc: '상대방의 성격, 가치관, 성실성 등 현실적인 조화를 신중하게 살피는 이성적인 태도입니다. 충동적인 선택을 피하고 안정적이고 책임감 있는 관계를 설계하는 강점이 있습니다.'
+      },
+      Mania: {
+        ko: '마니아 (소유적·열광적 사랑)',
+        shortKo: '마니아',
+        color: '#db2777',
+        desc: '상대방에게 깊이 몰입하고 끊임없이 애정을 확인받고 싶어 하는 태도입니다. 세심한 관심을 기울이지만, 불안과 질투로 인해 상대방과 자신 모두를 지치게 할 수 있어 정서적 자립이 필요합니다.'
+      },
+      Agape: {
+        ko: '아가페 (헌신적·이타적 사랑)',
+        shortKo: '아가페',
+        color: '#7c3aed',
+        desc: '보상을 바라지 않고 상대방의 행복과 성장을 먼저 배려하는 성숙한 태도입니다. 관계를 따뜻하게 감싸지만, 일방적인 희생이 되지 않도록 자신의 감정과 경계도 함께 돌봐야 합니다.'
+      }
+    };
+
+    // =========================================================================
+    // 2. APPLICATION STATE (INITIALIZED WITH 0 PARTICIPANTS)
+    // =========================================================================
+    let stlsMode = 'short';
+    let lasMode = 'short';
+    let stlsAnswers = {};
+    let lasAnswers = {};
+    let latestStlsResult = null;
+    let latestLasResult = null;
+    let liveStatsRecords = [];
+
+    // =========================================================================
+    // 3. SVG GRAPHIC GENERATORS FOR WORKSHEET UI
+    // =========================================================================
+    function buildWorksheetTriangleSvg(scoresObj, sizePx = 104) {
+      const cx = 100, cy = 105, maxR = 68;
+      const toRad = (deg) => (deg * Math.PI) / 180;
+
+      const hasResult = Boolean(scoresObj);
+      const iVal = hasResult ? scoresObj.intimacy : 0;
+      const pVal = hasResult ? scoresObj.passion : 0;
+      const cVal = hasResult ? scoresObj.commitment : 0;
+
+      const rI = (iVal / 9) * maxR;
+      const rP = (pVal / 9) * maxR;
+      const rC = (cVal / 9) * maxR;
+
+      const x1 = cx + rI * Math.cos(toRad(-90));
+      const y1 = cy + rI * Math.sin(toRad(-90));
+      const x2 = cx + rP * Math.cos(toRad(150));
+      const y2 = cy + rP * Math.sin(toRad(150));
+      const x3 = cx + rC * Math.cos(toRad(30));
+      const y3 = cy + rC * Math.sin(toRad(30));
+
+      const outerPts = `${cx},${cy - maxR} ${(cx + maxR * Math.cos(toRad(150))).toFixed(1)},${(cy + maxR * Math.sin(toRad(150))).toFixed(1)} ${(cx + maxR * Math.cos(toRad(30))).toFixed(1)},${(cy + maxR * Math.sin(toRad(30))).toFixed(1)}`;
+      const userPts = `${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${x3.toFixed(1)},${y3.toFixed(1)}`;
+
+      return `
+        <svg viewBox="0 0 200 195" width="${sizePx}" height="${sizePx}" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="${outerPts}" fill="#fff1f2" stroke="#fda4af" stroke-width="2" stroke-dasharray="4 3" />
+          <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy - maxR}" stroke="#fecdd3" stroke-width="1.2" />
+          <line x1="${cx}" y1="${cy}" x2="${(cx + maxR * Math.cos(toRad(150))).toFixed(1)}" y2="${(cy + maxR * Math.sin(toRad(150))).toFixed(1)}" stroke="#fecdd3" stroke-width="1.2" />
+          <line x1="${cx}" y1="${cy}" x2="${(cx + maxR * Math.cos(toRad(30))).toFixed(1)}" y2="${(cy + maxR * Math.sin(toRad(30))).toFixed(1)}" stroke="#fecdd3" stroke-width="1.2" />
+          ${hasResult ? `
+            <polygon points="${userPts}" fill="rgba(255, 107, 139, 0.36)" stroke="#ff6b8b" stroke-width="3" stroke-linejoin="round" />
+            <circle cx="${x1.toFixed(1)}" cy="${y1.toFixed(1)}" r="4.5" fill="#e11d48" />
+            <circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="4.5" fill="#db2777" />
+            <circle cx="${x3.toFixed(1)}" cy="${y3.toFixed(1)}" r="4.5" fill="#d97706" />
+          ` : `
+            <circle cx="${cx}" cy="${cy}" r="4" fill="#fda4af" />
+          `}
+          <text x="100" y="24" text-anchor="middle" fill="#be123c" font-size="13" font-weight="800">친밀감${hasResult ? ' ' + iVal : ''}</text>
+          <text x="34" y="176" text-anchor="middle" fill="#9d174d" font-size="13" font-weight="800">열정${hasResult ? ' ' + pVal : ''}</text>
+          <text x="166" y="176" text-anchor="middle" fill="#b45309" font-size="13" font-weight="800">헌신${hasResult ? ' ' + cVal : ''}</text>
+        </svg>
+      `;
+    }
+
+    function buildWorksheetColorWheelSvg(lasObj, sizePx = 104) {
+      const cx = 100, cy = 100, ringR = 64;
+      const nodes = [
+        { key: 'Eros',   label: '에로스', angle: -90, fill: '#f43f5e' },
+        { key: 'Agape',  label: '아가페', angle: -30, fill: '#8b5cf6' },
+        { key: 'Storge', label: '스토르게', angle: 30, fill: '#10b981' },
+        { key: 'Pragma', label: '프라그마', angle: 90, fill: '#0ea5e9' },
+        { key: 'Ludus',  label: '루두스', angle: 150, fill: '#f97316' },
+        { key: 'Mania',  label: '마니아', angle: 210, fill: '#ec4899' }
+      ];
+
+      const hasResult = Boolean(lasObj);
+      const toRad = (deg) => (deg * Math.PI) / 180;
+
+      const linesAndCircles = nodes.map(n => {
+        const nx = cx + ringR * Math.cos(toRad(n.angle));
+        const ny = cy + ringR * Math.sin(toRad(n.angle));
+        const isTop = hasResult && (n.key === lasObj.firstKey || n.key === lasObj.secondKey);
+        const r = isTop ? 24 : 20;
+        const scoreTxt = hasResult ? lasObj.scores[n.key].toFixed(1) : '-';
+        return `
+          <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#e9d5ff" stroke-width="1.5" />
+          <circle cx="${nx.toFixed(1)}" cy="${ny.toFixed(1)}" r="${r}" fill="${n.fill}" stroke="${isTop ? '#fde047' : '#ffffff'}" stroke-width="${isTop ? '3' : '2'}" />
+          <text x="${nx.toFixed(1)}" y="${(ny - 2).toFixed(1)}" text-anchor="middle" fill="#ffffff" font-size="8.5" font-weight="800">${n.label}</text>
+          <text x="${nx.toFixed(1)}" y="${(ny + 9).toFixed(1)}" text-anchor="middle" fill="#ffffff" font-size="9.5" font-weight="800">${scoreTxt}</text>
+        `;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 200 200" width="${sizePx}" height="${sizePx}" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="${cx}" cy="${cy}" r="${ringR}" fill="none" stroke="#d8b4fe" stroke-width="1.5" stroke-dasharray="4 3" />
+          ${linesAndCircles}
+          <circle cx="${cx}" cy="${cy}" r="18" fill="#ffffff" stroke="#f9a8d4" stroke-width="2" />
+          <text x="${cx}" y="${cy + 3.5}" text-anchor="middle" fill="#9d174d" font-size="9" font-weight="800">6색 휠</text>
+        </svg>
+      `;
+    }
+
+    function updateWorksheetVisuals() {
+      document.getElementById('ws-mini-triangle-wrap').innerHTML = buildWorksheetTriangleSvg(latestStlsResult, 102);
+      document.getElementById('ws-mini-wheel-wrap').innerHTML = buildWorksheetColorWheelSvg(latestLasResult, 102);
+    }
+
+    // =========================================================================
+    // 4. INITIALIZATION & UI HELPERS
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('ws-today-date').textContent = new Date().toLocaleDateString('ko-KR');
+
+      const savedClass = localStorage.getItem('love_class') || '1반';
+      const savedName = localStorage.getItem('love_id_name') || '';
+      document.getElementById('student-class').value = savedClass;
+      document.getElementById('student-id-name').value = savedName;
+      updateWorksheetHeader();
+      updateWorksheetVisuals();
+
+      document.getElementById('student-class').addEventListener('change', (e) => {
+        localStorage.setItem('love_class', e.target.value);
+        updateWorksheetHeader();
+      });
+      document.getElementById('student-id-name').addEventListener('input', (e) => {
+        localStorage.setItem('love_id_name', e.target.value);
+        updateWorksheetHeader();
+      });
+
+      ['q1', 'q2'].forEach(q => {
+        const savedText = localStorage.getItem('love_essay_' + q);
+        if (savedText) document.getElementById('essay-' + q).value = savedText;
+      });
+
+      const savedGas = localStorage.getItem('love_gas_url') || '';
+      if (savedGas) {
+        document.getElementById('gas-url-input').value = savedGas;
+        document.getElementById('stat-sync-badge').textContent = '구글 시트 실시간 연동됨';
+        document.getElementById('stat-sync-badge').className = 'text-xs font-extrabold text-emerald-700 mt-2';
+        fetchLiveStats();
+      } else {
+        renderStatsCharts();
+      }
+
+      renderStlsQuestions();
+      renderLasQuestions();
+    });
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      document.getElementById('toast-text').textContent = msg;
+      box.classList.remove('opacity-0', 'translate-y-3');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add('opacity-0', 'translate-y-3');
+      }, 4200);
+    }
+
+    function switchTab(tabName) {
+      ['stls', 'las', 'worksheet', 'stats'].forEach(t => {
+        document.getElementById('section-' + t).classList.add('hidden');
+        document.getElementById('tab-' + t).classList.remove('active');
+      });
+      document.getElementById('section-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (tabName === 'worksheet') {
+        updateWorksheetVisuals();
+      }
+      if (tabName === 'stats') {
+        fetchLiveStats();
+      }
+    }
+
+    function toggleHint(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+
+    function updateWorksheetHeader() {
+      const cls = document.getElementById('student-class').value || '1반';
+      const name = document.getElementById('student-id-name').value.trim() || '________________';
+      document.getElementById('ws-class-display').textContent = cls;
+      document.getElementById('ws-name-display').textContent = name;
+    }
+
+    function saveEssays() {
+      ['q1', 'q2'].forEach(q => {
+        localStorage.setItem('love_essay_' + q, document.getElementById('essay-' + q).value);
+      });
+    }
+
+    // =========================================================================
+    // 5. PURE HTML5 CANVAS 2D A4 RENDERER + MULTI-CHANNEL PDF DOWNLOADER
+    //    (100% Immune to Tainted Canvas, CORS, & Mobile/WebView Restrictions)
+    // =========================================================================
+    function drawRoundedRect(ctx, x, y, w, h, r, fillStyle, strokeStyle, lineWidth = 2) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+      if (strokeStyle) {
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = strokeStyle;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+      if (!text) return [];
+      const paragraphs = String(text).split(/\r?\n/);
+      const lines = [];
+      for (const para of paragraphs) {
+        if (para === '') {
+          lines.push('');
+          continue;
+        }
+        let currentLine = '';
+        for (let i = 0; i < para.length; i++) {
+          const ch = para[i];
+          const testLine = currentLine + ch;
+          if (ctx.measureText(testLine).width > maxWidth && currentLine.length > 0) {
+            lines.push(currentLine);
+            currentLine = ch;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+      }
+      return lines;
+    }
+
+    function drawTriangleOnCanvas(ctx, cx, cy, maxR, stlsObj) {
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const hasResult = Boolean(stlsObj);
+      const iVal = hasResult ? stlsObj.intimacy : 0;
+      const pVal = hasResult ? stlsObj.passion : 0;
+      const cVal = hasResult ? stlsObj.commitment : 0;
+
+      const ox1 = cx + maxR * Math.cos(toRad(-90));
+      const oy1 = cy + maxR * Math.sin(toRad(-90));
+      const ox2 = cx + maxR * Math.cos(toRad(150));
+      const oy2 = cy + maxR * Math.sin(toRad(150));
+      const ox3 = cx + maxR * Math.cos(toRad(30));
+      const oy3 = cy + maxR * Math.sin(toRad(30));
+
+      ctx.save();
+      // Reference outer dashed triangle
+      ctx.beginPath();
+      ctx.moveTo(ox1, oy1);
+      ctx.lineTo(ox2, oy2);
+      ctx.lineTo(ox3, oy3);
+      ctx.closePath();
+      ctx.fillStyle = '#fff1f2';
+      ctx.fill();
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#fda4af';
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Center axes
+      ctx.strokeStyle = '#fecdd3';
+      ctx.lineWidth = 1.5;
+      [[ox1, oy1], [ox2, oy2], [ox3, oy3]].forEach(([vx, vy]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(vx, vy);
+        ctx.stroke();
+      });
+
+      if (hasResult) {
+        const rI = (iVal / 9) * maxR;
+        const rP = (pVal / 9) * maxR;
+        const rC = (cVal / 9) * maxR;
+
+        const ux1 = cx + rI * Math.cos(toRad(-90));
+        const uy1 = cy + rI * Math.sin(toRad(-90));
+        const ux2 = cx + rP * Math.cos(toRad(150));
+        const uy2 = cy + rP * Math.sin(toRad(150));
+        const ux3 = cx + rC * Math.cos(toRad(30));
+        const uy3 = cy + rC * Math.sin(toRad(30));
+
+        ctx.beginPath();
+        ctx.moveTo(ux1, uy1);
+        ctx.lineTo(ux2, uy2);
+        ctx.lineTo(ux3, uy3);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 107, 139, 0.36)';
+        ctx.fill();
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = '#ff6b8b';
+        ctx.stroke();
+
+        const dots = [
+          { x: ux1, y: uy1, color: '#e11d48' },
+          { x: ux2, y: uy2, color: '#db2777' },
+          { x: ux3, y: uy3, color: '#d97706' }
+        ];
+        dots.forEach(d => {
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, 5.5, 0, Math.PI * 2);
+          ctx.fillStyle = d.color;
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+        });
+      } else {
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fda4af';
+        ctx.fill();
+      }
+
+      // Vertex labels
+      ctx.font = '700 13px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#be123c';
+      ctx.fillText(`친밀감${hasResult ? ' ' + iVal : ''}`, cx, oy1 - 10);
+      ctx.fillStyle = '#9d174d';
+      ctx.fillText(`열정${hasResult ? ' ' + pVal : ''}`, ox2 - 4, oy2 + 18);
+      ctx.fillStyle = '#b45309';
+      ctx.fillText(`헌신${hasResult ? ' ' + cVal : ''}`, ox3 + 4, oy3 + 18);
+      ctx.restore();
+    }
+
+    function drawColorWheelOnCanvas(ctx, cx, cy, ringR, lasObj) {
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const hasResult = Boolean(lasObj);
+      const nodes = [
+        { key: 'Eros',   label: '에로스',   angle: -90, fill: '#f43f5e' },
+        { key: 'Agape',  label: '아가페',   angle: -30, fill: '#8b5cf6' },
+        { key: 'Storge', label: '스토르게', angle: 30,  fill: '#10b981' },
+        { key: 'Pragma', label: '프라그마', angle: 90,  fill: '#0ea5e9' },
+        { key: 'Ludus',  label: '루두스',   angle: 150, fill: '#f97316' },
+        { key: 'Mania',  label: '마니아',   angle: 210, fill: '#ec4899' }
+      ];
+
+      ctx.save();
+      // Dashed ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, ringR, 0, Math.PI * 2);
+      ctx.setLineDash([4, 3]);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#d8b4fe';
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      nodes.forEach(n => {
+        const nx = cx + ringR * Math.cos(toRad(n.angle));
+        const ny = cy + ringR * Math.sin(toRad(n.angle));
+        const isTop = hasResult && (n.key === lasObj.firstKey || n.key === lasObj.secondKey);
+        const r = isTop ? 25 : 21;
+        const scoreTxt = hasResult ? lasObj.scores[n.key].toFixed(1) : '-';
+
+        // Spoke line
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(nx, ny);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#e9d5ff';
+        ctx.stroke();
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(nx, ny, r, 0, Math.PI * 2);
+        ctx.fillStyle = n.fill;
+        ctx.fill();
+        ctx.lineWidth = isTop ? 3.5 : 2;
+        ctx.strokeStyle = isTop ? '#fde047' : '#ffffff';
+        ctx.stroke();
+
+        // Labels inside circle
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 10px "Noto Sans KR", "Malgun Gothic", sans-serif';
+        ctx.fillText(n.label, nx, ny - 3);
+        ctx.font = '800 11px "Noto Sans KR", "Malgun Gothic", sans-serif';
+        ctx.fillText(scoreTxt, nx, ny + 11);
+      });
+
+      // Center hub
+      ctx.beginPath();
+      ctx.arc(cx, cy, 19, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#f9a8d4';
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#9d174d';
+      ctx.font = '800 10px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.fillText('6색 휠', cx, cy + 4);
+      ctx.restore();
+    }
+
+    function renderWorksheetA4Canvas() {
+      // High-res A4 Canvas (1240 x 1754 px @ 150 DPI ratio)
+      const W = 1240;
+      const H = 1754;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // White page background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle outer decorative frame
+      drawRoundedRect(ctx, 28, 28, W - 56, H - 56, 24, '#ffffff', '#fecdd3', 2);
+
+      const marginX = 64;
+      const contentW = W - marginX * 2;
+      let y = 72;
+
+      const cls = document.getElementById('student-class').value || '1반';
+      const rawName = document.getElementById('student-id-name').value.trim() || '________________';
+
+      // Header Tag & Title
+      ctx.fillStyle = '#e11d48';
+      ctx.font = '700 17px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('청소년 심리·가정 탐구 · 관계 가치관 형성 서·논술형 활동지', marginX, y);
+
+      y += 38;
+      ctx.fillStyle = '#4c0519';
+      ctx.font = '800 28px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.fillText('사랑의 삼각형과 색깔 이론으로 성찰하는 나의 관계 가치관', marginX, y);
+
+      // Student Info Badge
+      y += 22;
+      drawRoundedRect(ctx, marginX, y, contentW, 48, 14, '#fff1f2', '#fecdd3', 1.5);
+      ctx.fillStyle = '#881337';
+      ctx.font = '700 19px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.fillText(`소속 학급: ${cls}     |     학번·이름: ${rawName}`, marginX + 22, y + 31);
+
+      // Header Divider
+      y += 66;
+      ctx.beginPath();
+      ctx.moveTo(marginX, y);
+      ctx.lineTo(W - marginX, y);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ff6b8b';
+      ctx.stroke();
+
+      // Two Side-by-Side Result Summary Cards (Triangle + 6-Color Wheel)
+      y += 24;
+      const cardGap = 24;
+      const cardW = (contentW - cardGap) / 2;
+      const cardH = 216;
+
+      // Left Card: Sternberg Triangle
+      drawRoundedRect(ctx, marginX, y, cardW, cardH, 20, '#fff5f7', '#fecdd3', 2);
+      drawRoundedRect(ctx, marginX + 16, y + 16, 184, 184, 16, '#ffffff', '#ffe4e6', 1.5);
+      drawTriangleOnCanvas(ctx, marginX + 108, y + 114, 64, latestStlsResult);
+
+      const stlsTypeTxt = latestStlsResult ? latestStlsResult.typeTitle : '미검사 (기본 가이드 도형)';
+      const stlsScoreTxt = latestStlsResult
+        ? `친밀감 ${latestStlsResult.intimacy}점 / 열정 ${latestStlsResult.passion}점 / 헌신 ${latestStlsResult.commitment}점 (9점 만점)`
+        : '친밀감: -점 / 열정: -점 / 헌신: -점';
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#e11d48';
+      ctx.font = '700 16px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.fillText('🔺 1. 스턴버그 사랑의 삼각형 결과', marginX + 216, y + 48);
+
+      ctx.fillStyle = '#4c0519';
+      ctx.font = '800 20px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      const stlsTitleLines = wrapCanvasText(ctx, stlsTypeTxt, cardW - 232);
+      stlsTitleLines.slice(0, 2).forEach((line, idx) => {
+        ctx.fillText(line, marginX + 216, y + 82 + idx * 26);
+      });
+
+      ctx.fillStyle = '#9f1239';
+      ctx.font = '600 16px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      const stlsScoreLines = wrapCanvasText(ctx, stlsScoreTxt, cardW - 232);
+      stlsScoreLines.slice(0, 2).forEach((line, idx) => {
+        ctx.fillText(line, marginX + 216, y + 142 + idx * 23);
+      });
+
+      // Right Card: Lee's 6-Color Wheel
+      const rightCardX = marginX + cardW + cardGap;
+      drawRoundedRect(ctx, rightCardX, y, cardW, cardH, 20, '#faf5ff', '#e9d5ff', 2);
+      drawRoundedRect(ctx, rightCardX + 16, y + 16, 184, 184, 16, '#ffffff', '#f3e8ff', 1.5);
+      drawColorWheelOnCanvas(ctx, rightCardX + 108, y + 108, 60, latestLasResult);
+
+      const lasTypeTxt = latestLasResult ? `제1 주조색: ${latestLasResult.firstTitle}` : '미검사 (기본 6색 색상환)';
+      const lasScoreTxt = latestLasResult
+        ? `1순위 ${LAS_STYLE_META[latestLasResult.firstKey].shortKo}(${latestLasResult.scores[latestLasResult.firstKey]}점) / 2순위 ${LAS_STYLE_META[latestLasResult.secondKey].shortKo}(${latestLasResult.scores[latestLasResult.secondKey]}점)`
+        : '제1 주조색: - / 제2 보조색: -';
+
+      ctx.fillStyle = '#7e22ce';
+      ctx.font = '700 16px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.fillText('🎨 2. 리의 사랑의 색깔 이론 결과', rightCardX + 216, y + 48);
+
+      ctx.fillStyle = '#3b0764';
+      ctx.font = '800 20px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      const lasTitleLines = wrapCanvasText(ctx, lasTypeTxt, cardW - 232);
+      lasTitleLines.slice(0, 2).forEach((line, idx) => {
+        ctx.fillText(line, rightCardX + 216, y + 82 + idx * 26);
+      });
+
+      ctx.fillStyle = '#6b21a8';
+      ctx.font = '600 16px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      const lasScoreLines = wrapCanvasText(ctx, lasScoreTxt, cardW - 232);
+      lasScoreLines.slice(0, 2).forEach((line, idx) => {
+        ctx.fillText(line, rightCardX + 216, y + 142 + idx * 23);
+      });
+
+      // 2 Essay Questions & Spacious Student Answer Boxes
+      y += cardH + 46;
+      const questions = [
+        {
+          num: '1',
+          badgeColor: '#f43f5e',
+          title: '나의 사랑의 삼각형과 사랑의 색깔 분석을 통한 강점·보완점 성찰',
+          prompt: '스턴버그의 사랑의 삼각형 세 요소(친밀감·열정·헌신)와 리의 6가지 사랑의 색깔 진단 결과를 바탕으로, 내가 대인관계에서 지닌 강점과 앞으로 보완해야 할 점을 이론 개념을 활용해 서술하시오.',
+          answer: document.getElementById('essay-q1').value.trim()
+        },
+        {
+          num: '2',
+          badgeColor: '#ec4899',
+          title: '두 이론의 핵심 개념을 연결해 정의하는 ‘건강하고 성숙한 사랑의 조건’',
+          prompt: '스턴버그의 사랑의 삼각형 이론과 리의 사랑의 색깔 이론의 핵심 개념을 연결하여, 내가 추구하는 ‘건강하고 성숙한 사랑의 조건’을 구체적으로 정의하고 그 이유를 서술하시오.',
+          answer: document.getElementById('essay-q2').value.trim()
+        }
+      ];
+
+      questions.forEach((q) => {
+        // Number circle badge
+        ctx.beginPath();
+        ctx.arc(marginX + 16, y + 13, 16, 0, Math.PI * 2);
+        ctx.fillStyle = q.badgeColor;
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 17px "Noto Sans KR", "Malgun Gothic", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(q.num, marginX + 16, y + 19);
+
+        // Question title
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#4c0519';
+        ctx.font = '800 21px "Noto Sans KR", "Malgun Gothic", sans-serif';
+        ctx.fillText(q.title, marginX + 42, y + 20);
+
+        y += 38;
+        // Prompt text wrapped
+        ctx.fillStyle = '#4b5563';
+        ctx.font = '500 17px "Noto Sans KR", "Malgun Gothic", sans-serif';
+        const promptLines = wrapCanvasText(ctx, q.prompt, contentW - 8);
+        promptLines.forEach((line, idx) => {
+          ctx.fillText(line, marginX + 4, y + 18 + idx * 26);
+        });
+
+        y += promptLines.length * 26 + 18;
+
+        // Spacious Answer box (10 ruled lines)
+        const boxH = 385;
+        drawRoundedRect(ctx, marginX, y, contentW, boxH, 18, '#ffffff', '#cbd5e1', 2);
+
+        // Faint ruled writing lines inside box
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1.5;
+        for (let r = 1; r <= 10; r++) {
+          const lineY = y + r * 35;
+          ctx.beginPath();
+          ctx.moveTo(marginX + 20, lineY);
+          ctx.lineTo(W - marginX - 20, lineY);
+          ctx.stroke();
+        }
+
+        // Student's written answer
+        if (q.answer) {
+          ctx.fillStyle = '#111827';
+          ctx.font = '500 19px "Noto Sans KR", "Malgun Gothic", sans-serif';
+          const ansLines = wrapCanvasText(ctx, q.answer, contentW - 48);
+          ansLines.slice(0, 10).forEach((line, idx) => {
+            ctx.fillText(line, marginX + 24, y + 29 + idx * 35);
+          });
+        }
+
+        y += boxH + 46;
+      });
+
+      // Footer Line & Teacher Signature
+      const footerY = H - 72;
+      ctx.beginPath();
+      ctx.moveTo(marginX, footerY - 24);
+      ctx.lineTo(W - marginX, footerY - 24);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.stroke();
+
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '600 17px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`작성일: ${new Date().toLocaleDateString('ko-KR')}`, marginX, footerY + 6);
+
+      ctx.fillStyle = '#1f2937';
+      ctx.font = '700 18px "Noto Sans KR", "Malgun Gothic", sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('담당 교사 확인: ________________________ (인)', W - marginX, footerY + 6);
+
+      return canvas;
+    }
+
+    // Built-in pure-JS JPEG-to-PDF binary builder (Fallback if jsPDF CDN is blocked)
+    function buildMinimalPdfFromJpegDataUrl(jpegDataUrl, imgPixelW, imgPixelH) {
+      const base64 = jpegDataUrl.split(',')[1];
+      const rawBin = atob(base64);
+      const jpegBytes = new Uint8Array(rawBin.length);
+      for (let i = 0; i < rawBin.length; i++) {
+        jpegBytes[i] = rawBin.charCodeAt(i);
+      }
+
+      // A4 size in PDF points (595.28 x 841.89)
+      const pdfW = 595.28;
+      const pdfH = 841.89;
+      const encoder = new TextEncoder();
+
+      const parts = [];
+      const offsets = [0];
+      let byteLen = 0;
+
+      const pushStr = (s) => {
+        const b = encoder.encode(s);
+        parts.push(b);
+        byteLen += b.length;
+      };
+      const pushBytes = (b) => {
+        parts.push(b);
+        byteLen += b.length;
+      };
+
+      pushStr('%PDF-1.4\n');
+
+      // Obj 1: Catalog
+      offsets.push(byteLen);
+      pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+
+      // Obj 2: Pages
+      offsets.push(byteLen);
+      pushStr('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+
+      // Obj 3: Page
+      offsets.push(byteLen);
+      pushStr(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pdfW} ${pdfH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);
+
+      // Obj 4: Image XObject (DCTDecode JPEG)
+      offsets.push(byteLen);
+      pushStr(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgPixelW} /Height ${imgPixelH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`);
+      pushBytes(jpegBytes);
+      pushStr('\nendstream\nendobj\n');
+
+      // Obj 5: Content stream
+      const contentStream = `q\n${pdfW} 0 0 ${pdfH} 0 0 cm\n/Im0 Do\nQ\n`;
+      offsets.push(byteLen);
+      pushStr(`5 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+
+      // XRef table
+      const xrefOffset = byteLen;
+      pushStr(`xref\n0 ${offsets.length}\n`);
+      pushStr('0000000000 65535 f \n');
+      for (let i = 1; i < offsets.length; i++) {
+        pushStr(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+      }
+      pushStr(`trailer\n<< /Size ${offsets.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+      const out = new Uint8Array(byteLen);
+      let pos = 0;
+      for (const p of parts) {
+        out.set(p, pos);
+        pos += p.length;
+      }
+      return new Blob([out], { type: 'application/pdf' });
+    }
+
+    async function downloadWorksheetPdf() {
+      const btn = document.getElementById('btn-download-pdf');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span><span>PDF 파일 생성 중...</span>';
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+
+        const cls = document.getElementById('student-class').value || '1반';
+        const rawNameInput = document.getElementById('student-id-name').value.trim();
+        const safeName = (rawNameInput || '활동지').replace(/[\\/:*?"<>|]/g, '_');
+        const fileName = `데이터로들여다보는사랑의심리학_활동지_${cls}_${safeName}.pdf`;
+
+        // 1. Draw full A4 worksheet directly onto pure HTML5 Canvas
+        const canvas = renderWorksheetA4Canvas();
+        const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.94);
+
+        // 2. Build PDF Blob (use jsPDF if available, otherwise built-in pure-JS PDF generator)
+        let pdfBlob = null;
+        if (window.jspdf && window.jspdf.jsPDF) {
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+          });
+          pdf.addImage(jpegDataUrl, 'JPEG', 0, 0, 210, 297);
+          pdfBlob = pdf.output('blob');
+        } else {
+          pdfBlob = buildMinimalPdfFromJpegDataUrl(jpegDataUrl, canvas.width, canvas.height);
+        }
+
+        // 3. Multi-channel download delivery for Mobile & Desktop
+        let sharedViaNativeSheet = false;
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile|KAKAOTALK|NAVER/i.test(navigator.userAgent);
+
+        // Channel A: Mobile Native Share / Save-to-Files Sheet (Works inside mobile WebViews)
+        if (isMobile && navigator.share && navigator.canShare) {
+          try {
+            const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+            if (navigator.canShare({ files: [pdfFile] })) {
+              await navigator.share({
+                files: [pdfFile],
+                title: fileName
+              });
+              sharedViaNativeSheet = true;
+              showToast(`📥 '${fileName}' 저장·공유 창이 열렸습니다!`);
+            }
+          } catch (shareErr) {
+            if (shareErr && shareErr.name === 'AbortError') {
+              sharedViaNativeSheet = true;
+            }
+          }
+        }
+
+        // Channel B: Standard Blob URL <a download> trigger
+        if (!sharedViaNativeSheet) {
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 20000);
+          showToast(`📥 '${fileName}' PDF 파일 다운로드가 완료되었습니다!`);
+        }
+      } catch (err) {
+        console.error('PDF Download Error:', err);
+        showToast('⚠️ PDF 생성 중 일시적인 오류가 발생했습니다. 다시 한 번 눌러주세요.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    // =========================================================================
+    // 6. TAB 1: STLS RENDERING, SCORING & ANIMATED SVG TRIANGLE
+    // =========================================================================
+    function getFilteredStlsItems() {
+      const filtered = stlsMode === 'short' ? STLS_ITEMS.filter(i => i.short) : STLS_ITEMS;
+      const intList = filtered.filter(i => i.dim === 'intimacy');
+      const pasList = filtered.filter(i => i.dim === 'passion');
+      const comList = filtered.filter(i => i.dim === 'commitment');
+      const result = [];
+      for (let i = 0; i < intList.length; i++) {
+        if (intList[i]) result.push(intList[i]);
+        if (pasList[i]) result.push(pasList[i]);
+        if (comList[i]) result.push(comList[i]);
+      }
+      return result;
+    }
+
+    function setStlsMode(mode) {
+      stlsMode = mode;
+      document.getElementById('stls-mode-short').className = mode === 'short'
+        ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-rose-600 shadow-sm transition'
+        : 'px-3.5 py-2 rounded-xl text-xs font-bold text-rose-500 hover:text-rose-700 transition';
+      document.getElementById('stls-mode-full').className = mode === 'full'
+        ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-rose-600 shadow-sm transition'
+        : 'px-3.5 py-2 rounded-xl text-xs font-bold text-rose-500 hover:text-rose-700 transition';
+      renderStlsQuestions();
+    }
+
+    function renderStlsQuestions() {
+      const items = getFilteredStlsItems();
+      const container = document.getElementById('stls-questions');
+      container.innerHTML = items.map((item, idx) => {
+        const selectedVal = stlsAnswers[item.id];
+        let buttonsHtml = '';
+        for (let score = 1; score <= 9; score++) {
+          const isSel = selectedVal === score ? 'selected' : '';
+          buttonsHtml += `
+            <button type="button" onclick="selectStlsAnswer(${item.id}, ${score})"
+              class="likert-btn ${isSel} flex-1 py-2.5 sm:py-2.5 rounded-xl border border-rose-200 bg-white text-xs sm:text-sm font-semibold text-rose-800 hover:border-rose-400">
+              ${score}
+            </button>
+          `;
+        }
+        return `
+          <div id="stls-q-card-${item.id}" class="glass-card rounded-3xl p-5 transition ${selectedVal ? 'border-rose-300 bg-white/95' : ''}">
+            <div class="flex items-start gap-3 mb-3.5">
+              <span class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                ${idx + 1}
+              </span>
+              <p class="text-sm sm:text-base font-semibold text-rose-950 leading-snug">${item.text}</p>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-[11px] font-medium text-rose-500 px-1">
+                <span>1 (전혀 그렇지 않다)</span>
+                <span>5 (보통이다)</span>
+                <span>9 (매우 그렇다)</span>
+              </div>
+              <div class="flex gap-1 sm:gap-2">
+                ${buttonsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      updateStlsProgress();
+    }
+
+    function selectStlsAnswer(id, score) {
+      stlsAnswers[id] = score;
+      renderStlsQuestions();
+    }
+
+    function updateStlsProgress() {
+      const items = getFilteredStlsItems();
+      const answered = items.filter(i => stlsAnswers[i.id] !== undefined).length;
+      const pct = Math.round((answered / items.length) * 100);
+      document.getElementById('stls-progress-bar').style.width = pct + '%';
+      document.getElementById('stls-progress-text').textContent = `${answered} / ${items.length}`;
+    }
+
+    function determineSternbergType(i, p, c) {
+      const highI = i >= 6.0;
+      const highP = p >= 6.0;
+      const highC = c >= 6.0;
+
+      if (highI && highP && highC) {
+        return {
+          title: '성숙한 사랑 (Consummate Love)',
+          sub: '친밀감, 열정, 헌신이 모두 높게 조화를 이루는 완전한 사랑 유형입니다.',
+          desc: '서로를 깊이 이해하고 신뢰하는 정서적 유대(친밀감), 낭만적 끌림(열정), 그리고 관계를 책임감 있게 지켜나가려는 의지(헌신)가 균형 있게 결합된 가장 이상적인 사랑의 형태입니다.'
+        };
+      }
+      if (highI && highP && !highC) {
+        return {
+          title: '낭만적 사랑 (Romantic Love)',
+          sub: '따뜻한 친밀감과 두근거리는 열정이 결합된 사랑 유형입니다.',
+          desc: '정서적으로 깊이 통하고 서로에게 강한 매력을 느끼는 상태입니다. 관계가 일시적인 감정에 머무르지 않고 오래 지속되려면 서로에 대한 책임감과 약속(헌신)을 함께 키워가는 과정이 필요합니다.'
+        };
+      }
+      if (highI && !highP && highC) {
+        return {
+          title: '우애적 사랑 (Companionate Love)',
+          sub: '깊은 친밀감과 변치 않는 헌신이 결합된 신뢰 중심의 사랑 유형입니다.',
+          desc: '오랜 우정과 상호 존중, 그리고 관계를 지키려는 굳건한 의지가 바탕이 된 안정적인 관계입니다. 일상 속에서 서로에게 새로운 활력과 설렘(열정)을 불어넣으면 더욱 풍부한 관계가 됩니다.'
+        };
+      }
+      if (!highI && highP && highC) {
+        return {
+          title: '얼빠진 사랑 (Fatuous Love)',
+          sub: '강렬한 열정에 이끌려 성급하게 헌신을 결심하는 사랑 유형입니다.',
+          desc: '첫눈에 반한 열정만을 근거로 충분한 이해 없이 미래를 약속하기 쉬운 유형입니다. 상대방의 내면과 가치관을 차분히 알아가는 정서적 교류(친밀감)의 시간을 충분히 갖는 것이 중요합니다.'
+        };
+      }
+      if (highI && !highP && !highC) {
+        return {
+          title: '좋아함 / 호감 (Liking / Friendship)',
+          sub: '편안하고 따뜻한 정서적 친밀감이 중심이 되는 우정형 관계입니다.',
+          desc: '서로에게 솔직할 수 있고 함께 있을 때 심리적 안정감을 느끼는 진정한 우정 관계입니다. 모든 건강한 인간관계와 사랑의 가장 튼튼한 토대가 되는 요소입니다.'
+        };
+      }
+      if (!highI && highP && !highC) {
+        return {
+          title: '도취성 사랑 (Infatuated Love)',
+          sub: '강한 설렘과 매혹(열정)이 지배적으로 나타나는 사랑 유형입니다.',
+          desc: '상대방에 대한 강렬한 끌림과 이상화가 두드러지는 초기 열정 단계입니다. 감정이 가라앉은 뒤에도 건강한 관계를 유지하려면 상대의 실제 모습을 이해하는 친밀감과 책임감이 뒷받침되어야 합니다.'
+        };
+      }
+      if (!highI && !highP && highC) {
+        return {
+          title: '공허한 사랑 (Empty Love)',
+          sub: '정서적 교류나 설렘보다 관계를 유지하려는 의무감(헌신)이 중심인 상태입니다.',
+          desc: '약속과 책임을 지키려는 의지는 강하지만, 정서적 따뜻함(친밀감)과 생동감(열정)이 부족한 상태입니다. 진솔한 대화와 새로운 공유 경험을 통해 활력을 회복할 필요가 있습니다.'
+        };
+      }
+      return {
+        title: '비사랑 (Nonlove / 탐색 단계)',
+        sub: '세 가지 사랑의 요소가 아직 본격적으로 형성되기 전인 일상적 관계입니다.',
+        desc: '특정한 연애 감정보다는 자기 이해와 또래 관계 속에서 다양한 가치관을 탐색하는 시기입니다. 앞으로 소중한 관계를 맺어가며 친밀감, 열정, 헌신의 의미를 균형 있게 배워갈 수 있습니다.'
+      };
+    }
+
+    function calculateStls() {
+      const items = getFilteredStlsItems();
+      const missing = items.find(i => stlsAnswers[i.id] === undefined);
+      if (missing) {
+        showToast('응답하지 않은 문항이 있습니다. 표시된 문항을 확인해 주세요.');
+        const el = document.getElementById('stls-q-card-' + missing.id);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('ring-2', 'ring-rose-500');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-rose-500'), 2000);
+        return;
+      }
+
+      const calcAvg = (dim) => {
+        const sub = items.filter(i => i.dim === dim);
+        const sum = sub.reduce((acc, cur) => acc + stlsAnswers[cur.id], 0);
+        return +(sum / sub.length).toFixed(1);
+      };
+
+      const intimacy = calcAvg('intimacy');
+      const passion = calcAvg('passion');
+      const commitment = calcAvg('commitment');
+      const typeInfo = determineSternbergType(intimacy, passion, commitment);
+
+      latestStlsResult = { intimacy, passion, commitment, typeTitle: typeInfo.title };
+
+      document.getElementById('stls-type-title').textContent = typeInfo.title;
+      document.getElementById('stls-type-subtitle').textContent = typeInfo.sub;
+      document.getElementById('stls-type-desc').textContent = typeInfo.desc;
+
+      document.getElementById('badge-intimacy').textContent = intimacy >= 6.0 ? '높음 (≥6.0)' : '보완 가능';
+      document.getElementById('badge-passion').textContent = passion >= 6.0 ? '높음 (≥6.0)' : '보완 가능';
+      document.getElementById('badge-commitment').textContent = commitment >= 6.0 ? '높음 (≥6.0)' : '보완 가능';
+
+      document.getElementById('ws-stls-summary-type').textContent = typeInfo.title;
+      document.getElementById('ws-stls-summary-scores').textContent =
+        `친밀감: ${intimacy}점 / 열정: ${passion}점 / 헌신: ${commitment}점 (9점 만점)`;
+      updateWorksheetVisuals();
+
+      const resultCard = document.getElementById('stls-result-card');
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      animateStlsTriangle(intimacy, passion, commitment);
+    }
+
+    function animateStlsTriangle(targetI, targetP, targetC) {
+      const cx = 170, cy = 175, maxR = 120;
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const duration = 1100;
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        const curI = targetI * ease;
+        const curP = targetP * ease;
+        const curC = targetC * ease;
+
+        const rI = (curI / 9) * maxR;
+        const rP = (curP / 9) * maxR;
+        const rC = (curC / 9) * maxR;
+
+        const x1 = cx + rI * Math.cos(toRad(-90));
+        const y1 = cy + rI * Math.sin(toRad(-90));
+        const x2 = cx + rP * Math.cos(toRad(150));
+        const y2 = cy + rP * Math.sin(toRad(150));
+        const x3 = cx + rC * Math.cos(toRad(30));
+        const y3 = cy + rC * Math.sin(toRad(30));
+
+        const pts = `${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${x3.toFixed(1)},${y3.toFixed(1)}`;
+        document.getElementById('stls-user-poly').setAttribute('points', pts);
+        document.getElementById('stls-draw-path').setAttribute('d', `M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)} L${x3.toFixed(1)},${y3.toFixed(1)} Z`);
+
+        document.getElementById('dot-intimacy').setAttribute('cx', x1.toFixed(1));
+        document.getElementById('dot-intimacy').setAttribute('cy', y1.toFixed(1));
+        document.getElementById('dot-passion').setAttribute('cx', x2.toFixed(1));
+        document.getElementById('dot-passion').setAttribute('cy', y2.toFixed(1));
+        document.getElementById('dot-commitment').setAttribute('cx', x3.toFixed(1));
+        document.getElementById('dot-commitment').setAttribute('cy', y3.toFixed(1));
+
+        document.getElementById('svg-score-intimacy').textContent = `${curI.toFixed(1)} / 9.0`;
+        document.getElementById('svg-score-passion').textContent = `${curP.toFixed(1)} / 9.0`;
+        document.getElementById('svg-score-commitment').textContent = `${curC.toFixed(1)} / 9.0`;
+
+        document.getElementById('card-score-intimacy').textContent = curI.toFixed(1);
+        document.getElementById('card-score-passion').textContent = curP.toFixed(1);
+        document.getElementById('card-score-commitment').textContent = curC.toFixed(1);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    // =========================================================================
+    // 7. TAB 2: LEE'S LOVE ATTITUDES SCALE (LAS) & 6-CIRCLE COLOR WHEEL
+    // =========================================================================
+    function getFilteredLasItems() {
+      const filtered = lasMode === 'short' ? LAS_ITEMS.filter(i => i.short) : LAS_ITEMS;
+      const styles = ['Eros', 'Ludus', 'Storge', 'Pragma', 'Mania', 'Agape'];
+      const buckets = styles.map(s => filtered.filter(i => i.style === s));
+      const result = [];
+      const maxLen = buckets[0].length;
+      for (let i = 0; i < maxLen; i++) {
+        buckets.forEach(b => { if (b[i]) result.push(b[i]); });
+      }
+      return result;
+    }
+
+    function setLasMode(mode) {
+      lasMode = mode;
+      document.getElementById('las-mode-short').className = mode === 'short'
+        ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-purple-700 shadow-sm transition'
+        : 'px-3.5 py-2 rounded-xl text-xs font-bold text-purple-500 hover:text-purple-700 transition';
+      document.getElementById('las-mode-full').className = mode === 'full'
+        ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-purple-700 shadow-sm transition'
+        : 'px-3.5 py-2 rounded-xl text-xs font-bold text-purple-500 hover:text-purple-700 transition';
+      renderLasQuestions();
+    }
+
+    function renderLasQuestions() {
+      const items = getFilteredLasItems();
+      const container = document.getElementById('las-questions');
+      const labels = ['1 전혀 아니다', '2 아니다', '3 보통이다', '4 그렇다', '5 매우 그렇다'];
+
+      container.innerHTML = items.map((item, idx) => {
+        const selectedVal = lasAnswers[item.id];
+        let buttonsHtml = '';
+        for (let score = 1; score <= 5; score++) {
+          const isSel = selectedVal === score ? 'selected' : '';
+          buttonsHtml += `
+            <button type="button" onclick="selectLasAnswer(${item.id}, ${score})"
+              class="likert-btn likert-btn-las ${isSel} flex-1 py-2.5 px-1 rounded-xl border border-purple-200 bg-white text-[11px] sm:text-xs font-semibold text-purple-900 hover:border-purple-400">
+              ${labels[score - 1]}
+            </button>
+          `;
+        }
+        return `
+          <div id="las-q-card-${item.id}" class="glass-card rounded-3xl p-5 transition ${selectedVal ? 'border-purple-300 bg-white/95' : ''}">
+            <div class="flex items-start gap-3 mb-3.5">
+              <span class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                ${idx + 1}
+              </span>
+              <p class="text-sm sm:text-base font-semibold text-rose-950 leading-snug">${item.text}</p>
+            </div>
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-2">
+              ${buttonsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+      updateLasProgress();
+    }
+
+    function selectLasAnswer(id, score) {
+      lasAnswers[id] = score;
+      renderLasQuestions();
+    }
+
+    function updateLasProgress() {
+      const items = getFilteredLasItems();
+      const answered = items.filter(i => lasAnswers[i.id] !== undefined).length;
+      const pct = Math.round((answered / items.length) * 100);
+      document.getElementById('las-progress-bar').style.width = pct + '%';
+      document.getElementById('las-progress-text').textContent = `${answered} / ${items.length}`;
+    }
+
+    function calculateLas() {
+      const items = getFilteredLasItems();
+      const missing = items.find(i => lasAnswers[i.id] === undefined);
+      if (missing) {
+        showToast('응답하지 않은 문항이 있습니다. 표시된 문항을 확인해 주세요.');
+        const el = document.getElementById('las-q-card-' + missing.id);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('ring-2', 'ring-purple-500');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-purple-500'), 2000);
+        return;
+      }
+
+      const styles = ['Eros', 'Agape', 'Storge', 'Pragma', 'Ludus', 'Mania'];
+      const scores = {};
+      styles.forEach(st => {
+        const sub = items.filter(i => i.style === st);
+        const sum = sub.reduce((acc, cur) => acc + lasAnswers[cur.id], 0);
+        scores[st] = +(sum / sub.length).toFixed(1);
+      });
+
+      const sorted = [...styles].sort((a, b) => scores[b] - scores[a]);
+      const firstKey = sorted[0];
+      const secondKey = sorted[1];
+
+      const firstMeta = LAS_STYLE_META[firstKey];
+      const secondMeta = LAS_STYLE_META[secondKey];
+
+      latestLasResult = {
+        scores,
+        firstKey,
+        secondKey,
+        firstTitle: firstMeta.ko,
+        secondTitle: secondMeta.ko
+      };
+
+      document.getElementById('las-top-title').textContent = `제1 주조색: ${firstMeta.ko}`;
+      document.getElementById('las-top-subtitle').textContent = `제2 보조색: ${secondMeta.ko}`;
+
+      document.getElementById('las-1st-name').textContent = firstMeta.ko;
+      document.getElementById('las-1st-desc').textContent = firstMeta.desc;
+      document.getElementById('las-1st-score-badge').textContent = `${scores[firstKey].toFixed(1)} / 5.0`;
+
+      document.getElementById('las-2nd-name').textContent = secondMeta.ko;
+      document.getElementById('las-2nd-desc').textContent = secondMeta.desc;
+      document.getElementById('las-2nd-score-badge').textContent = `${scores[secondKey].toFixed(1)} / 5.0`;
+
+      document.getElementById('ws-las-summary-type').textContent = `제1 주조색: ${firstMeta.ko}`;
+      document.getElementById('ws-las-summary-scores').textContent =
+        `1순위 ${firstMeta.shortKo}(${scores[firstKey]}점) / 2순위 ${secondMeta.shortKo}(${scores[secondKey]}점)`;
+      updateWorksheetVisuals();
+
+      const resultCard = document.getElementById('las-result-card');
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      animateColorWheel(scores, firstKey, secondKey);
+    }
+
+    function animateColorWheel(scores, firstKey, secondKey) {
+      const styles = ['Eros', 'Agape', 'Storge', 'Pragma', 'Ludus', 'Mania'];
+
+      styles.forEach(st => {
+        const node = document.getElementById('wheel-node-' + st);
+        node.classList.remove('top-rank');
+        const scaleVal = 0.88 + ((scores[st] - 1) / 4) * 0.30;
+        node.style.transform = `translate(-50%, -50%) scale(${scaleVal.toFixed(2)})`;
+        if (st === firstKey || st === secondKey) {
+          node.classList.add('top-rank');
+        }
+      });
+
+      const duration = 1100;
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        styles.forEach(st => {
+          const curVal = scores[st] * ease;
+          document.getElementById('wheel-score-' + st).textContent = curVal.toFixed(1);
+        });
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    // =========================================================================
+    // 8. TAB 4: ANONYMOUS LIVE STATS (0 INITIAL) & GOOGLE APPS SCRIPT SYNC
+    // =========================================================================
+    function toggleGasPanel() {
+      const panel = document.getElementById('gas-panel');
+      const arrow = document.getElementById('gas-arrow');
+      panel.classList.toggle('hidden');
+      arrow.style.transform = panel.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function copyGasCode() {
+      const code = document.getElementById('gas-code-block').textContent;
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('📋 구글 앱스 스크립트 코드가 복사되었습니다!');
+    }
+
+    function saveGasUrl() {
+      const url = document.getElementById('gas-url-input').value.trim();
+      localStorage.setItem('love_gas_url', url);
+      if (url) {
+        document.getElementById('stat-sync-badge').textContent = '구글 시트 실시간 연동됨';
+        document.getElementById('stat-sync-badge').className = 'text-xs font-extrabold text-emerald-700 mt-2';
+        showToast('✅ 구글 시트 URL이 저장되었습니다! 실시간 통계를 불러옵니다.');
+        fetchLiveStats();
+      } else {
+        document.getElementById('stat-sync-badge').textContent = '로컬 대기 (0명)';
+        document.getElementById('stat-sync-badge').className = 'text-xs font-extrabold text-amber-800 mt-2';
+        showToast('URL이 비워져 로컬 통계 모드로 전환되었습니다.');
+      }
+    }
+
+    async function submitResultToSheet(type) {
+      const studentClass = document.getElementById('student-class').value || '1반';
+      const studentIdName = document.getElementById('student-id-name').value.trim() || '익명';
+
+      let resultType = '';
+      let detailScores = '';
+
+      if (type === 'STLS') {
+        if (!latestStlsResult) return showToast('먼저 스턴버그 검사를 완료해 주세요!');
+        resultType = latestStlsResult.typeTitle.split(' (')[0];
+        detailScores = `친밀 ${latestStlsResult.intimacy} / 열정 ${latestStlsResult.passion} / 헌신 ${latestStlsResult.commitment}`;
+      } else {
+        if (!latestLasResult) return showToast('먼저 리의 사랑의 색깔 검사를 완료해 주세요!');
+        resultType = latestLasResult.firstTitle;
+        detailScores = `1순위 ${latestLasResult.firstTitle} / 2순위 ${latestLasResult.secondTitle}`;
+      }
+
+      liveStatsRecords.push({
+        studentClass,
+        testType: type,
+        resultType
+      });
+      renderStatsCharts();
+
+      const gasUrl = localStorage.getItem('love_gas_url');
+      if (!gasUrl) {
+        showToast('📊 실시간 통계에 익명으로 반영되었습니다! (시트 URL 미연결 상태)');
+        return;
+      }
+
+      try {
+        await fetch(gasUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentClass,
+            studentIdName,
+            testType: type,
+            resultType,
+            detailScores
+          })
+        });
+        showToast('🎉 구글 시트 및 실시간 학급 통계에 익명 전송 완료!');
+      } catch (err) {
+        showToast('⚠️ 네트워크 오류로 로컬 통계에만 반영되었습니다.');
+      }
+    }
+
+    async function fetchLiveStats() {
+      const gasUrl = localStorage.getItem('love_gas_url');
+      if (!gasUrl) {
+        renderStatsCharts();
+        return;
+      }
+      try {
+        const res = await fetch(gasUrl);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          liveStatsRecords = data;
+          showToast('🔄 구글 시트에서 최신 익명 통계를 불러왔습니다!');
+        }
+      } catch (e) {}
+      renderStatsCharts();
+    }
+
+    function renderStatsCharts() {
+      const filterClass = document.getElementById('stats-class-filter').value;
+      const filtered = filterClass === 'ALL'
+        ? liveStatsRecords
+        : liveStatsRecords.filter(r => r.studentClass === filterClass);
+
+      document.getElementById('stat-total-count').textContent = `${filtered.length}명`;
+
+      const stlsList = filtered.filter(r => r.testType === 'STLS');
+      const lasList = filtered.filter(r => r.testType === 'LAS');
+
+      const stlsTypes = ['성숙한 사랑', '낭만적 사랑', '우애적 사랑', '얼빠진 사랑', '좋아함', '도취성 사랑', '공허한 사랑', '비사랑'];
+      const stlsCounts = {};
+      stlsTypes.forEach(t => stlsCounts[t] = 0);
+      stlsList.forEach(r => {
+        const key = stlsTypes.find(t => r.resultType && r.resultType.includes(t)) || '성숙한 사랑';
+        stlsCounts[key]++;
+      });
+
+      const topStls = Object.entries(stlsCounts).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('stat-top-stls').textContent = (topStls && topStls[1] > 0) ? topStls[0] : '-';
+
+      const stlsContainer = document.getElementById('chart-stls-bars');
+      stlsContainer.innerHTML = stlsTypes.map(t => {
+        const cnt = stlsCounts[t];
+        const pct = stlsList.length ? Math.round((cnt / stlsList.length) * 100) : 0;
+        return `
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-rose-900">
+              <span>${t}</span>
+              <span>${cnt}명 (${pct}%)</span>
+            </div>
+            <div class="w-full h-2.5 bg-rose-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-rose-400 to-pink-500 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const lasTypes = [
+        { label: '에로스 (열정적 사랑)', color: 'from-rose-400 to-red-500' },
+        { label: '스토르게 (우정적 사랑)', color: 'from-emerald-400 to-teal-500' },
+        { label: '아가페 (헌신적·이타적 사랑)', color: 'from-purple-400 to-violet-600' },
+        { label: '프라그마 (실용적 사랑)', color: 'from-sky-400 to-blue-500' },
+        { label: '루두스 (유희적 사랑)', color: 'from-orange-400 to-amber-500' },
+        { label: '마니아 (소유적·열광적 사랑)', color: 'from-pink-400 to-fuchsia-500' }
+      ];
+      const lasCounts = {};
+      lasTypes.forEach(t => lasCounts[t.label] = 0);
+      lasList.forEach(r => {
+        const found = lasTypes.find(t => r.resultType && r.resultType.includes(t.label.split(' ')[0]));
+        if (found) lasCounts[found.label]++;
+      });
+
+      const topLas = Object.entries(lasCounts).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('stat-top-las').textContent = (topLas && topLas[1] > 0) ? topLas[0].split(' ')[0] : '-';
+
+      const lasContainer = document.getElementById('chart-las-bars');
+      lasContainer.innerHTML = lasTypes.map(t => {
+        const cnt = lasCounts[t.label];
+        const pct = lasList.length ? Math.round((cnt / lasList.length) * 100) : 0;
+        return `
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-purple-950">
+              <span>${t.label}</span>
+              <span>${cnt}명 (${pct}%)</span>
+            </div>
+            <div class="w-full h-2.5 bg-purple-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r ${t.color} rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
